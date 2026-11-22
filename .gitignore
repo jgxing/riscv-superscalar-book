@@ -1,0 +1,17 @@
+# WorkBuddy 项目数据，不是教材内容
+.workbuddy/
+
+# 凭据文件，绝不入库
+github_pat.txt
+*.pat
+.env
+
+# Verilog 仿真中间产物
+*.vvp
+*.vcd
+sim.vvp
+
+# 编辑器与系统杂项
+.DS_Store
+Thumbs.db
+*.swp
