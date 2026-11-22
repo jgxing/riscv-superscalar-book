@@ -21,6 +21,7 @@ const REPO = process.env.RV_GITHUB_REPO || 'riscv-superscalar-book';
 const PRIVATE = process.env.RV_GITHUB_PRIVATE === '1';
 const PAGES = process.env.RV_GITHUB_PAGES === '1';
 const BRANCH = 'main';
+const REPO_DESC = 'RISC-V 多发射乱序处理器：从原理到实现。正文、SVG 插图、Digital 电路与 Verilog 骨架代码';
 const API = 'https://api.github.com';
 const CHECK_ONLY = process.argv.indexOf('--check') >= 0;
 const RETRY_CODES = new Set([7, 28, 35, 52, 55, 56]);
@@ -152,7 +153,7 @@ function main() {
     if (CHECK_ONLY) { console.log('仓库尚不存在：' + owner + '/' + REPO + '（--check 模式未创建）'); return; }
     repo = api(tok, 'POST', '/user/repos', {
       name: REPO,
-      description: 'RISC-V 多发射乱序处理器设计入门教材：正文、SVG 插图、Digital 电路与 Verilog 骨架代码',
+      description: REPO_DESC,
       private: PRIVATE,
       auto_init: false,
       has_issues: true
@@ -161,6 +162,9 @@ function main() {
     console.log('已创建' + (PRIVATE ? '私有' : '公开') + '仓库：' + repo.data.html_url);
   } else if (repo.status === 200) {
     console.log('复用已有仓库：' + repo.data.html_url);
+    const upd = api(tok, 'PATCH', repoPath, { description: REPO_DESC });
+    if (upd.status !== 200) fail(upd, '同步仓库描述');
+    console.log('已同步仓库描述。');
   } else {
     fail(repo, '查询仓库');
   }
