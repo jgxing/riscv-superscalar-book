@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 500" width="980" height="500" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图6-2 预译码把错误发现提前</title>
+  <desc>上半部分是没有预译码的情况：分支猜错后，错误指令一路流到执行阶段才发现，中间取回的三条指令全部作废。下半部分是有预译码的情况：取指阶段就把预译码信息和预测结果对照，当拍发现矛盾并冲刷，错误指令没有进入后端。</desc>
+  <rect x="0" y="0" width="980" height="500" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 6-2　预译码把错误发现提前</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">同样一次预测错误，越早发现，作废的工作越少</text>
+
+  <!-- 周期刻度 -->
+  <g font-size="11" fill="#475569" text-anchor="middle">
+    <text x="300" y="92">周期 1</text>
+    <text x="440" y="92">周期 2</text>
+    <text x="580" y="92">周期 3</text>
+    <text x="720" y="92">周期 4</text>
+    <text x="860" y="92">周期 5</text>
+  </g>
+  <g stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 4">
+    <line x1="300" y1="100" x2="300" y2="470"/>
+    <line x1="440" y1="100" x2="440" y2="470"/>
+    <line x1="580" y1="100" x2="580" y2="470"/>
+    <line x1="720" y1="100" x2="720" y2="470"/>
+    <line x1="860" y1="100" x2="860" y2="470"/>
+  </g>
+
+  <!-- ===== 上半：无预译码 ===== -->
+  <text x="30" y="128" font-size="13" font-weight="bold" fill="#922B21">没有预译码</text>
+  <rect x="28" y="140" width="952" height="140" rx="10" fill="#FEF5F4" stroke="#E6B0AA" stroke-width="1.2"/>
+
+  <!-- 分支取指 -->
+  <rect x="226" y="156" width="140" height="34" rx="6" fill="#FADBD8" stroke="#C0392B" stroke-width="1.4"/>
+  <text x="296" y="178" font-size="11.5" fill="#922B21" text-anchor="middle">取到分支 jal</text>
+
+  <!-- 错误路径指令 -->
+  <rect x="366" y="156" width="120" height="34" rx="6" fill="#F5B7B1" stroke="#C0392B" stroke-width="1.4"/>
+  <text x="426" y="178" font-size="11.5" fill="#7B241C" text-anchor="middle">错误指令 A</text>
+  <rect x="506" y="156" width="120" height="34" rx="6" fill="#F5B7B1" stroke="#C0392B" stroke-width="1.4"/>
+  <text x="566" y="178" font-size="11.5" fill="#7B241C" text-anchor="middle">错误指令 B</text>
+  <rect x="646" y="156" width="120" height="34" rx="6" fill="#F5B7B1" stroke="#C0392B" stroke-width="1.4"/>
+  <text x="706" y="178" font-size="11.5" fill="#7B241C" text-anchor="middle">错误指令 C</text>
+
+  <!-- 发现点 -->
+  <rect x="786" y="156" width="160" height="34" rx="6" fill="#C0392B" stroke="#922B21" stroke-width="1.4"/>
+  <text x="866" y="178" font-size="11.5" fill="#ffffff" text-anchor="middle">执行阶段才发现错</text>
+
+  <!-- 说明条 -->
+  <rect x="226" y="212" width="720" height="30" rx="6" fill="#FADBD8"/>
+  <text x="586" y="232" font-size="12" fill="#7B241C" text-anchor="middle">这三条错误指令白带了一趟，还要专门冲刷作废</text>
+
+  <!-- 大大的代价标注 -->
+  <text x="60" y="258" font-size="12" font-weight="bold" fill="#922B21">代价　3 条错误指令进入流水线</text>
+
+  <!-- ===== 下半：有预译码 ===== -->
+  <text x="30" y="316" font-size="13" font-weight="bold" fill="#0F6E56">有预译码</text>
+  <rect x="28" y="328" width="952" height="140" rx="10" fill="#F1F8F4" stroke="#A9D5C0" stroke-width="1.2"/>
+
+  <!-- 取指+预译码 -->
+  <rect x="226" y="344" width="140" height="34" rx="6" fill="#D5F5E3" stroke="#0F6E56" stroke-width="1.4"/>
+  <text x="296" y="366" font-size="11.5" fill="#0F6E56" text-anchor="middle">取指 + 预译码</text>
+
+  <!-- 检查对照 -->
+  <rect x="366" y="344" width="150" height="34" rx="6" fill="#ABEBC6" stroke="#0F6E56" stroke-width="1.4"/>
+  <text x="441" y="366" font-size="11.5" fill="#0E6655" text-anchor="middle">预译码与预测对照</text>
+
+  <!-- 冲刷 -->
+  <rect x="516" y="344" width="160" height="34" rx="6" fill="#0F6E56" stroke="#0B5345" stroke-width="1.4"/>
+  <text x="596" y="366" font-size="11.5" fill="#ffffff" text-anchor="middle">当拍发现矛盾 → 冲刷</text>
+
+  <!-- 正确路径 -->
+  <rect x="696" y="344" width="200" height="34" rx="6" fill="#D5F5E3" stroke="#0F6E56" stroke-width="1.4"/>
+  <text x="796" y="366" font-size="11.5" fill="#0F6E56" text-anchor="middle">从正确目标重新取指</text>
+
+  <!-- 说明条 -->
+  <rect x="226" y="400" width="670" height="30" rx="6" fill="#D5F5E3"/>
+  <text x="561" y="420" font-size="12" fill="#0E6655" text-anchor="middle">错误指令一条都没有进入后端，冲刷路径明显缩短</text>
+
+  <text x="60" y="446" font-size="12" font-weight="bold" fill="#0F6E56">代价　几乎为零</text>
+
+  <!-- 底部提示 -->
+  <rect x="28" y="474" width="952" height="20" rx="6" fill="#F5F3FF"/>
+  <text x="504" y="488" font-size="11.5" fill="#5B21B6" text-anchor="middle">边界　预译码只抓指令本身能判断的错误，依赖寄存器值的条件分支仍要等执行阶段</text>
+</svg>

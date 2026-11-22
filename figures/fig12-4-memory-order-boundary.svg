@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" width="1000" height="480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图12-4 乱序访存的安全边界</title>
+  <desc>同地址的访存必须保持程序顺序，否则会读到旧值或写反；不同地址的访存互不影响，可以放心乱序执行。</desc>
+  <rect x="0" y="0" width="1000" height="480" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 12-4　乱序访存的安全边界</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">乱序的是执行时刻，不是访存规则</text>
+
+  <!-- 左：同地址 -->
+  <rect x="30" y="90" width="450" height="268" rx="10" fill="#FCE8E6" stroke="#C0392B" stroke-width="1.8"/>
+  <text x="255" y="122" font-size="14" font-weight="bold" fill="#A93226" text-anchor="middle">同地址　必须守住顺序</text>
+  <line x1="50" y1="136" x2="460" y2="136" stroke="#C0392B" stroke-width="1"/>
+  <text x="52" y="166" font-size="12" fill="#374151">S1　写 0x100 = 0xAB</text>
+  <text x="52" y="192" font-size="12" fill="#374151">L2　读 0x100</text>
+
+  <rect x="52" y="212" width="406" height="52" rx="7" fill="#ffffff" stroke="#C0392B"/>
+  <text x="66" y="234" font-size="11.5" font-weight="bold" fill="#A93226">按序才对</text>
+  <text x="66" y="252" font-size="11.5" fill="#374151">L2 在 S1 之后读，得到 0xAB</text>
+
+  <rect x="52" y="276" width="406" height="52" rx="7" fill="#ffffff" stroke="#C0392B"/>
+  <text x="66" y="298" font-size="11.5" font-weight="bold" fill="#A93226">乱序就错</text>
+  <text x="66" y="316" font-size="11.5" fill="#374151">L2 抢在 S1 前读，得到旧值 0x11</text>
+
+  <text x="52" y="348" font-size="11" fill="#A93226">LSQ 用年龄和地址比较来守住这条线</text>
+
+  <!-- 右：不同地址 -->
+  <rect x="520" y="90" width="450" height="268" rx="10" fill="#E7F5EC" stroke="#2E8B57" stroke-width="1.8"/>
+  <text x="745" y="122" font-size="14" font-weight="bold" fill="#1E6B40" text-anchor="middle">不同地址　可以放心超车</text>
+  <line x1="540" y1="136" x2="950" y2="136" stroke="#2E8B57" stroke-width="1"/>
+  <text x="542" y="166" font-size="12" fill="#374151">S3　写 0x200 = 0xCD</text>
+  <text x="542" y="192" font-size="12" fill="#374151">L4　读 0x300</text>
+
+  <rect x="542" y="212" width="406" height="52" rx="7" fill="#ffffff" stroke="#2E8B57"/>
+  <text x="556" y="234" font-size="11.5" font-weight="bold" fill="#1E6B40">互不相干</text>
+  <text x="556" y="252" font-size="11.5" fill="#374151">L4 越过 S3 先执行，结果一样</text>
+
+  <rect x="542" y="276" width="406" height="52" rx="7" fill="#ffffff" stroke="#2E8B57"/>
+  <text x="556" y="298" font-size="11.5" font-weight="bold" fill="#1E6B40">超车有收益</text>
+  <text x="556" y="316" font-size="11.5" fill="#374151">慢 store 不挡着快 load</text>
+
+  <text x="542" y="348" font-size="11" fill="#1E6B40">地址不同就没有数据相关，乱序是安全的</text>
+
+  <!-- 底部规则直觉 -->
+  <rect x="30" y="378" width="940" height="86" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="48" y="405" font-size="12.5" fill="#374151">为什么还要有内存序规则。多核之间若完全没有约定，一个核看到的写顺序可能和程序里的顺序完全不同。</text>
+  <text x="48" y="430" font-size="12.5" fill="#374151">锁和栅栏就失去意义。RISC-V 的弱内存序给了一个最小约定：该守的同址顺序要守住，</text>
+  <text x="48" y="453" font-size="12.5" fill="#374151">其余情况允许硬件重排来换性能。本书只讲这个直觉，不展开形式化模型。</text>
+</svg>

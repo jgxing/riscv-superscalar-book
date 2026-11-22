@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" width="940" height="560" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图2-1 三种相关的对比</title>
+  <desc>RAW 写后读承载真实数据必须遵守；WAR 读后写与 WAW 写后写只是寄存器名字撞车，数据之间并无依赖。用三行指令示例分别说明。</desc>
+  <rect x="0" y="0" width="940" height="560" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 2-1　三种相关的对比</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">前一条为 I1，后一条为 I2；真相关传递数据，伪相关只是名字撞车</text>
+
+  <!-- RAW -->
+  <g>
+    <rect x="30" y="84" width="880" height="132" rx="10" fill="#FCECEC" stroke="#A32D2D" stroke-width="1.2"/>
+    <rect x="30" y="84" width="150" height="132" rx="10" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1.2"/>
+    <text x="105" y="132" font-size="20" font-weight="bold" fill="#7a2020" text-anchor="middle">RAW</text>
+    <text x="105" y="158" font-size="13" fill="#7a2020" text-anchor="middle">写后读</text>
+    <text x="105" y="184" font-size="12" fill="#A32D2D" text-anchor="middle">真相关</text>
+
+    <text x="205" y="112" font-size="13" font-weight="bold" fill="#7a2020">I1 写 R1，I2 读 R1，I2 用的是 I1 的结果</text>
+    <g font-family="Consolas,monospace" font-size="13" fill="#2C2C2A">
+      <text x="205" y="140">I1  MUL  R1, R2, R3</text>
+      <text x="205" y="166">I2  ADD  R4, R1, R5</text>
+    </g>
+    <!-- 数据流动箭头 -->
+    <line x1="470" y1="146" x2="560" y2="170" stroke="#A32D2D" stroke-width="1.8"/>
+    <text x="600" y="150" font-size="12.5" fill="#7a2020" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">R1 的值必须传给 I2</text>
+    <rect x="625" y="176" width="255" height="28" rx="6" fill="#fff" stroke="#A32D2D" stroke-dasharray="4 3"/>
+    <text x="752" y="195" font-size="12" fill="#7a2020" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">躲不开，只能缩短等待</text>
+  </g>
+
+  <!-- WAR -->
+  <g>
+    <rect x="30" y="228" width="880" height="132" rx="10" fill="#FFF8E8" stroke="#BA7517" stroke-width="1.2"/>
+    <rect x="30" y="228" width="150" height="132" rx="10" fill="#FAC775" stroke="#BA7517" stroke-width="1.2"/>
+    <text x="105" y="276" font-size="20" font-weight="bold" fill="#7a4f00" text-anchor="middle">WAR</text>
+    <text x="105" y="302" font-size="13" fill="#7a4f00" text-anchor="middle">读后写</text>
+    <text x="105" y="328" font-size="12" fill="#BA7517" text-anchor="middle">伪相关</text>
+
+    <text x="205" y="256" font-size="13" font-weight="bold" fill="#7a4f00">I1 读 R1，I2 写 R1，两者并无数据传递</text>
+    <g font-family="Consolas,monospace" font-size="13" fill="#2C2C2A">
+      <text x="205" y="284">I1  ADD  R4, R1, R5</text>
+      <text x="205" y="310">I2  SUB  R1, R2, R3</text>
+    </g>
+    <text x="600" y="294" font-size="12.5" fill="#7a4f00" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">只要 I1 读到旧值即可</text>
+    <rect x="625" y="320" width="255" height="28" rx="6" fill="#fff" stroke="#BA7517" stroke-dasharray="4 3"/>
+    <text x="752" y="339" font-size="12" fill="#7a4f00" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">只是名字撞车，可消除</text>
+  </g>
+
+  <!-- WAW -->
+  <g>
+    <rect x="30" y="372" width="880" height="132" rx="10" fill="#F0EEFB" stroke="#534AB7" stroke-width="1.2"/>
+    <rect x="30" y="372" width="150" height="132" rx="10" fill="#D8D4F5" stroke="#534AB7" stroke-width="1.2"/>
+    <text x="105" y="420" font-size="20" font-weight="bold" fill="#3C3489" text-anchor="middle">WAW</text>
+    <text x="105" y="446" font-size="13" fill="#3C3489" text-anchor="middle">写后写</text>
+    <text x="105" y="472" font-size="12" fill="#534AB7" text-anchor="middle">伪相关</text>
+
+    <text x="205" y="400" font-size="13" font-weight="bold" fill="#3C3489">I1 写 R1，I2 也写 R1，只要最后留下 I2 的值</text>
+    <g font-family="Consolas,monospace" font-size="13" fill="#2C2C2A">
+      <text x="205" y="428">I1  MUL  R1, R2, R3</text>
+      <text x="205" y="454">I2  ADD  R1, R4, R5</text>
+    </g>
+    <text x="600" y="438" font-size="12.5" fill="#3C3489" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">两次写互不需要对方数据</text>
+    <rect x="625" y="464" width="255" height="28" rx="6" fill="#fff" stroke="#534AB7" stroke-dasharray="4 3"/>
+    <text x="752" y="483" font-size="12" fill="#3C3489" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">只是名字撞车，可消除</text>
+  </g>
+
+  <text x="30" y="538" font-size="12" fill="#6B7280">判断要点：后一条是否真的需要前一条产出的那个数。需要就是真相关 RAW，不需要只是碰巧同名。</text>
+</svg>

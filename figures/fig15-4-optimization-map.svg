@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" width="1000" height="480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图15-4 从教学核往前走的路</title>
+  <desc>以二发射教学核为起点，列出加宽发射、加深队列、强化前端、强化访存四条常见优化方向，以及各自要付出的代价。香山把这些方向组合起来做到很大规模。</desc>
+  <rect x="0" y="0" width="1000" height="480" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 15-4　从教学核往前走的路</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">四条方向，每条都在拓宽一段带宽或缩短一种等待</text>
+
+  <rect x="30" y="82" width="940" height="30" rx="6" fill="#F1F5F9" stroke="#CBD5E1"/>
+  <text x="500" y="102" font-size="11.5" fill="#475569" text-anchor="middle">起点　本书的 2 发射简化乱序核，已经能跑通完整闭环</text>
+
+  <!-- 第一列 -->
+  <rect x="30" y="134" width="220" height="266" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+  <text x="140" y="162" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">加宽发射</text>
+  <text x="48" y="192" font-size="11.5" fill="#334155">2 发射到 4 发射、8 发射</text>
+  <text x="48" y="218" font-size="11.5" fill="#334155">每拍多挑几条就绪项</text>
+  <text x="48" y="244" font-size="11.5" fill="#334155">重命名与提交也要跟上</text>
+  <line x1="48" y1="262" x2="232" y2="262" stroke="#93C5FD" stroke-width="1"/>
+  <text x="48" y="288" font-size="11" font-weight="bold" fill="#B45309">代价</text>
+  <text x="48" y="312" font-size="11" fill="#92400E">唤醒选择逻辑变复杂</text>
+  <text x="48" y="334" font-size="11" fill="#92400E">寄存器堆端口翻倍</text>
+  <text x="48" y="356" font-size="11" fill="#92400E">旁路网络交叉变大</text>
+  <text x="48" y="386" font-size="10.5" fill="#64748B">前端供指不够时白加</text>
+
+  <!-- 第二列 -->
+  <rect x="270" y="134" width="220" height="266" rx="10" fill="#F3E8FF" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="380" y="162" font-size="12.5" font-weight="bold" fill="#6D28D9" text-anchor="middle">加深队列</text>
+  <text x="288" y="192" font-size="11.5" fill="#334155">ROB、发射队列、LSQ</text>
+  <text x="288" y="218" font-size="11.5" fill="#334155">装下更多在飞指令</text>
+  <text x="288" y="244" font-size="11.5" fill="#334155">跨过长的依赖链继续找并行</text>
+  <line x1="288" y1="262" x2="472" y2="262" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="288" y="288" font-size="11" font-weight="bold" fill="#B45309">代价</text>
+  <text x="288" y="312" font-size="11" fill="#92400E">恢复时要冲的更多</text>
+  <text x="288" y="334" font-size="11" fill="#92400E">检查点数量上涨</text>
+  <text x="288" y="356" font-size="11" fill="#92400E">面积和功耗都涨</text>
+  <text x="288" y="386" font-size="10.5" fill="#64748B">收益随深度递减</text>
+
+  <!-- 第三列 -->
+  <rect x="510" y="134" width="220" height="266" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="620" y="162" font-size="12.5" font-weight="bold" fill="#15803D" text-anchor="middle">强化前端</text>
+  <text x="528" y="192" font-size="11.5" fill="#334155">加宽取指、加大 BTB</text>
+  <text x="528" y="218" font-size="11.5" fill="#334155">多级预测器、返回栈</text>
+  <text x="528" y="244" font-size="11.5" fill="#334155">预译码更早发现错误</text>
+  <line x1="528" y1="262" x2="712" y2="262" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="528" y="288" font-size="11" font-weight="bold" fill="#B45309">代价</text>
+  <text x="528" y="312" font-size="11" fill="#92400E">预测器面积不小</text>
+  <text x="528" y="334" font-size="11" fill="#92400E">训练与更新更复杂</text>
+  <text x="528" y="356" font-size="11" fill="#92400E">错误路径取指更浪费</text>
+  <text x="528" y="386" font-size="10.5" fill="#64748B">猜得准比猜得快更重要</text>
+
+  <!-- 第四列 -->
+  <rect x="750" y="134" width="220" height="266" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.5"/>
+  <text x="860" y="162" font-size="12.5" font-weight="bold" fill="#B45309" text-anchor="middle">强化访存</text>
+  <text x="768" y="192" font-size="11.5" fill="#334155">多级缓存、硬件预取</text>
+  <text x="768" y="218" font-size="11.5" fill="#334155">转发路径与访存并行度</text>
+  <text x="768" y="244" font-size="11.5" fill="#334155">load 投机更早触发</text>
+  <line x1="768" y1="262" x2="952" y2="262" stroke="#FDE68A" stroke-width="1"/>
+  <text x="768" y="288" font-size="11" font-weight="bold" fill="#B45309">代价</text>
+  <text x="768" y="312" font-size="11" fill="#92400E">存储层次更复杂</text>
+  <text x="768" y="334" font-size="11" fill="#92400E">多核要处理一致性</text>
+  <text x="768" y="356" font-size="11" fill="#92400E">违例恢复路径变长</text>
+  <text x="768" y="386" font-size="10.5" fill="#64748B">本书有意不展开这块</text>
+
+  <text x="30" y="432" font-size="11.5" fill="#374151">香山把这些方向组合起来，做到很宽的发射、很深的队列和多层预测。本书停在四块都够用的最小闭环上，把每条路的原理看清楚。</text>
+  <text x="30" y="458" font-size="11.5" fill="#8B5E00">要点　优化没有终点，只有当下最划算的那一块</text>
+</svg>

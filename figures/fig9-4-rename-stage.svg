@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" width="1000" height="480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图9-4 重命名站的数据通路</title>
+  <desc>重命名站由 RAT 和空闲表两块组成。逻辑寄存器号进来，RAT 查表得到物理源寄存器号和旧映射，空闲表分配新的物理目的号，三者一起打包送往分派与发射；提交阶段再把旧映射送回空闲表。</desc>
+  <rect x="0" y="0" width="1000" height="480" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 9-4　重命名站的数据通路</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">进出两批信号要分清：进来的是逻辑名字，出去的是物理编号</text>
+
+  <!-- 入口 uop -->
+  <rect x="28" y="104" width="160" height="110" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="108" y="132" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">译码来的 uop</text>
+  <text x="108" y="158" font-size="11.5" fill="#185FA5" text-anchor="middle">rd = R1</text>
+  <text x="108" y="178" font-size="11.5" fill="#185FA5" text-anchor="middle">rs1 = R2</text>
+  <text x="108" y="198" font-size="11.5" fill="#185FA5" text-anchor="middle">rs2 = R3</text>
+
+  <!-- RAT -->
+  <rect x="264" y="94" width="250" height="132" rx="10" fill="#F7F9FC" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="389" y="122" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">RAT 重命名表</text>
+  <text x="389" y="148" font-size="11.5" fill="#374151" text-anchor="middle">查 rs1、rs2 得到 ps1、ps2</text>
+  <text x="389" y="170" font-size="11.5" fill="#374151" text-anchor="middle">查 rd 得到 old_pd</text>
+  <text x="389" y="196" font-size="11.5" fill="#185FA5" text-anchor="middle">再把 rd 改成新分配的物理号</text>
+  <text x="389" y="215" font-size="10.5" fill="#64748B" text-anchor="middle">组内两条之间要加旁路</text>
+
+  <!-- 空闲表 -->
+  <rect x="264" y="258" width="250" height="126" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.8"/>
+  <text x="389" y="286" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">空闲寄存器池</text>
+  <text x="389" y="312" font-size="11.5" fill="#374151" text-anchor="middle">有一条写目的就分一个 pd</text>
+  <text x="389" y="334" font-size="11.5" fill="#374151" text-anchor="middle">空闲数不够就拉起背压</text>
+  <text x="389" y="360" font-size="11.5" fill="#B45309" text-anchor="middle">提交回收从队尾放回</text>
+
+  <!-- 输出 uop -->
+  <rect x="610" y="104" width="360" height="132" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="790" y="132" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">改名后的 uop</text>
+  <text x="790" y="158" font-size="11.5" fill="#374151" text-anchor="middle">pd = P10　　ps1 = P2　　ps2 = P3</text>
+  <text x="790" y="180" font-size="11.5" fill="#374151" text-anchor="middle">old_pd = P1，随 uop 写入 ROB</text>
+  <text x="790" y="210" font-size="11.5" fill="#185FA5" text-anchor="middle">后面发射队列盯着 P2、P3 广播</text>
+
+  <!-- 连线 -->
+  <line x1="188" y1="158" x2="262" y2="158" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="262,158 254,154 254,162" fill="#185FA5"/>
+  <line x1="514" y1="158" x2="608" y2="158" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="608,158 600,154 600,162" fill="#185FA5"/>
+  <line x1="389" y1="226" x2="389" y2="256" stroke="#D97706" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <polygon points="389,256 385,248 393,248" fill="#D97706"/>
+  <text x="400" y="244" font-size="10.5" fill="#B45309">需要新号</text>
+  <line x1="514" y1="322" x2="608" y2="200" stroke="#D97706" stroke-width="1.6"/>
+  <polygon points="608,200 600,199 605,192" fill="#D97706"/>
+  <text x="560" y="270" font-size="10.5" fill="#B45309">pd</text>
+
+  <!-- 提交回收回路 -->
+  <rect x="610" y="278" width="360" height="106" rx="10" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="790" y="306" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">ROB 提交回收</text>
+  <text x="790" y="332" font-size="11.5" fill="#64748B" text-anchor="middle">uop 提交时取出 old_pd</text>
+  <text x="790" y="356" font-size="11.5" fill="#64748B" text-anchor="middle">还给空闲表，形成闭环</text>
+  <path d="M 610 332 C 560 410, 470 410, 400 384" fill="none" stroke="#94A3B8" stroke-width="1.8"/>
+  <polygon points="400,384 409,381 405,374" fill="#94A3B8"/>
+  <line x1="790" y1="236" x2="790" y2="276" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <polygon points="790,276 786,268 794,268" fill="#94A3B8"/>
+
+  <text x="30" y="430" font-size="11.5" fill="#5F5E5A">要点　RAT 管"名字换成哪个编号"，空闲表管"还有哪些编号能用"，两者缺一不可</text>
+  <text x="30" y="455" font-size="11" fill="#8B5E00">第 13 章接上 ROB 后，old_pd 的回收时机就有了着落</text>
+</svg>

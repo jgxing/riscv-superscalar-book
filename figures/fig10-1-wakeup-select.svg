@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="1000" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图10-1 发射队列的唤醒与选择通路</title>
+  <desc>发射队列每项存物理源号、就绪位和年龄。结果总线广播物理号，各项内容比较命中后把就绪位置一；仲裁器在就绪项里按年龄挑出最多两个送往执行单元。</desc>
+  <rect x="0" y="0" width="1000" height="520" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 10-1　发射队列的唤醒与选择通路</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">左边等位，中间听广播置就绪，右边按年龄发两张票</text>
+
+  <text x="36" y="90" font-size="12" font-weight="bold" fill="#0C447C">发射队列表项</text>
+  <text x="330" y="90" font-size="12" font-weight="bold" fill="#0C447C">内容比较（唤醒）</text>
+  <text x="552" y="90" font-size="12" font-weight="bold" fill="#0C447C">就绪请求</text>
+  <text x="700" y="90" font-size="12" font-weight="bold" fill="#0C447C">仲裁器</text>
+  <text x="872" y="90" font-size="12" font-weight="bold" fill="#0C447C">发射口</text>
+
+  <!-- E0 等待 -->
+  <rect x="28" y="102" width="270" height="60" rx="8" fill="#FFF7E8" stroke="#D97706" stroke-width="1.4"/>
+  <text x="42" y="126" font-size="12.5" font-weight="bold" fill="#92400E">E0　ps1=P10（未就绪）　ps2=P2</text>
+  <text x="42" y="148" font-size="11" fill="#B45309">age=1　还没有资格被选</text>
+  <rect x="320" y="108" width="190" height="48" rx="7" fill="#ffffff" stroke="#D97706"/>
+  <text x="415" y="137" font-size="11.5" fill="#92400E" text-anchor="middle">P10 == 广播号 ?</text>
+  <text x="552" y="138" font-size="13" font-weight="bold" fill="#B45309">req = 0</text>
+
+  <!-- E1 就绪 -->
+  <rect x="28" y="170" width="270" height="60" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+  <text x="42" y="194" font-size="12.5" font-weight="bold" fill="#0C447C">E1　ps1=P3　ps2=P4（都就绪）</text>
+  <text x="42" y="216" font-size="11" fill="#185FA5">age=2　可以申请发射口</text>
+  <rect x="320" y="176" width="190" height="48" rx="7" fill="#ffffff" stroke="#CBD5E1"/>
+  <text x="415" y="205" font-size="11.5" fill="#64748B" text-anchor="middle">无需比较，已就绪</text>
+  <text x="552" y="206" font-size="13" font-weight="bold" fill="#185FA5">req = 1</text>
+
+  <!-- E2 就绪且最老 -->
+  <rect x="28" y="238" width="270" height="60" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="42" y="262" font-size="12.5" font-weight="bold" fill="#0C447C">E2　ps1=P5　ps2=P6（都就绪）</text>
+  <text x="42" y="284" font-size="11" fill="#185FA5">age=0　全场最老，优先发车</text>
+  <rect x="320" y="244" width="190" height="48" rx="7" fill="#ffffff" stroke="#CBD5E1"/>
+  <text x="415" y="273" font-size="11.5" fill="#64748B" text-anchor="middle">无需比较，已就绪</text>
+  <text x="552" y="274" font-size="13" font-weight="bold" fill="#185FA5">req = 1</text>
+
+  <!-- E3 空 -->
+  <rect x="28" y="306" width="270" height="60" rx="8" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="42" y="336" font-size="12.5" fill="#94A3B8">E3　空项</text>
+  <text x="330" y="336" font-size="11.5" fill="#CBD5E1">—</text>
+  <text x="552" y="336" font-size="13" fill="#CBD5E1">req = 0</text>
+
+  <!-- 仲裁器 -->
+  <rect x="690" y="168" width="160" height="126" rx="10" fill="#F7F9FC" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="770" y="196" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">按年龄挑选</text>
+  <text x="770" y="222" font-size="11.5" fill="#374151" text-anchor="middle">第一张票　E2</text>
+  <text x="770" y="246" font-size="11.5" fill="#374151" text-anchor="middle">第二张票　E1</text>
+  <text x="770" y="274" font-size="11" fill="#64748B" text-anchor="middle">两个口都空</text>
+
+  <!-- 输出 -->
+  <rect x="884" y="176" width="88" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="928" y="203" font-size="12" font-weight="bold" fill="#0C447C" text-anchor="middle">发射口 0</text>
+  <rect x="884" y="240" width="88" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="928" y="267" font-size="12" font-weight="bold" fill="#0C447C" text-anchor="middle">发射口 1</text>
+
+  <line x1="670" y1="240" x2="688" y2="220" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="688,220 680,220 684,213" fill="#185FA5"/>
+  <line x1="850" y1="220" x2="882" y2="200" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="882,200 874,199 878,192" fill="#185FA5"/>
+  <line x1="850" y1="246" x2="882" y2="262" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="882,262 874,257 878,266" fill="#185FA5"/>
+
+  <!-- 广播总线 -->
+  <rect x="28" y="396" width="944" height="72" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.6"/>
+  <text x="44" y="422" font-size="13" font-weight="bold" fill="#92400E">结果总线这一拍广播两个物理号</text>
+  <rect x="330" y="410" width="110" height="38" rx="7" fill="#ffffff" stroke="#D97706"/>
+  <text x="385" y="435" font-size="12.5" font-weight="bold" fill="#92400E" text-anchor="middle">P10</text>
+  <rect x="460" y="410" width="110" height="38" rx="7" fill="#ffffff" stroke="#D97706"/>
+  <text x="515" y="435" font-size="12.5" font-weight="bold" fill="#92400E" text-anchor="middle">P33</text>
+  <text x="600" y="435" font-size="11.5" fill="#B45309">所有表项同时比较，命中就把就绪位置一</text>
+
+  <line x1="385" y1="408" x2="385" y2="160" stroke="#D97706" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <polygon points="385,160 381,168 389,168" fill="#D97706"/>
+  <line x1="515" y1="408" x2="515" y2="300" stroke="#D97706" stroke-width="1.4" stroke-dasharray="5 4"/>
+
+  <text x="30" y="496" font-size="11.5" fill="#5F5E5A">要点　唤醒是内容比较，选择是年龄比较；两件事合在一拍完成，背靠背依赖才不会多一个气泡</text>
+</svg>

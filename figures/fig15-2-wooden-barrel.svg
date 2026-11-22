@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图15-2 找瓶颈就是找最短的那块板</title>
+  <desc>把前端供指、发射带宽、重排序深度和访存带宽看成围成木桶的四块板，实际吞吐由最短的那块决定。图中访存最短，此时加宽发射不会提升 IPC。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 15-2　找瓶颈就是找最短的那块板</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">木桶能装多少水，由最短的一块决定</text>
+
+  <!-- 木桶 -->
+  <rect x="90" y="360" width="570" height="14" rx="4" fill="#94A3B8"/>
+
+  <!-- 前端板 -->
+  <rect x="120" y="140" width="74" height="220" rx="5" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="157" y="132" font-size="11.5" fill="#0C447C" text-anchor="middle">前端供指</text>
+  <text x="157" y="390" font-size="10.5" fill="#64748B" text-anchor="middle">每拍 4 条</text>
+
+  <!-- 发射板 -->
+  <rect x="254" y="110" width="74" height="250" rx="5" fill="#F3E8FF" stroke="#7C3AED" stroke-width="1.8"/>
+  <text x="291" y="102" font-size="11.5" fill="#6D28D9" text-anchor="middle">发射带宽</text>
+  <text x="291" y="390" font-size="10.5" fill="#64748B" text-anchor="middle">每拍 4 条</text>
+
+  <!-- ROB 板 -->
+  <rect x="388" y="170" width="74" height="190" rx="5" fill="#FFF7E8" stroke="#D97706" stroke-width="1.8"/>
+  <text x="425" y="162" font-size="11.5" fill="#B45309" text-anchor="middle">重排序深度</text>
+  <text x="425" y="390" font-size="10.5" fill="#64748B" text-anchor="middle">192 项</text>
+
+  <!-- 访存板（最短） -->
+  <rect x="522" y="260" width="74" height="100" rx="5" fill="#FEE2E2" stroke="#DC2626" stroke-width="2.4"/>
+  <text x="559" y="252" font-size="11.5" font-weight="bold" fill="#B91C1C" text-anchor="middle">访存带宽</text>
+  <text x="559" y="390" font-size="10.5" fill="#B91C1C" text-anchor="middle">最短的一块</text>
+
+  <!-- 水位线 -->
+  <line x1="100" y1="260" x2="606" y2="260" stroke="#0891B2" stroke-width="2.2" stroke-dasharray="7 5"/>
+  <path d="M606 253 L618 260 L606 267" stroke="#0891B2" stroke-width="2" fill="none"/>
+  <rect x="368" y="268" width="132" height="30" rx="6" fill="#ECFEFF" stroke="#0891B2"/>
+  <text x="434" y="287" font-size="11.5" fill="#0E7490" text-anchor="middle">实际吞吐到这里</text>
+
+  <!-- 右侧诊断 -->
+  <rect x="700" y="90" width="270" height="290" rx="11" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="718" y="118" font-size="13" font-weight="bold" fill="#1f2937">诊断结论</text>
+
+  <text x="718" y="150" font-size="11.5" fill="#B91C1C">当前最短的是访存</text>
+  <text x="718" y="174" font-size="11.5" fill="#475569">队列满、等地址、缓存缺失</text>
+
+  <line x1="718" y1="190" x2="952" y2="190" stroke="#CBD5E1" stroke-width="1"/>
+
+  <text x="718" y="216" font-size="12" font-weight="bold" fill="#15803D">该做的事</text>
+  <text x="718" y="240" font-size="11.5" fill="#166534">加预取、加访存端口</text>
+  <text x="718" y="262" font-size="11.5" fill="#166534">让荷载能早点回来</text>
+
+  <line x1="718" y1="278" x2="952" y2="278" stroke="#CBD5E1" stroke-width="1"/>
+
+  <text x="718" y="304" font-size="12" font-weight="bold" fill="#B45309">不该做的事</text>
+  <text x="718" y="328" font-size="11.5" fill="#92400E">继续加宽发射、加深 ROB</text>
+  <text x="718" y="350" font-size="11.5" fill="#92400E">水还是从访存那块漏走</text>
+
+  <text x="30" y="420" font-size="11.5" fill="#374151">优化之前先找最短板。各块的能力要对得上，单独把一块拉得很高，多半只是白花面积和功耗。</text>
+  <text x="30" y="446" font-size="11.5" fill="#8B5E00">要点　 IPC 上不去时，先看计数器说哪一块在堵</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" width="940" height="560" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图1-2 顺序执行浪费了现成的并行度</title>
+  <desc>同样的五条指令，顺序单发射执行时被 I1 的慢乘法和 I2 的 RAW 等待拖住，独立的 I3 明明可以用空闲的 ALU 却只能干等。展示程序里存在指令级并行但顺序执行浪费了它。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="940" height="560" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 1-2　顺序执行浪费了现成的并行度</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">五条指令中 I3、I4、I5 与前面的等待无关，却被顺序约束挡在后面</text>
+
+  <!-- 指令列表 -->
+  <g font-size="12.5" font-family="Consolas,monospace">
+    <rect x="30" y="86" width="880" height="150" rx="10" fill="#F7F7F4" stroke="#D3D1C8" stroke-width="1.2"/>
+    <text x="45" y="112" font-family="'Microsoft YaHei',sans-serif" font-size="13" font-weight="bold" fill="#1f2937">程序</text>
+    <text x="45" y="136" fill="#2C2C2A">I1  MUL  R1, R2, R3</text>
+    <text x="360" y="136" fill="#A32D2D" font-family="'Microsoft YaHei',sans-serif" font-size="12">慢，3 拍</text>
+    <text x="45" y="160" fill="#2C2C2A">I2  ADD  R4, R1, R5</text>
+    <text x="360" y="160" fill="#A32D2D" font-family="'Microsoft YaHei',sans-serif" font-size="12">RAW，要等 I1 的 R1</text>
+    <text x="45" y="184" fill="#0F6E56">I3  SUB  R6, R7, R8</text>
+    <text x="360" y="184" fill="#0F6E56" font-family="'Microsoft YaHei',sans-serif" font-size="12">完全独立，可立即执行</text>
+    <text x="45" y="208" fill="#0F6E56">I4  ADD  R1, R9, R10</text>
+    <text x="360" y="208" fill="#0F6E56" font-family="'Microsoft YaHei',sans-serif" font-size="12">与 I1 只是 WAW，不真依赖</text>
+    <text x="45" y="232" fill="#0F6E56">I5  XOR  R5, R11, R12</text>
+    <text x="360" y="232" fill="#0F6E56" font-family="'Microsoft YaHei',sans-serif" font-size="12">与 I2 只是 WAR，不真依赖</text>
+  </g>
+
+  <!-- 顺序执行时间轴 -->
+  <text x="30" y="278" font-size="14" font-weight="bold" fill="#1f2937">顺序单发射执行</text>
+  <g font-size="11.5">
+    <!-- 周期刻度 -->
+    <text x="200" y="300" fill="#9CA3AF" text-anchor="middle">周期1</text>
+    <text x="290" y="300" fill="#9CA3AF" text-anchor="middle">周期2</text>
+    <text x="380" y="300" fill="#9CA3AF" text-anchor="middle">周期3</text>
+    <text x="470" y="300" fill="#9CA3AF" text-anchor="middle">周期4</text>
+    <text x="560" y="300" fill="#9CA3AF" text-anchor="middle">周期5</text>
+    <text x="650" y="300" fill="#9CA3AF" text-anchor="middle">周期6</text>
+    <text x="740" y="300" fill="#9CA3AF" text-anchor="middle">周期7</text>
+
+    <!-- I1 占周期1-3 乘法 -->
+    <rect x="160" y="310" width="270" height="30" rx="5" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="295" y="330" fill="#0C447C" text-anchor="middle">I1 MUL（占用 3 拍）</text>
+    <!-- I2 等 I1，周期4才执行 -->
+    <rect x="440" y="346" width="90" height="30" rx="5" fill="#F1EFE8" stroke="#5F5E5A" stroke-dasharray="4 3"/>
+    <text x="485" y="366" fill="#5F5E5A" text-anchor="middle">等 I1</text>
+    <rect x="530" y="346" width="90" height="30" rx="5" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="575" y="366" fill="#0C447C" text-anchor="middle">I2 ADD</text>
+    <!-- I3 独立却被挡到周期5 -->
+    <rect x="430" y="382" width="190" height="30" rx="5" fill="#FAC775" stroke="#BA7517" stroke-dasharray="4 3"/>
+    <text x="525" y="402" fill="#7a4f00" text-anchor="middle">I3 独立，却只能在这之后</text>
+    <!-- ALU 空闲标注 -->
+    <rect x="160" y="346" width="270" height="30" rx="5" fill="none" stroke="#0F6E56" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <text x="295" y="366" fill="#0F6E56" text-anchor="middle">此刻 ALU 空着，I3 本可以用它</text>
+  </g>
+
+  <!-- 结论框 -->
+  <g>
+    <rect x="30" y="440" width="880" height="96" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
+    <text x="50" y="468" font-size="14" font-weight="bold" fill="#3C3489">这就是指令级并行（ILP）</text>
+    <text x="50" y="492" font-size="12.5" fill="#3C3489">程序里同时存在多条可并行的指令，顺序流水线却死守程序顺序，把现成的并行度浪费掉了。</text>
+    <text x="50" y="514" font-size="12.5" fill="#3C3489">乱序执行要做的，就是在保证结果正确的前提下，让 I3 这样的独立指令越过等待，提前用上空闲的执行单元。</text>
+  </g>
+</svg>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第6章 预译码的操作码检测单元。
+预译码在取指阶段粗粒度识别指令类型，判断一条指令是不是分支，
+最直接的办法是把取回指令的操作码与分支操作码做相等比较。
+操作码有多位，需要逐位比较：本电路画的是其中一位的比较——
+输入 opcode_bit（指令操作码的一位）与 branch_bit（分支操作码的对应位），
+输出这一位的关系 opcode_lt_branch、bit_match、opcode_gt_branch。
+把每一位的 bit_match 相与，全部为 1 就说明整条指令是分支指令（is_branch=1）。
+这就是预译码最底层的一步：拿操作码和分支码比较。
+仿真：拨动两个输入，观察相等时 bit_match=1。
+对照教材第5章 5.4 节（2 位饱和计数器）与 5.10 节。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>4</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>当前计数器状态 state 的其中一位（s1 或 s0）。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>opcode_bit</string>
+        </entry>
+      </elementAttributes>
+      <pos x="160" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>边界值的对应位：检测上边界 11 时接 1，检测下边界 00 时接 0。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>branch_bit</string>
+        </entry>
+      </elementAttributes>
+      <pos x="160" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="200" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="200" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="280" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="280" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NOr</elementName>
+      <elementAttributes/>
+      <pos x="400" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>state 这一位小于边界位</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>opcode_lt_branch</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>bit_match=1 表示这一位操作码与分支码相等。各位都相等即整条指令是分支。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>bit_match</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>state 这一位大于边界位</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>opcode_gt_branch</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>opcode_bit branch_bit opcode_lt_branch bit_match opcode_gt_branch
+0   0   0   1   0
+0   1   1   0   0
+1   0   0   0   1
+1   1   0   1   0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="460" y="260"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="180" y="140"/>
+      <p2 x="260" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="180"/>
+      <p2 x="260" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="480" y="160"/>
+      <p2 x="500" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="100"/>
+      <p2 x="180" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="240" y="100"/>
+      <p2 x="280" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="100"/>
+      <p2 x="500" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="100"/>
+      <p2 x="200" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="180"/>
+      <p2 x="280" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="180"/>
+      <p2 x="400" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="120"/>
+      <p2 x="360" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="200"/>
+      <p2 x="360" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="220"/>
+      <p2 x="180" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="240" y="220"/>
+      <p2 x="280" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="220"/>
+      <p2 x="500" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="220"/>
+      <p2 x="200" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="140"/>
+      <p2 x="280" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="140"/>
+      <p2 x="400" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="100"/>
+      <p2 x="180" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="180"/>
+      <p2 x="180" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="100"/>
+      <p2 x="360" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="180"/>
+      <p2 x="360" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="120"/>
+      <p2 x="360" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="200"/>
+      <p2 x="360" y="220"/>
+    </wire>
+  </wires>
+</circuit>

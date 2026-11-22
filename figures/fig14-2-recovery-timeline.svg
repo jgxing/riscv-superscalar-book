@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图14-2 一次预测错误的恢复时序</title>
+  <desc>从分支进入后端拍快照，到错误路径指令进入各队列，再到分支执行发现猜错，前端重定向、后端冲刷、状态恢复的先后顺序。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 14-2　一次预测错误的恢复时序</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">快照在最前面拍下，冲刷和恢复在发现错误的那一拍一起发出</text>
+
+  <!-- 时间轴刻度 -->
+  <g font-size="11" fill="#64748B" text-anchor="middle">
+    <text x="150" y="96">周期 1</text>
+    <text x="350" y="96">周期 2</text>
+    <text x="550" y="96">周期 3</text>
+    <text x="750" y="96">周期 4</text>
+    <text x="910" y="96">周期 5</text>
+  </g>
+  <path d="M60 106 L60 420" stroke="#CBD5E1" stroke-width="1.4" fill="none"/>
+  <path d="M250 106 L250 420" stroke="#CBD5E1" stroke-width="1.4" fill="none"/>
+  <path d="M450 106 L450 420" stroke="#CBD5E1" stroke-width="1.4" fill="none"/>
+  <path d="M650 106 L650 420" stroke="#CBD5E1" stroke-width="1.4" fill="none"/>
+  <path d="M850 106 L850 420" stroke="#CBD5E1" stroke-width="1.4" fill="none"/>
+
+  <!-- 周期1：拍快照 -->
+  <rect x="70" y="120" width="170" height="84" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="155" y="146" font-size="12" font-weight="bold" fill="#0C447C" text-anchor="middle">分支进入后端</text>
+  <text x="155" y="168" font-size="11" fill="#185FA5" text-anchor="middle">拍下 RAT 快照</text>
+  <text x="155" y="188" font-size="11" fill="#185FA5" text-anchor="middle">存进检查点槽</text>
+
+  <!-- 周期2：错误路径流入 -->
+  <rect x="270" y="120" width="170" height="84" rx="8" fill="#FFF7E8" stroke="#D97706" stroke-width="1.6"/>
+  <text x="355" y="146" font-size="12" font-weight="bold" fill="#B45309" text-anchor="middle">错误路径流入</text>
+  <text x="355" y="168" font-size="11" fill="#92400E" text-anchor="middle">后续 uop 已改名</text>
+  <text x="355" y="188" font-size="11" fill="#92400E" text-anchor="middle">RAT 已被改过</text>
+
+  <!-- 周期3：发现猜错 -->
+  <rect x="470" y="120" width="170" height="84" rx="8" fill="#FDECEC" stroke="#B91C1C" stroke-width="2"/>
+  <text x="555" y="146" font-size="12" font-weight="bold" fill="#B91C1C" text-anchor="middle">分支执行完成</text>
+  <text x="555" y="168" font-size="11" fill="#7F1D1D" text-anchor="middle">判定预测错误</text>
+  <text x="555" y="188" font-size="11" fill="#7F1D1D" text-anchor="middle">发出重定向</text>
+
+  <!-- 周期4：三路并发 -->
+  <rect x="670" y="120" width="170" height="84" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="755" y="146" font-size="12" font-weight="bold" fill="#0C447C" text-anchor="middle">三路同时发出</text>
+  <text x="755" y="168" font-size="11" fill="#185FA5" text-anchor="middle">PC / 冲刷 / 恢复</text>
+  <text x="755" y="188" font-size="11" fill="#185FA5" text-anchor="middle">互补做，不分先后</text>
+
+  <!-- 周期5：重取指 -->
+  <rect x="860" y="120" width="120" height="84" rx="8" fill="#F7F9FC" stroke="#94A3B8"/>
+  <text x="920" y="146" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">重新取指</text>
+  <text x="920" y="168" font-size="11" fill="#64748B" text-anchor="middle">走正确路径</text>
+  <text x="920" y="188" font-size="11" fill="#64748B" text-anchor="middle">从头改名</text>
+
+  <!-- 流水行 -->
+  <g font-size="11.5">
+    <text x="30" y="244" font-weight="bold" fill="#374151">前端取指</text>
+    <rect x="70" y="228" width="580" height="24" rx="4" fill="#FEF3C7" stroke="#D97706"/>
+    <text x="360" y="245" fill="#92400E" text-anchor="middle">沿错误路径一路取</text>
+    <rect x="670" y="228" width="170" height="24" rx="4" fill="#FDECEC" stroke="#B91C1C"/>
+    <text x="755" y="245" fill="#B91C1C" text-anchor="middle">冲掉 FTQ</text>
+    <rect x="860" y="228" width="120" height="24" rx="4" fill="#DCFCE7" stroke="#16A34A"/>
+    <text x="920" y="245" fill="#15803D" text-anchor="middle">正确 PC</text>
+
+    <text x="30" y="290" font-weight="bold" fill="#374151">重命名状态</text>
+    <rect x="70" y="274" width="170" height="24" rx="4" fill="#DBEAFE" stroke="#185FA5"/>
+    <text x="155" y="291" fill="#0C447C" text-anchor="middle">快照已存</text>
+    <rect x="250" y="274" width="390" height="24" rx="4" fill="#FEF3C7" stroke="#D97706"/>
+    <text x="445" y="291" fill="#92400E" text-anchor="middle">被错误路径指令改过</text>
+    <rect x="650" y="274" width="330" height="24" rx="4" fill="#DCFCE7" stroke="#16A34A"/>
+    <text x="815" y="291" fill="#15803D" text-anchor="middle">恢复快照，回到分支起点</text>
+
+    <text x="30" y="336" font-weight="bold" fill="#374151">后端队列</text>
+    <rect x="70" y="320" width="590" height="24" rx="4" fill="#FEF3C7" stroke="#D97706"/>
+    <text x="365" y="337" fill="#92400E" text-anchor="middle">错误路径 uop 占着发射队列、LSQ、ROB</text>
+    <rect x="670" y="320" width="310" height="24" rx="4" fill="#DCFCE7" stroke="#16A34A"/>
+    <text x="825" y="337" fill="#15803D" text-anchor="middle">按序号阈值全部冲掉</text>
+  </g>
+
+  <rect x="70" y="372" width="910" height="56" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="86" y="396" font-size="12" fill="#374151">恢复必须在发现错误的同一拍发出，否则错误路径的指令会继续往下走、继续改状态。</text>
+  <text x="86" y="416" font-size="11.5" fill="#64748B">三路动作互补：前端管重新取指，后端管清除残留，检查点管把命名状态拨回去。</text>
+
+  <text x="30" y="452" font-size="11.5" fill="#8B5E00">要点　快照拍得早，才有东西可恢复；冲刷发得快，才不让错误扩散</text>
+</svg>

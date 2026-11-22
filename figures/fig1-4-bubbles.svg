@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520" width="940" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图1-4 五级流水线的空泡示意</title>
+  <desc>五级流水线时空图，横轴是周期、纵轴是指令。无冒险时是一道整齐的斜线，出现结构冒险、数据冒险、控制冒险时空泡让斜线断开，这些空泡就是浪费的周期。</desc>
+  <rect x="0" y="0" width="940" height="520" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 1-4　五级流水线的空泡示意</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">横轴为周期，纵轴为指令；斜线断开处就是被浪费的空泡</text>
+
+  <!-- 图例 -->
+  <g font-size="12">
+    <rect x="600" y="52" width="16" height="16" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="622" y="65" fill="#2C2C2A">正常执行</text>
+    <rect x="700" y="52" width="16" height="16" fill="#F7C1C1" stroke="#A32D2D"/>
+    <text x="722" y="65" fill="#2C2C2A">空泡（浪费）</text>
+  </g>
+
+  <!-- 周期刻度 -->
+  <g font-size="11" fill="#9CA3AF" text-anchor="middle">
+    <text x="150" y="96">1</text><text x="210" y="96">2</text><text x="270" y="96">3</text>
+    <text x="330" y="96">4</text><text x="390" y="96">5</text><text x="450" y="96">6</text>
+    <text x="510" y="96">7</text><text x="570" y="96">8</text><text x="630" y="96">9</text>
+    <text x="690" y="96">10</text><text x="750" y="96">11</text><text x="810" y="96">12</text>
+  </g>
+
+  <!-- 指令行标签 -->
+  <g font-size="12" fill="#2C2C2A" font-family="Consolas,monospace">
+    <text x="34" y="130">I1</text><text x="34" y="168">I2</text><text x="34" y="206">I3</text>
+    <text x="34" y="244">I4</text><text x="34" y="282">I5</text><text x="34" y="320">I6</text>
+    <text x="34" y="358">I7</text><text x="34" y="396">I8</text>
+  </g>
+
+  <!-- 网格竖线 -->
+  <g stroke="#ECECE8" stroke-width="1">
+    <line x1="150" y1="104" x2="150" y2="410"/><line x1="210" y1="104" x2="210" y2="410"/>
+    <line x1="270" y1="104" x2="270" y2="410"/><line x1="330" y1="104" x2="330" y2="410"/>
+    <line x1="390" y1="104" x2="390" y2="410"/><line x1="450" y1="104" x2="450" y2="410"/>
+    <line x1="510" y1="104" x2="510" y2="410"/><line x1="570" y1="104" x2="570" y2="410"/>
+    <line x1="630" y1="104" x2="630" y2="410"/><line x1="690" y1="104" x2="690" y2="410"/>
+    <line x1="750" y1="104" x2="750" y2="410"/><line x1="810" y1="104" x2="810" y2="410"/>
+  </g>
+
+  <!-- I1: 周期1-5 正常 -->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="120" y="112" width="60" height="26"/><rect x="180" y="112" width="60" height="26"/>
+    <rect x="240" y="112" width="60" height="26"/><rect x="300" y="112" width="60" height="26"/>
+    <rect x="360" y="112" width="60" height="26"/>
+  </g>
+  <!-- I2: 周期2起，但周期4因RAW空泡（画一个空泡在周期4）-->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="180" y="150" width="60" height="26"/><rect x="240" y="150" width="60" height="26"/>
+  </g>
+  <rect x="300" y="150" width="60" height="26" fill="#F7C1C1" stroke="#A32D2D" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="360" y="150" width="60" height="26"/><rect x="420" y="150" width="60" height="26"/>
+    <rect x="480" y="150" width="60" height="26"/>
+  </g>
+  <!-- I3: 周期3起，周期5结构冒险空泡 -->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="240" y="188" width="60" height="26"/><rect x="300" y="188" width="60" height="26"/>
+    <rect x="360" y="188" width="60" height="26"/>
+  </g>
+  <rect x="420" y="188" width="60" height="26" fill="#F7C1C1" stroke="#A32D2D" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="480" y="188" width="60" height="26"/><rect x="540" y="188" width="60" height="26"/>
+    <rect x="600" y="188" width="60" height="26"/>
+  </g>
+  <!-- I4: 周期4起 正常 -->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="300" y="226" width="60" height="26"/><rect x="360" y="226" width="60" height="26"/>
+    <rect x="420" y="226" width="60" height="26"/><rect x="480" y="226" width="60" height="26"/>
+    <rect x="540" y="226" width="60" height="26"/>
+  </g>
+  <!-- I5: 分支指令，周期6起，之后控制冒险冲刷 -->
+  <g fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8">
+    <rect x="360" y="264" width="60" height="26"/><rect x="420" y="264" width="60" height="26"/>
+    <rect x="480" y="264" width="60" height="26"/>
+  </g>
+  <!-- 分支猜错：后续 I6 I7 被冲刷（红叉空泡）-->
+  <rect x="540" y="264" width="60" height="26" fill="#F7C1C1" stroke="#A32D2D" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <rect x="600" y="264" width="60" height="26" fill="#F7C1C1" stroke="#A32D2D" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <text x="630" y="282" font-size="11" fill="#7a2020" text-anchor="middle">冲刷</text>
+
+  <!-- 空泡标注 -->
+  <line x1="330" y1="150" x2="330" y2="138" stroke="#A32D2D" stroke-width="1"/>
+  <text x="330" y="134" font-size="10" fill="#A32D2D" text-anchor="middle">数据</text>
+
+  <line x1="450" y1="188" x2="450" y2="176" stroke="#A32D2D" stroke-width="1"/>
+  <text x="450" y="172" font-size="10" fill="#A32D2D" text-anchor="middle">结构</text>
+
+  <text x="570" y="244" font-size="10" fill="#A32D2D" text-anchor="middle">控制</text>
+
+  <!-- 底部说明 -->
+  <g font-size="12.5">
+    <rect x="30" y="430" width="880" height="70" rx="10" fill="#FAFAF8" stroke="#D3D1C8" stroke-width="1.2"/>
+    <text x="50" y="456" fill="#2C2C2A">没有冒险时，斜线整齐连续，每个周期都产出一条指令。</text>
+    <text x="50" y="480" fill="#2C2C2A">每一处空泡都是一次冒险付出的代价，本章的 CPI 账本就是这些空泡加起来的结果。</text>
+  </g>
+</svg>

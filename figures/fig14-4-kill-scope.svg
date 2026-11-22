@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="1000" height="450" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图14-4 后端冲刷范围</title>
+  <desc>按程序序号把在飞 uop 排开，出错分支之前的老指令保留，分支自己及其之后的全部冲掉。发射队列、LSQ、ROB 都按同一个阈值清理。</desc>
+  <rect x="0" y="0" width="1000" height="450" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 14-4　后端冲刷范围</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">序号是程序顺序的刻度，阈值一刀切下去，右边全作废</text>
+
+  <!-- 序号带 -->
+  <text x="36" y="100" font-size="12.5" font-weight="bold" fill="#374151">在飞 uop 按序号排列</text>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="40" y="112" width="110" height="66" rx="7" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+    <text x="95" y="138" font-weight="bold" fill="#15803D">seq 6</text>
+    <text x="95" y="160" fill="#166534">保留</text>
+
+    <rect x="156" y="112" width="110" height="66" rx="7" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+    <text x="211" y="138" font-weight="bold" fill="#15803D">seq 7</text>
+    <text x="211" y="160" fill="#166534">保留</text>
+
+    <rect x="272" y="112" width="110" height="66" rx="7" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+    <text x="327" y="138" font-weight="bold" fill="#15803D">seq 8</text>
+    <text x="327" y="160" fill="#166534">保留</text>
+
+    <rect x="388" y="112" width="110" height="66" rx="7" fill="#FDECEC" stroke="#B91C1C" stroke-width="2"/>
+    <text x="443" y="138" font-weight="bold" fill="#B91C1C">seq 9</text>
+    <text x="443" y="160" fill="#7F1D1D">出错分支</text>
+
+    <rect x="504" y="112" width="110" height="66" rx="7" fill="#FDECEC" stroke="#B91C1C"/>
+    <text x="559" y="138" font-weight="bold" fill="#B91C1C">seq 10</text>
+    <text x="559" y="160" fill="#7F1D1D">冲掉</text>
+
+    <rect x="620" y="112" width="110" height="66" rx="7" fill="#FDECEC" stroke="#B91C1C"/>
+    <text x="675" y="138" font-weight="bold" fill="#B91C1C">seq 11</text>
+    <text x="675" y="160" fill="#7F1D1D">冲掉</text>
+
+    <rect x="736" y="112" width="110" height="66" rx="7" fill="#FDECEC" stroke="#B91C1C"/>
+    <text x="791" y="138" font-weight="bold" fill="#B91C1C">seq 12</text>
+    <text x="791" y="160" fill="#7F1D1D">冲掉</text>
+
+    <rect x="852" y="112" width="110" height="66" rx="7" fill="#FDECEC" stroke="#B91C1C"/>
+    <text x="907" y="138" font-weight="bold" fill="#B91C1C">seq 13</text>
+    <text x="907" y="160" fill="#7F1D1D">冲掉</text>
+  </g>
+
+  <path d="M388 96 L388 186" stroke="#B91C1C" stroke-width="2" stroke-dasharray="5,4" fill="none"/>
+  <text x="443" y="200" font-size="11.5" font-weight="bold" fill="#B91C1C" text-anchor="middle">kill_from = 9，序号不小于 9 的全部作废</text>
+
+  <!-- 三个队列都要清 -->
+  <text x="36" y="236" font-size="12.5" font-weight="bold" fill="#374151">同一个阈值发给后端各个队列</text>
+
+  <g font-size="11.5">
+    <rect x="40" y="250" width="300" height="76" rx="8" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="56" y="274" font-weight="bold" fill="#374151">发射队列</text>
+    <text x="56" y="297" fill="#64748B">清掉错误路径 uop 的就绪项和</text>
+    <text x="56" y="316" fill="#64748B">它们占的发射口</text>
+
+    <rect x="356" y="250" width="300" height="76" rx="8" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="372" y="274" font-weight="bold" fill="#374151">访存队列</text>
+    <text x="372" y="297" fill="#64748B">清掉投机的 load 和未提交的</text>
+    <text x="372" y="316" fill="#64748B">store，不让错误值写进内存</text>
+
+    <rect x="672" y="250" width="290" height="76" rx="8" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="688" y="274" font-weight="bold" fill="#374151">重排序缓冲</text>
+    <text x="688" y="297" fill="#64748B">释放错误路径表项，把分配的</text>
+    <text x="688" y="316" fill="#64748B">物理寄存器还给空闲表</text>
+  </g>
+
+  <!-- 判据 -->
+  <rect x="40" y="350" width="922" height="56" rx="9" fill="#E6F1FB" stroke="#185FA5"/>
+  <text x="56" y="374" font-size="12" fill="#0C447C">逐项判据：重定向有效、序号不小于阈值、uop 还在飞，三个条件都成立才 kill。</text>
+  <text x="56" y="394" font-size="11.5" fill="#185FA5">出错那条自己也 kill，因为它的结果同样不能留。判据用不小于，不用大于。</text>
+
+  <text x="30" y="430" font-size="11.5" fill="#8B5E00">要点　按序号划一刀，比按进入时间划更可靠，序号本身就是程序顺序的凭据</text>
+</svg>

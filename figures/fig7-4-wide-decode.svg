@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 470" width="980" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图7-4 多宽度译码与uop整理</title>
+  <desc>两个译码器并行工作一次译码两条指令。由于拆分和融合,两个译码器吐出的uop数量忽多忽少:可能一条拆成两条,也可能两条融成一条。后面加一级uop整理缓冲,把波动的输出理成稳定的uop流再送后端。译码宽度要与发射宽度匹配,教学模型取2宽配2发射。</desc>
+  <rect x="0" y="0" width="980" height="470" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 7-4　多宽度译码与 uop 整理</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">拆分与融合让输出数量忽多忽少，用一级缓冲理成稳定的流</text>
+
+  <!-- 两条输入指令 -->
+  <g>
+    <rect x="46" y="120" width="120" height="44" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="106" y="147" font-size="12" fill="#0C447C" text-anchor="middle" font-family="monospace">指令 A</text>
+    <rect x="46" y="290" width="120" height="44" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="106" y="317" font-size="12" fill="#0C447C" text-anchor="middle" font-family="monospace">指令 B</text>
+  </g>
+  <text x="106" y="100" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">指令缓冲一次给出两条</text>
+
+  <!-- 两个译码器 -->
+  <g>
+    <rect x="228" y="112" width="140" height="60" rx="8" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.8"/>
+    <text x="298" y="136" font-size="13" font-weight="bold" fill="#7D6608" text-anchor="middle">译码器 0</text>
+    <text x="298" y="156" font-size="10.5" fill="#9A7D0A" text-anchor="middle">指令 A 拆成 2 条</text>
+
+    <rect x="228" y="282" width="140" height="60" rx="8" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.8"/>
+    <text x="298" y="306" font-size="13" font-weight="bold" fill="#7D6608" text-anchor="middle">译码器 1</text>
+    <text x="298" y="326" font-size="10.5" fill="#9A7D0A" text-anchor="middle">指令 B 正常译 1 条</text>
+  </g>
+
+  <line x1="166" y1="142" x2="226" y2="142" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="226,142 216,137 216,147" fill="#334155"/>
+  <line x1="166" y1="312" x2="226" y2="312" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="226,312 216,307 216,317" fill="#334155"/>
+
+  <!-- 输出的 uop (数量不齐) -->
+  <g font-size="11" fill="#0C447C">
+    <rect x="428" y="100" width="90" height="30" rx="6" fill="#E6F1FB" stroke="#7FB2DC" stroke-width="1.2"/>
+    <text x="473" y="119" text-anchor="middle">uop a0</text>
+    <rect x="428" y="136" width="90" height="30" rx="6" fill="#E6F1FB" stroke="#7FB2DC" stroke-width="1.2"/>
+    <text x="473" y="155" text-anchor="middle">uop a1</text>
+    <rect x="428" y="298" width="90" height="30" rx="6" fill="#E6F1FB" stroke="#7FB2DC" stroke-width="1.2"/>
+    <text x="473" y="317" text-anchor="middle">uop b0</text>
+  </g>
+  <line x1="368" y1="142" x2="426" y2="115" stroke="#334155" stroke-width="1.6"/>
+  <line x1="368" y1="142" x2="426" y2="151" stroke="#334155" stroke-width="1.6"/>
+  <line x1="368" y1="312" x2="426" y2="313" stroke="#334155" stroke-width="1.6"/>
+
+  <text x="473" y="200" font-size="11" fill="#A93226" text-anchor="middle">这次吐出 3 条</text>
+
+  <!-- 波动示意 -->
+  <text x="560" y="180" font-size="11" fill="#922B21" text-anchor="middle">数量在 1～4 条之间波动</text>
+  <text x="560" y="240" font-size="11" fill="#922B21" text-anchor="middle">（融合时可能只有 1 条）</text>
+
+  <!-- 整理缓冲 -->
+  <g>
+    <rect x="620" y="150" width="160" height="130" rx="10" fill="#F1F8F4" stroke="#0F6E56" stroke-width="2"/>
+    <text x="700" y="180" font-size="13" font-weight="bold" fill="#0F6E56" text-anchor="middle">uop 整理缓冲</text>
+    <g fill="#ABEBC6" stroke="#0F6E56" stroke-width="1">
+      <rect x="640" y="196" width="30" height="26" rx="4"/>
+      <rect x="675" y="196" width="30" height="26" rx="4"/>
+      <rect x="710" y="196" width="30" height="26" rx="4"/>
+      <rect x="745" y="196" width="20" height="26" rx="4"/>
+    </g>
+    <text x="700" y="244" font-size="11" fill="#0E6655" text-anchor="middle">吸收波动</text>
+    <text x="700" y="264" font-size="11" fill="#0E6655" text-anchor="middle">理成稳定流</text>
+  </g>
+
+  <!-- 箭头入整理 -->
+  <line x1="520" y1="150" x2="618" y2="180" stroke="#334155" stroke-width="1.8"/>
+  <line x1="520" y1="313" x2="618" y2="240" stroke="#334155" stroke-width="1.8"/>
+
+  <!-- 后端 -->
+  <g>
+    <rect x="852" y="182" width="106" height="66" rx="8" fill="#EDE9FE" stroke="#6D5BD0" stroke-width="1.8"/>
+    <text x="905" y="210" font-size="13" font-weight="bold" fill="#4C1D95" text-anchor="middle">后端</text>
+    <text x="905" y="232" font-size="11" fill="#5B21B6" text-anchor="middle">2 发射</text>
+  </g>
+  <line x1="780" y1="215" x2="850" y2="215" stroke="#334155" stroke-width="2"/>
+  <polygon points="850,215 840,210 840,220" fill="#334155"/>
+  <text x="815" y="207" font-size="10" fill="#475569" text-anchor="middle">每拍 2 条</text>
+
+  <!-- 底部提示 -->
+  <rect x="46" y="372" width="912" height="76" rx="10" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="64" y="396" font-size="12" font-weight="bold" fill="#5B21B6">宽度匹配</text>
+  <text x="64" y="418" font-size="11.5" fill="#4C1D95">译码太窄，后端吃不饱；译码太宽，多出的 uop 存不下。教学模型取 2 宽译码配 2 发射，与发射宽度对齐即可。</text>
+  <text x="64" y="438" font-size="11.5" fill="#5B21B6">这个"用队列吸收波动"的套路，和第 4 章 FTQ、第 6 章指令缓冲是同一招。</text>
+</svg>

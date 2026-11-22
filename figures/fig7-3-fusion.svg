@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 450" width="980" height="450" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图7-3 两条指令融成一条uop</title>
+  <desc>上一条是lui加载20位立即数高位,当前是addi加12位低位,且目的寄存器一致,符合固定搭配。译码器认出后把两条融合成一条带32位立即数的加法uop,uop数量少了一条。融合要看到上一条指令,所以译码器需要一点历史信息。</desc>
+  <rect x="0" y="0" width="980" height="450" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 7-3　两条指令融成一条 uop</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">lui 与紧跟的 addi 是固定搭配，可合成一条带完整立即数的加法</text>
+
+  <!-- 两条原指令 -->
+  <g>
+    <rect x="50" y="110" width="230" height="66" rx="8" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.6"/>
+    <text x="165" y="136" font-size="13" font-weight="bold" fill="#7D6608" text-anchor="middle" font-family="monospace">lui t0, 0x1</text>
+    <text x="165" y="158" font-size="11" fill="#9A7D0A" text-anchor="middle">加载 20 位立即数高位 → t0</text>
+
+    <rect x="50" y="192" width="230" height="66" rx="8" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.6"/>
+    <text x="165" y="218" font-size="13" font-weight="bold" fill="#7D6608" text-anchor="middle" font-family="monospace">addi t0, t0, 0x20</text>
+    <text x="165" y="240" font-size="11" fill="#9A7D0A" text-anchor="middle">再加 12 位低位 → t0</text>
+  </g>
+
+  <!-- 融合条件框 -->
+  <g>
+    <rect x="318" y="150" width="180" height="70" rx="9" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="1.8"/>
+    <text x="408" y="174" font-size="12.5" font-weight="bold" fill="#4C1D95" text-anchor="middle">融合条件成立</text>
+    <text x="408" y="194" font-size="10.5" fill="#5B21B6" text-anchor="middle">上一条 lui + 当前 addi</text>
+    <text x="408" y="210" font-size="10.5" fill="#5B21B6" text-anchor="middle">且目的寄存器相同</text>
+  </g>
+
+  <!-- 箭头汇聚 -->
+  <line x1="280" y1="143" x2="316" y2="170" stroke="#6D5BD0" stroke-width="1.6"/>
+  <line x1="280" y1="225" x2="316" y2="200" stroke="#6D5BD0" stroke-width="1.6"/>
+
+  <!-- 融合箭头 -->
+  <line x1="498" y1="185" x2="568" y2="185" stroke="#0F6E56" stroke-width="2.4"/>
+  <polygon points="568,185 558,180 558,190" fill="#0F6E56"/>
+  <text x="533" y="175" font-size="11.5" font-weight="bold" fill="#0F6E56" text-anchor="middle">融合</text>
+
+  <!-- 融合后的 uop -->
+  <g>
+    <rect x="588" y="130" width="340" height="110" rx="10" fill="#D5F5E3" stroke="#0F6E56" stroke-width="2"/>
+    <text x="758" y="158" font-size="14" font-weight="bold" fill="#0E6655" text-anchor="middle">一条 uop</text>
+    <text x="758" y="184" font-size="14" font-weight="bold" fill="#0B5345" text-anchor="middle" font-family="monospace">ADD  t0, x0, 0x1020</text>
+    <text x="758" y="210" font-size="11" fill="#0F6E56" text-anchor="middle">lui 的高 20 位 + addi 的低 12 位</text>
+    <text x="758" y="228" font-size="11" fill="#0F6E56" text-anchor="middle">一个加法就加载完 32 位常量</text>
+    <rect x="610" y="140" width="72" height="24" rx="6" fill="#0F6E56"/>
+    <text x="646" y="157" font-size="10.5" fill="#ffffff" text-anchor="middle">fused=1</text>
+  </g>
+
+  <!-- 效果对比 -->
+  <rect x="50" y="288" width="380" height="60" rx="9" fill="#E6F1FB" stroke="#7FB2DC" stroke-width="1.2"/>
+  <text x="240" y="312" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">融合前　2 条 ISA 指令 → 2 条 uop</text>
+  <text x="240" y="332" font-size="11" fill="#185FA5" text-anchor="middle">后端要处理两次</text>
+
+  <rect x="548" y="288" width="380" height="60" rx="9" fill="#D5F5E3" stroke="#A9D5C0" stroke-width="1.2"/>
+  <text x="738" y="312" font-size="12.5" font-weight="bold" fill="#0E6655" text-anchor="middle">融合后　2 条 ISA 指令 → 1 条 uop</text>
+  <text x="738" y="332" font-size="11" fill="#0F6E56" text-anchor="middle">后端负担少一条</text>
+
+  <!-- 底部提示 -->
+  <rect x="50" y="368" width="878" height="62" rx="9" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="68" y="392" font-size="11.5" fill="#4C1D95">融合的难点是识别：译码器要看的不只是当前指令，还得知道上一条是什么。</text>
+  <text x="68" y="414" font-size="11.5" fill="#5B21B6">所以融合要在译码阶段做——这里还能方便看到相邻指令，再往后指令就散开了。</text>
+</svg>

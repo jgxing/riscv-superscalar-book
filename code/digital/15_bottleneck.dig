@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第15章 瓶颈优先判据。
+四个输入分别是前端断粮、发射阻塞、访存阻塞和重定向恢复。
+同一拍可能有多个事件成立，这里按影响面从大到小取一个：
+recover 优先于 lsq，lsq 优先于 issue，issue 优先于 front。
+输出是独热形式，四个中最多一个为 1。
+把它们编成两位就是 perf_counter.v 里的 bottleneck_o：
+to_front=00，to_issue=01，to_lsq=10，to_recover=11。
+真值表最后一列给出了这个两位编码。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>8</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>前端断粮，取不到指令。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>front</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>发射口没就绪项，或执行端口不够。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>issue</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>访存队列满或还在等地址。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>lsq</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>发生重定向与冲刷。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>recover</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="60"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="240" y="60"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="240" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="240" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="340" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="340" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="460" y="80"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="580" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="580" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>瓶颈是重定向恢复。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>to_recover</string>
+        </entry>
+      </elementAttributes>
+      <pos x="760" y="60"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>瓶颈是访存。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>to_lsq</string>
+        </entry>
+      </elementAttributes>
+      <pos x="760" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>瓶颈是发射。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>to_issue</string>
+        </entry>
+      </elementAttributes>
+      <pos x="760" y="260"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>瓶颈是前端。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>to_front</string>
+        </entry>
+      </elementAttributes>
+      <pos x="760" y="360"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>recover lsq issue front to_recover to_lsq to_issue to_front
+0 0 0 0 0 0 0 0
+0 0 0 1 0 0 0 1
+0 0 1 0 0 0 1 0
+0 0 1 1 0 0 1 0
+0 1 0 0 0 1 0 0
+0 1 0 1 0 1 0 0
+0 1 1 0 0 1 0 0
+0 1 1 1 0 1 0 0
+1 0 0 0 1 0 0 0
+1 0 0 1 1 0 0 0
+1 0 1 0 1 0 0 0
+1 0 1 1 1 0 0 0
+1 1 0 0 1 0 0 0
+1 1 0 1 1 0 0 0
+1 1 1 0 1 0 0 0
+1 1 1 1 1 0 0 0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="400" y="470"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire><p1 x="100" y="60"/><p2 x="240" y="60"/></wire>
+    <wire><p1 x="100" y="140"/><p2 x="240" y="140"/></wire>
+    <wire><p1 x="100" y="220"/><p2 x="240" y="220"/></wire>
+    <wire><p1 x="280" y="60"/><p2 x="320" y="60"/></wire>
+    <wire><p1 x="320" y="60"/><p2 x="320" y="100"/></wire>
+    <wire><p1 x="320" y="100"/><p2 x="340" y="100"/></wire>
+    <wire><p1 x="280" y="140"/><p2 x="320" y="140"/></wire>
+    <wire><p1 x="320" y="140"/><p2 x="320" y="120"/></wire>
+    <wire><p1 x="320" y="120"/><p2 x="340" y="120"/></wire>
+    <wire><p1 x="280" y="60"/><p2 x="300" y="60"/></wire>
+    <wire><p1 x="300" y="60"/><p2 x="300" y="180"/></wire>
+    <wire><p1 x="300" y="180"/><p2 x="340" y="180"/></wire>
+    <wire><p1 x="100" y="140"/><p2 x="120" y="140"/></wire>
+    <wire><p1 x="120" y="140"/><p2 x="120" y="200"/></wire>
+    <wire><p1 x="120" y="200"/><p2 x="340" y="200"/></wire>
+    <wire><p1 x="370" y="110"/><p2 x="420" y="110"/></wire>
+    <wire><p1 x="420" y="110"/><p2 x="420" y="80"/></wire>
+    <wire><p1 x="420" y="80"/><p2 x="460" y="80"/></wire>
+    <wire><p1 x="280" y="220"/><p2 x="430" y="220"/></wire>
+    <wire><p1 x="430" y="220"/><p2 x="430" y="100"/></wire>
+    <wire><p1 x="430" y="100"/><p2 x="460" y="100"/></wire>
+    <wire><p1 x="490" y="90"/><p2 x="550" y="90"/></wire>
+    <wire><p1 x="550" y="90"/><p2 x="550" y="100"/></wire>
+    <wire><p1 x="550" y="100"/><p2 x="580" y="100"/></wire>
+    <wire><p1 x="100" y="220"/><p2 x="140" y="220"/></wire>
+    <wire><p1 x="140" y="220"/><p2 x="140" y="120"/></wire>
+    <wire><p1 x="140" y="120"/><p2 x="580" y="120"/></wire>
+    <wire><p1 x="490" y="90"/><p2 x="560" y="90"/></wire>
+    <wire><p1 x="560" y="90"/><p2 x="560" y="220"/></wire>
+    <wire><p1 x="560" y="220"/><p2 x="580" y="220"/></wire>
+    <wire><p1 x="100" y="300"/><p2 x="540" y="300"/></wire>
+    <wire><p1 x="540" y="300"/><p2 x="540" y="240"/></wire>
+    <wire><p1 x="540" y="240"/><p2 x="580" y="240"/></wire>
+    <wire><p1 x="100" y="60"/><p2 x="740" y="60"/></wire>
+    <wire><p1 x="740" y="60"/><p2 x="760" y="60"/></wire>
+    <wire><p1 x="370" y="190"/><p2 x="720" y="190"/></wire>
+    <wire><p1 x="720" y="190"/><p2 x="720" y="160"/></wire>
+    <wire><p1 x="720" y="160"/><p2 x="760" y="160"/></wire>
+    <wire><p1 x="610" y="110"/><p2 x="700" y="110"/></wire>
+    <wire><p1 x="700" y="110"/><p2 x="700" y="260"/></wire>
+    <wire><p1 x="700" y="260"/><p2 x="760" y="260"/></wire>
+    <wire><p1 x="610" y="230"/><p2 x="740" y="230"/></wire>
+    <wire><p1 x="740" y="230"/><p2 x="740" y="360"/></wire>
+    <wire><p1 x="740" y="360"/><p2 x="760" y="360"/></wire>
+  </wires>
+</circuit>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第14章 错误路径冲刷判据。
+一个在飞 uop 要不要作废，看三个条件：
+mispred 是分支被判定猜错，young 是这条 uop 的序号不小于出错分支（也就是在错误路径上），
+valid 是这条 uop 还在飞、没有已经退休。
+三者同时为 1 才输出 kill。
+对应 recover.v 里 kill_mask_o 的判据：any_redirect &amp;&amp; (uop_seq &gt;= kill_from)。
+前级的序号比较用输入开关代替，把判据本身看清楚。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>5</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>分支执行后判定为预测错误。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>mispred</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>这条 uop 的序号不小于出错分支的序号，也就是更年轻或就是它自己。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>young</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>这条 uop 还在飞，没退休。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>valid</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="300" y="130"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="480" y="150"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>为 1 时这条 uop 落在错误路径上，必须作废。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>kill</string>
+        </entry>
+      </elementAttributes>
+      <pos x="650" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>mispred young valid kill
+0 0 0 0
+0 0 1 0
+0 1 0 0
+0 1 1 0
+1 0 0 0
+1 0 1 0
+1 1 0 0
+1 1 1 1
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="400" y="360"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="100" y="100"/>
+      <p2 x="260" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="100"/>
+      <p2 x="260" y="130"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="130"/>
+      <p2 x="300" y="130"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="180"/>
+      <p2 x="250" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="250" y="180"/>
+      <p2 x="250" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="250" y="150"/>
+      <p2 x="300" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="330" y="140"/>
+      <p2 x="420" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="140"/>
+      <p2 x="420" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="150"/>
+      <p2 x="480" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="280"/>
+      <p2 x="450" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="450" y="280"/>
+      <p2 x="450" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="450" y="170"/>
+      <p2 x="480" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="510" y="160"/>
+      <p2 x="650" y="160"/>
+    </wire>
+  </wires>
+</circuit>

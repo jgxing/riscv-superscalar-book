@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第12章 load 投机违例检测的最后一步。
+三个输入都由前级电路产生：addr_match 是更老的 store 地址与 load 地址相等，
+store_older 是这条 store 确实比 load 老，load_done 是 load 已经投机读过。
+三者同时为 1 才报 violation，让 load 的结果作废重做。
+对应 lsq.v 里 store 地址就绪时那段检查：valid 且是 load 且已投机且年龄更大且地址相等。
+这里用输入开关代替前级比较电路，把判据单独看清楚。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>5</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>更老的 store 地址与已投机的 load 地址相等。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>addr_match</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>这条 store 的年龄比 load 小，也就是更老。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>store_older</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>load 已经投机读过内存。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>load_done</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="300" y="150"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="450" y="150"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>为 1 时 load 结果作废，需要重新执行。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>violation</string>
+        </entry>
+      </elementAttributes>
+      <pos x="620" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>addr_match store_older load_done violation
+0 0 0 0
+0 0 1 0
+0 1 0 0
+0 1 1 0
+1 0 0 0
+1 0 1 0
+1 1 0 0
+1 1 1 1
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="400" y="320"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="100" y="100"/>
+      <p2 x="260" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="100"/>
+      <p2 x="260" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="150"/>
+      <p2 x="300" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="180"/>
+      <p2 x="260" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="180"/>
+      <p2 x="260" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="170"/>
+      <p2 x="300" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="330" y="160"/>
+      <p2 x="400" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="160"/>
+      <p2 x="400" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="150"/>
+      <p2 x="450" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="280"/>
+      <p2 x="400" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="280"/>
+      <p2 x="400" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="170"/>
+      <p2 x="450" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="480" y="160"/>
+      <p2 x="620" y="160"/>
+    </wire>
+  </wires>
+</circuit>

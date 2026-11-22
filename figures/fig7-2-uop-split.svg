@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 440" width="980" height="440" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图7-2 一条复杂指令拆成多条uop</title>
+  <desc>一条双字存储指令sd要写入8个字节,但后端数据通路一次只能处理4字节,于是被拆成两条32位存储uop。第一条存低4字节标记不是最后一条,第二条存高4字节标记是最后一条。两条uop打上顺序标记,提交时作为一个整体退休。</desc>
+  <rect x="0" y="0" width="980" height="440" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 7-2　一条复杂指令拆成多条 uop</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">以双字存储 sd 为例，32 位通路一次只能存 4 字节</text>
+
+  <!-- 原指令 -->
+  <g>
+    <rect x="60" y="120" width="250" height="100" rx="10" fill="#FCE8E6" stroke="#C0392B" stroke-width="2"/>
+    <text x="185" y="150" font-size="14" font-weight="bold" fill="#922B21" text-anchor="middle">一条 ISA 指令</text>
+    <text x="185" y="178" font-size="16" font-weight="bold" fill="#7B241C" text-anchor="middle" font-family="monospace">sd t1, 0(t2)</text>
+    <text x="185" y="202" font-size="11" fill="#A93226" text-anchor="middle">把 8 字节写到 t2 指向的地址</text>
+  </g>
+
+  <!-- 拆分箭头 -->
+  <line x1="310" y1="170" x2="400" y2="170" stroke="#C0392B" stroke-width="2"/>
+  <polygon points="400,170 390,165 390,175" fill="#C0392B"/>
+  <text x="355" y="160" font-size="11.5" fill="#922B21" text-anchor="middle">拆分</text>
+
+  <!-- 两条 uop -->
+  <g>
+    <rect x="420" y="100" width="360" height="62" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="438" y="124" font-size="12.5" font-weight="bold" fill="#0C447C">uop 0　STORE.W</text>
+    <text x="438" y="146" font-size="11" fill="#185FA5">存低 4 字节，地址 0(t2)　　标记：不是最后一条</text>
+    <rect x="790" y="116" width="76" height="30" rx="6" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1"/>
+    <text x="828" y="136" font-size="10.5" fill="#7D6608" text-anchor="middle">第 1 / 2 条</text>
+  </g>
+
+  <g>
+    <rect x="420" y="182" width="360" height="62" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="438" y="206" font-size="12.5" font-weight="bold" fill="#0C447C">uop 1　STORE.W</text>
+    <text x="438" y="228" font-size="11" fill="#185FA5">存高 4 字节，地址 4(t2)　　标记：最后一条</text>
+    <rect x="790" y="198" width="76" height="30" rx="6" fill="#D5F5E3" stroke="#0F6E56" stroke-width="1"/>
+    <text x="828" y="218" font-size="10.5" fill="#0E6655" text-anchor="middle">第 2 / 2 条</text>
+  </g>
+
+  <!-- 送后端 -->
+  <line x1="780" y1="163" x2="900" y2="163" stroke="#334155" stroke-width="1.6"/>
+  <line x1="780" y1="245" x2="900" y2="245" stroke="#334155" stroke-width="1.6"/>
+  <line x1="900" y1="163" x2="900" y2="245" stroke="#334155" stroke-width="1.6"/>
+  <line x1="900" y1="204" x2="930" y2="204" stroke="#334155" stroke-width="2"/>
+  <polygon points="930,204 920,199 920,209" fill="#334155"/>
+  <text x="900" y="278" font-size="11" fill="#475569" text-anchor="middle">送后端</text>
+
+  <!-- 底部说明 -->
+  <rect x="60" y="290" width="860" height="130" rx="10" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="78" y="316" font-size="12.5" font-weight="bold" fill="#5B21B6">为什么要打顺序标记</text>
+  <text x="78" y="340" font-size="11.5" fill="#4C1D95">两条 uop 来自同一条 sd，但在后端看来是两条普通操作，各自独立重命名、调度、执行。</text>
+  <text x="78" y="362" font-size="11.5" fill="#4C1D95">只有到提交时，才靠"是不是最后一条"这个标记，把它们认作一个整体一起退休。</text>
+  <text x="78" y="392" font-size="11.5" fill="#5B21B6">取舍　通路做宽能少拆几条、减轻后端，但硬件成本上升；做窄省面积，uop 数量涨。</text>
+</svg>

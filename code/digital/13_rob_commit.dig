@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第13章 ROB 队头提交允许信号。
+head_valid 是队头项有效，head_done 是这条 uop 已经乱序写回，
+head_except 是它带异常。只有 valid=1 且 done=1 且 except=0 才允许提交。
+对应 rob.v 里从 head 开始数连续 done 项的提交决策：队头没写完或有异常都要停下。
+异常取反后再和前两个条件相与，输入用开关代替前级电路，把判据单独看清楚。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>5</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>队头这一项有效，ROB 非空。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>head_valid</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>队头这条 uop 已经执行完并写回。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>head_done</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>队头这条 uop 带异常，为 1 时不许提交。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>head_except</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="300" y="130"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="300" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="480" y="150"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>为 1 时队头这条可以提交，提交指针前移。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>commit_allow</string>
+        </entry>
+      </elementAttributes>
+      <pos x="650" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>head_valid head_done head_except commit_allow
+0 0 0 0
+0 0 1 0
+0 1 0 0
+0 1 1 0
+1 0 0 0
+1 0 1 0
+1 1 0 1
+1 1 1 0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="400" y="360"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="100" y="100"/>
+      <p2 x="260" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="100"/>
+      <p2 x="260" y="130"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="130"/>
+      <p2 x="300" y="130"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="180"/>
+      <p2 x="250" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="250" y="180"/>
+      <p2 x="250" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="250" y="150"/>
+      <p2 x="300" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="280"/>
+      <p2 x="300" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="330" y="140"/>
+      <p2 x="420" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="140"/>
+      <p2 x="420" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="420" y="150"/>
+      <p2 x="480" y="150"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="280"/>
+      <p2 x="450" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="450" y="280"/>
+      <p2 x="450" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="450" y="170"/>
+      <p2 x="480" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="510" y="160"/>
+      <p2 x="650" y="160"/>
+    </wire>
+  </wires>
+</circuit>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" height="560" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图8-1 后端四大功能块全景</title>
+  <desc>后端按功能分成四块。控制块掌管重命名、发射队列、ROB和提交，是调度中枢。整数块、浮点块、访存块是三个并行的执行车间。uop从前端进入控制块登记改名,送进发射队列,再被分发到三个执行块。执行结果经广播写回,同时在ROB登记,最后按顺序提交送回寄存器堆。</desc>
+  <rect x="0" y="0" width="980" height="560" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 8-1　后端四大功能块全景</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">控制块维持秩序，三个执行块并行干活；上为 uop 去程，下为结果回程</text>
+
+  <!-- 前端来向 -->
+  <g>
+    <rect x="30" y="100" width="120" height="56" rx="8" fill="#F7F9FC" stroke="#94A3B8" stroke-width="1.4"/>
+    <text x="90" y="124" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">前端译码</text>
+    <text x="90" y="142" font-size="10.5" fill="#64748B" text-anchor="middle">送来的 uop 流</text>
+    <line x1="150" y1="128" x2="196" y2="128" stroke="#475569" stroke-width="1.8"/>
+    <polygon points="196,128 188,124 188,132" fill="#475569"/>
+  </g>
+
+  <!-- 控制块 大框 -->
+  <rect x="200" y="88" width="470" height="384" rx="14" fill="#F0F5FB" stroke="#185FA5" stroke-width="2"/>
+  <text x="220" y="112" font-size="14" font-weight="bold" fill="#0C447C">控制块 CtrlBlock</text>
+  <text x="220" y="130" font-size="10.5" fill="#185FA5">调度中枢，秩序由它维持</text>
+
+  <!-- 重命名 -->
+  <g>
+    <rect x="220" y="150" width="130" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="285" y="174" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">重命名</text>
+    <text x="285" y="192" font-size="10" fill="#185FA5" text-anchor="middle">逻辑名换物理名</text>
+  </g>
+
+  <!-- 发射队列 -->
+  <g>
+    <rect x="400" y="150" width="130" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="465" y="174" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">发射队列</text>
+    <text x="465" y="192" font-size="10" fill="#185FA5" text-anchor="middle">等操作数就绪</text>
+  </g>
+
+  <!-- ROB -->
+  <g>
+    <rect x="220" y="356" width="430" height="52" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="435" y="378" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">重排序缓冲 ROB</text>
+    <text x="435" y="396" font-size="10" fill="#185FA5" text-anchor="middle">按程序顺序记录，按顺序提交——那本记录原始次序的账本</text>
+  </g>
+
+  <!-- 提交 -->
+  <g>
+    <rect x="220" y="418" width="130" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="285" y="445" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">按序提交</text>
+  </g>
+
+  <!-- 重命名->发射队列 -->
+  <line x1="350" y1="178" x2="398" y2="178" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="398,178 390,174 390,182" fill="#185FA5"/>
+
+  <!-- 三个执行块 -->
+  <!-- 整数 -->
+  <g>
+    <rect x="700" y="100" width="250" height="96" rx="10" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.8"/>
+    <text x="825" y="126" font-size="13" font-weight="bold" fill="#7D6608" text-anchor="middle">整数块 IntBlock</text>
+    <text x="825" y="148" font-size="10.5" fill="#9A7D0A" text-anchor="middle">ALU × 多个、分支单元</text>
+    <text x="825" y="168" font-size="10.5" fill="#9A7D0A" text-anchor="middle">加减逻辑、跳转目标</text>
+    <text x="825" y="186" font-size="10" fill="#B59B0A" text-anchor="middle">大部分整数指令在此</text>
+  </g>
+  <!-- 浮点 -->
+  <g>
+    <rect x="700" y="210" width="250" height="96" rx="10" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="1.8"/>
+    <text x="825" y="236" font-size="13" font-weight="bold" fill="#5B21B6" text-anchor="middle">浮点块 FPBlock</text>
+    <text x="825" y="258" font-size="10.5" fill="#6D5BD0" text-anchor="middle">浮点加减乘除</text>
+    <text x="825" y="278" font-size="10.5" fill="#6D5BD0" text-anchor="middle">电路复杂，多周期</text>
+    <text x="825" y="296" font-size="10" fill="#8B7BD8" text-anchor="middle">独立的车间</text>
+  </g>
+  <!-- 访存 -->
+  <g>
+    <rect x="700" y="320" width="250" height="96" rx="10" fill="#E8F7F1" stroke="#0F6E56" stroke-width="1.8"/>
+    <text x="825" y="346" font-size="13" font-weight="bold" fill="#0B5D49" text-anchor="middle">访存块 MemBlock</text>
+    <text x="825" y="368" font-size="10.5" fill="#0F6E56" text-anchor="middle">地址生成、LSQ、DCache</text>
+    <text x="825" y="388" font-size="10.5" fill="#0F6E56" text-anchor="middle">要维护访存顺序</text>
+    <text x="825" y="406" font-size="10" fill="#4A9E85" text-anchor="middle">四块里最麻烦的一块</text>
+  </g>
+
+  <!-- 发射队列 -> 三个执行块 (去程) -->
+  <line x1="530" y1="178" x2="690" y2="140" stroke="#185FA5" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <polygon points="690,140 682,138 686,146" fill="#185FA5"/>
+  <line x1="530" y1="182" x2="690" y2="250" stroke="#185FA5" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <polygon points="690,250 681,248 686,256" fill="#185FA5"/>
+  <line x1="530" y1="190" x2="690" y2="360" stroke="#185FA5" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <polygon points="690,360 681,357 686,365" fill="#185FA5"/>
+
+  <!-- 结果回程: 执行块 -> 写回/ROB -->
+  <text x="600" y="300" font-size="10.5" fill="#B45309">结果经广播写回 ↓</text>
+  <path d="M 700 158 C 660 300, 660 340, 520 380" fill="none" stroke="#B45309" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <polygon points="520,380 528,377 525,385" fill="#B45309"/>
+
+  <!-- 提交 -> 寄存器堆 -->
+  <g>
+    <rect x="700" y="418" width="250" height="52" rx="8" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+    <text x="825" y="440" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">寄存器堆</text>
+    <text x="825" y="458" font-size="10" fill="#64748B" text-anchor="middle">按序交出的最终结果</text>
+  </g>
+  <line x1="350" y1="440" x2="698" y2="440" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="698,440 690,436 690,444" fill="#185FA5"/>
+
+  <!-- 图例 -->
+  <g font-size="10.5" fill="#5F5E5A">
+    <line x1="30" y1="510" x2="60" y2="510" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="66" y="514">uop 去程（登记、排队、分发）</text>
+    <line x1="300" y1="510" x2="330" y2="510" stroke="#B45309" stroke-width="1.8" stroke-dasharray="5 4"/>
+    <text x="336" y="514">结果回程（写回、登记、提交）</text>
+  </g>
+  <text x="30" y="540" font-size="11" fill="#8B5E00">餐馆比喻　控制块是前台调度，整数、浮点、访存是三个不同工种的厨房</text>
+</svg>

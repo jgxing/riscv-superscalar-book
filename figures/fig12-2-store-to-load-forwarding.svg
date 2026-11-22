@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图12-2 store-to-load 转发</title>
+  <desc>更老的store写好地址和数据后留在store buffer里，后续同地址load直接取它的新值，不必等store提交写进内存。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 12-2　store-to-load 转发</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">后续 load 直接从 store buffer 拿新值，不必等它写进内存</text>
+
+  <!-- store -->
+  <rect x="30" y="110" width="220" height="110" rx="9" fill="#FFF7E8" stroke="#D97706" stroke-width="1.6"/>
+  <text x="140" y="140" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">S1　store</text>
+  <text x="48" y="169" font-size="12" fill="#374151">地址　0x100</text>
+  <text x="48" y="193" font-size="12" fill="#374151">数据　0xAB</text>
+  <text x="48" y="212" font-size="11" fill="#B45309">年龄 1，更老</text>
+
+  <line x1="252" y1="165" x2="308" y2="165" stroke="#D97706" stroke-width="1.8"/>
+  <polygon points="308,165 300,161 300,169" fill="#D97706"/>
+
+  <!-- store buffer -->
+  <rect x="312" y="110" width="240" height="110" rx="9" fill="#FFF7E8" stroke="#D97706" stroke-width="1.8"/>
+  <text x="432" y="140" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">store buffer 表项</text>
+  <text x="330" y="169" font-size="12" fill="#374151">已就绪　地址 0x100</text>
+  <text x="330" y="193" font-size="12" fill="#374151">值 0xAB</text>
+  <text x="330" y="212" font-size="11" fill="#B45309">提交之前一直留着</text>
+
+  <!-- load -->
+  <line x1="554" y1="165" x2="610" y2="165" stroke="#2E8B57" stroke-width="2.2"/>
+  <text x="582" y="150" font-size="11" fill="#1E6B40" text-anchor="middle">地址相等</text>
+  <polygon points="610,165 602,161 602,169" fill="#2E8B57"/>
+
+  <rect x="614" y="110" width="220" height="110" rx="9" fill="#E7F5EC" stroke="#2E8B57" stroke-width="1.8"/>
+  <text x="724" y="140" font-size="14" font-weight="bold" fill="#1E6B40" text-anchor="middle">L2　load</text>
+  <text x="632" y="169" font-size="12" fill="#374151">地址　0x100</text>
+  <text x="632" y="193" font-size="13" font-weight="bold" fill="#1E6B40">拿到 0xAB</text>
+  <text x="632" y="212" font-size="11" fill="#1E6B40">年龄 2，比 S1 年轻</text>
+
+  <!-- 慢路：写内存 -->
+  <rect x="312" y="270" width="240" height="70" rx="8" fill="#F7F9FC" stroke="#94A3B8"/>
+  <text x="432" y="298" font-size="12.5" font-weight="bold" fill="#475569" text-anchor="middle">内存</text>
+  <text x="432" y="321" font-size="11" fill="#64748B" text-anchor="middle">等 store 提交后才写入</text>
+  <line x1="432" y1="222" x2="432" y2="268" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="6 5"/>
+  <polygon points="432,268 428,260 436,260" fill="#94A3B8"/>
+  <text x="452" y="250" font-size="11" fill="#64748B">慢路</text>
+
+  <!-- 快路说明 -->
+  <rect x="614" y="270" width="220" height="70" rx="8" fill="#E7F5EC" stroke="#2E8B57"/>
+  <text x="724" y="298" font-size="12.5" font-weight="bold" fill="#1E6B40" text-anchor="middle">快路</text>
+  <text x="724" y="321" font-size="11" fill="#1E6B40" text-anchor="middle">转发省下写回再读的等待</text>
+
+  <rect x="30" y="370" width="940" height="76" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="48" y="398" font-size="12.5" fill="#374151">转发只认更老的同址 store。更年轻的 store 写在后面，不能盖掉 load 本该读到的旧值。</text>
+  <text x="48" y="424" font-size="12.5" fill="#374151">若有多个更老的同址 store，取年龄最大的那个，也就是程序顺序上最近的一次写。</text>
+</svg>

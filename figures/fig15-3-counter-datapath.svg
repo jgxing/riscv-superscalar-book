@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图15-3 性能计数器接在哪里</title>
+  <desc>前端、发射、访存队列和恢复控制各自把停顿事件送给性能计数器，提交口给出本拍提交条数；计数器输出周期数、提交数、各类停顿次数、瓶颈编码和 IPC 分子分母。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 15-3　性能计数器接在哪里</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">把所有没干活的理由都接到同一个地方记账</text>
+
+  <!-- 左：四个事件来源 -->
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="30" y="104" width="190" height="44" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="125" y="124" fill="#0C447C">前端</text>
+    <text x="125" y="140" font-size="10.5" fill="#475569">front_stall_i</text>
+
+    <rect x="30" y="164" width="190" height="44" rx="7" fill="#F3E8FF" stroke="#7C3AED"/>
+    <text x="125" y="184" fill="#6D28D9">发射队列</text>
+    <text x="125" y="200" font-size="10.5" fill="#475569">issue_stall_i</text>
+
+    <rect x="30" y="224" width="190" height="44" rx="7" fill="#FFF7E8" stroke="#D97706"/>
+    <text x="125" y="244" fill="#B45309">访存队列</text>
+    <text x="125" y="260" font-size="10.5" fill="#475569">lsq_stall_i</text>
+
+    <rect x="30" y="284" width="190" height="44" rx="7" fill="#FEE2E2" stroke="#DC2626"/>
+    <text x="125" y="304" fill="#B91C1C">恢复控制</text>
+    <text x="125" y="320" font-size="10.5" fill="#475569">recover_i</text>
+  </g>
+
+  <!-- 左到中的箭头 -->
+  <g stroke="#94A3B8" stroke-width="1.6" fill="none">
+    <path d="M220 126 L360 126"/>
+    <path d="M220 186 L360 186"/>
+    <path d="M220 246 L360 246"/>
+    <path d="M220 306 L360 306"/>
+  </g>
+  <g stroke="#94A3B8" stroke-width="1.6" fill="none">
+    <path d="M352 120 L360 126 L352 132"/>
+    <path d="M352 180 L360 186 L352 192"/>
+    <path d="M352 240 L360 246 L352 252"/>
+    <path d="M352 300 L360 306 L352 312"/>
+  </g>
+
+  <!-- 中：计数器 -->
+  <rect x="360" y="100" width="270" height="230" rx="11" fill="#F1F5F9" stroke="#334155" stroke-width="1.8"/>
+  <text x="495" y="130" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">perf_counter</text>
+  <text x="495" y="152" font-size="11" fill="#64748B" text-anchor="middle">每个时钟沿累加一次</text>
+
+  <line x1="380" y1="166" x2="610" y2="166" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="380" y="190" font-size="11.5" fill="#334155">cycle_o　周期数</text>
+  <text x="380" y="214" font-size="11.5" fill="#334155">commit_o　提交数</text>
+  <text x="380" y="238" font-size="11.5" fill="#334155">四类停顿各自计数</text>
+  <text x="380" y="262" font-size="11.5" fill="#334155">bottleneck_o　瓶颈编码</text>
+  <text x="380" y="286" font-size="11.5" fill="#334155">ipc_num_o / ipc_den_o</text>
+  <text x="380" y="314" font-size="10.5" fill="#64748B">除法不在硬件里做</text>
+
+  <!-- 下：提交口 -->
+  <rect x="360" y="374" width="270" height="46" rx="7" fill="#DCFCE7" stroke="#16A34A"/>
+  <text x="495" y="394" font-size="11.5" fill="#15803D" text-anchor="middle">提交口</text>
+  <text x="495" y="410" font-size="10.5" fill="#475569" text-anchor="middle">commit_i　本拍提交条数</text>
+  <path d="M495 374 L495 334" stroke="#16A34A" stroke-width="1.8" fill="none"/>
+  <path d="M488 342 L495 334 L502 342" stroke="#16A34A" stroke-width="1.8" fill="none"/>
+
+  <!-- 右：输出去向 -->
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="700" y="104" width="270" height="60" rx="7" fill="#F8FAFC" stroke="#94A3B8"/>
+    <text x="835" y="126" fill="#1f2937">软件读累计值</text>
+    <text x="835" y="146" font-size="10.5" fill="#475569">算 IPC 和各停顿占比</text>
+
+    <rect x="700" y="182" width="270" height="60" rx="7" fill="#F8FAFC" stroke="#94A3B8"/>
+    <text x="835" y="204" fill="#1f2937">看哪类停顿最多</text>
+    <text x="835" y="224" font-size="10.5" fill="#475569">决定下一轮优化方向</text>
+
+    <rect x="700" y="260" width="270" height="60" rx="7" fill="#F8FAFC" stroke="#94A3B8"/>
+    <text x="835" y="282" fill="#1f2937">看当前瓶颈编码</text>
+    <text x="835" y="302" font-size="10.5" fill="#475569">在线调试时的粗略指示</text>
+  </g>
+
+  <g stroke="#94A3B8" stroke-width="1.6" fill="none">
+    <path d="M630 134 L700 134"/>
+    <path d="M630 212 L700 212"/>
+    <path d="M630 290 L700 290"/>
+  </g>
+
+  <text x="30" y="440" font-size="11.5" fill="#374151">计数器只是把第 1 章那张账本自动记下来。它不改变处理器的行为，只让瓶颈从感觉变成数字。</text>
+  <text x="30" y="462" font-size="11.5" fill="#8B5E00">要点　先量再改，别凭直觉优化</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" width="900" height="330" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图3-4 从 2 发射扩展到 N 发射</title>
+  <desc>对比 2 发射与 N 发射，展示发射宽度提升时需要同步加宽的部件：发射逻辑、保留站端口、功能部件、CDB 带宽、RAT 与寄存器堆端口。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="330" fill="#ffffff"/>
+  <text x="30" y="36" font-size="18" font-weight="bold" fill="#1f2937">图 3-4　从 2 发射到 N 发射</text>
+
+  <!-- 2 发射 -->
+  <g>
+    <rect x="30" y="60" width="330" height="230" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.2"/>
+    <text x="195" y="88" font-size="15" font-weight="bold" fill="#0C447C" text-anchor="middle">2 发射最小核（本书主线）</text>
+    <g font-size="12.5" fill="#0C447C">
+      <text x="50" y="118">· 每周期发射 2 条指令</text>
+      <text x="50" y="146">· 保留站接收 2 个广播写入</text>
+      <text x="50" y="174">· 少量 ALU + 1 个乘法器</text>
+      <text x="50" y="202">· 1 根 CDB，一拍广播 1 个结果</text>
+      <text x="50" y="230">· RAT 读 2 写 1，端口压力小</text>
+      <text x="50" y="266" font-weight="bold" fill="#185FA5">→ 用最小闭环把原理讲透</text>
+    </g>
+  </g>
+
+  <!-- 箭头 -->
+  <line x1="375" y1="175" x2="475" y2="175" stroke="#534AB7" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="425" y="164" font-size="12" fill="#534AB7" text-anchor="middle">加宽</text>
+
+  <!-- N 发射 -->
+  <g>
+    <rect x="490" y="60" width="380" height="230" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+    <text x="680" y="88" font-size="15" font-weight="bold" fill="#085041" text-anchor="middle">N 发射（香山 V2=6 / V3=8）</text>
+    <g font-size="12.5" fill="#085041">
+      <text x="510" y="118">· 每周期发射 N 条、查 N 次 RAT</text>
+      <text x="510" y="146">· 保留站支持 N 个广播 + N 个发射读取</text>
+      <text x="510" y="174">· 更多 ALU / 乘法 / 访存流水线</text>
+      <text x="510" y="202">· 多根 CDB，否则结果堵塞（这是瓶颈）</text>
+      <text x="510" y="230">· RAT / 寄存器堆读写端口大增（痛点）</text>
+      <text x="510" y="266" font-weight="bold" fill="#0F6E56">→ 都是工程上的放大，机制不变</text>
+    </g>
+  </g>
+
+  <text x="30" y="316" font-size="12" fill="#6B7280">CDB 广播带宽是发射宽度提升的主要瓶颈；真实处理器用多 CDB 或"写回 PRF 加唤醒通知"来缓解（第 11 章）。</text>
+</svg>

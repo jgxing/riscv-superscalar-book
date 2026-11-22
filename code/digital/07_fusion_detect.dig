@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第7章 指令融合的检测电路（最简形式）。
+融合要认出固定指令对，例如"上一条是 lui、当前是 addi"。
+本电路把这两个条件各用一个输入表示：prev_is_lui 与 curr_is_addi，
+两者同时为 1（相与）时输出 can_fuse=1，表示融合条件成立。
+真实译码器里，prev_is_lui 和 curr_is_addi 各自来自操作码比较，
+本电路演示的是最后一步——两个条件相与得出融合决定。
+仿真：拨动两个输入，只有都为 1 时 can_fuse 才亮。
+对照教材第7章 7.4 节（指令融合）与 7.9 节。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>4</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="360" y="170"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>上一条指令是不是 lui。真实译码器里由比较上一条指令的操作码得出。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>prev_is_lui</string>
+        </entry>
+      </elementAttributes>
+      <pos x="280" y="170"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>当前指令是不是 addi。真实译码器里由比较当前指令的操作码得出。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>curr_is_addi</string>
+        </entry>
+      </elementAttributes>
+      <pos x="280" y="190"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>can_fuse=1 表示两个条件都成立，可以融合成一条 uop。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>can_fuse</string>
+        </entry>
+      </elementAttributes>
+      <pos x="430" y="180"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>prev_is_lui curr_is_addi can_fuse
+0   0   0
+0   1   0
+1   0   0
+1   1   1
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="280"/>
+      <rotate>0</rotate>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="390" y="180"/>
+      <p2 x="430" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="170"/>
+      <p2 x="360" y="170"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="190"/>
+      <p2 x="360" y="190"/>
+    </wire>
+  </wires>
+</circuit>

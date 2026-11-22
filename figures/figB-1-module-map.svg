@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图B-1 五个模板模块在核里的位置</title>
+  <desc>FIFO 用在队列，CAM 加优先编码器用在标签监听和查表，仲裁器用在发射选择，交叉开关用在结果写回与旁路选通。</desc>
+  <rect x="0" y="0" width="1000" height="430" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 B-1　五个模板模块在核里的位置</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">全书反复出现的结构，认清一次以后就省事</text>
+
+  <!-- 上排：取指与译码流 -->
+  <g font-size="12" text-anchor="middle">
+    <rect x="40" y="100" width="150" height="50" rx="8" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="115" y="121" fill="#0C447C">前端取指</text>
+    <text x="115" y="139" font-size="10.5" fill="#475569">第 4 到 6 章</text>
+
+    <rect x="250" y="100" width="150" height="50" rx="8" fill="#F1F5F9" stroke="#64748B"/>
+    <text x="325" y="121" fill="#334155">FTQ 指令缓冲</text>
+    <text x="325" y="139" font-size="10.5" fill="#475569">队列</text>
+
+    <rect x="460" y="100" width="150" height="50" rx="8" fill="#F3E8FF" stroke="#7C3AED"/>
+    <text x="535" y="121" fill="#6D28D9">译码与重命名</text>
+    <text x="535" y="139" font-size="10.5" fill="#475569">第 7、9 章</text>
+
+    <rect x="670" y="100" width="150" height="50" rx="8" fill="#FFF7E8" stroke="#D97706"/>
+    <text x="745" y="121" fill="#B45309">发射队列</text>
+    <text x="745" y="139" font-size="10.5" fill="#475569">第 10 章</text>
+
+    <rect x="850" y="100" width="120" height="50" rx="8" fill="#FEE2E2" stroke="#DC2626"/>
+    <text x="910" y="121" fill="#B91C1C">执行单元</text>
+    <text x="910" y="139" font-size="10.5" fill="#475569">第 11 章</text>
+  </g>
+
+  <g stroke="#94A3B8" stroke-width="1.8" fill="none">
+    <path d="M190 125 L246 125"/>
+    <path d="M400 125 L456 125"/>
+    <path d="M610 125 L666 125"/>
+    <path d="M820 125 L846 125"/>
+  </g>
+  <g stroke="#94A3B8" stroke-width="1.8" fill="none">
+    <path d="M238 119 L246 125 L238 131"/>
+    <path d="M448 119 L456 125 L448 131"/>
+    <path d="M658 119 L666 125 L658 131"/>
+    <path d="M838 119 L846 125 L838 131"/>
+  </g>
+
+  <!-- 下排：五个模板，标注挂在哪里 -->
+  <g font-size="12" text-anchor="middle">
+    <rect x="40" y="222" width="175" height="86" rx="9" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="127" y="248" font-size="13" font-weight="bold" fill="#0C447C">FIFO</text>
+    <text x="127" y="270" font-size="10.5" fill="#334155">FTQ 指令缓冲</text>
+    <text x="127" y="288" font-size="10.5" fill="#334155">指令队列 ROB</text>
+
+    <rect x="234" y="222" width="175" height="86" rx="9" fill="#F3E8FF" stroke="#7C3AED" stroke-width="1.6"/>
+    <text x="321" y="248" font-size="13" font-weight="bold" fill="#6D28D9">CAM</text>
+    <text x="321" y="270" font-size="10.5" fill="#334155">保留站标签匹配</text>
+    <text x="321" y="288" font-size="10.5" fill="#334155">BTB 查表</text>
+
+    <rect x="428" y="222" width="175" height="86" rx="9" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+    <text x="515" y="248" font-size="13" font-weight="bold" fill="#15803D">优先编码器</text>
+    <text x="515" y="270" font-size="10.5" fill="#334155">CAM 命中后定位</text>
+    <text x="515" y="288" font-size="10.5" fill="#334155">中断优先级</text>
+
+    <rect x="622" y="222" width="175" height="86" rx="9" fill="#FFF7E8" stroke="#D97706" stroke-width="1.6"/>
+    <text x="709" y="248" font-size="13" font-weight="bold" fill="#B45309">仲裁器</text>
+    <text x="709" y="270" font-size="10.5" fill="#334155">发射口发票</text>
+    <text x="709" y="288" font-size="10.5" fill="#334155">CDB 写回竞争</text>
+
+    <rect x="816" y="222" width="154" height="86" rx="9" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.6"/>
+    <text x="893" y="248" font-size="13" font-weight="bold" fill="#B91C1C">交叉开关</text>
+    <text x="893" y="270" font-size="10.5" fill="#334155">结果写回选通</text>
+    <text x="893" y="288" font-size="10.5" fill="#334155">旁路网络</text>
+  </g>
+
+  <!-- 对应关系连线（虚线） -->
+  <g stroke="#CBD5E1" stroke-width="1.4" fill="none" stroke-dasharray="4 3">
+    <path d="M325 150 L127 218"/>
+    <path d="M535 150 L321 218"/>
+    <path d="M745 150 L709 218"/>
+    <path d="M910 150 L893 218"/>
+  </g>
+
+  <text x="30" y="360" font-size="11.5" fill="#374151">这五个模块单独看都不难，难点在于把它们接起来还让时序对得上。先逐个跑通，再拼整体。</text>
+  <text x="30" y="388" font-size="11.5" fill="#374151">参数和接口按教学核取值　发射宽度 2，物理寄存器 64 个，队列深度多为 8。</text>
+  <text x="30" y="412" font-size="11.5" fill="#8B5E00">要点　打包向量最右端是 0 号单元，写测试期望时别排反</text>
+</svg>

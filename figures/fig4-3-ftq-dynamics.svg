@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" height="560" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图4-3 FTQ 的动态填充与消耗</title>
+  <desc>FTQ 是一个存地址的先进先出队列。预测器作为生产者从队尾 tail 写入新地址，取指单元作为消费者从队头 head 读出地址去取指令。两个指针各自前进，速度差由队列深度吸收。多留一位指针后，最高位不同、其余位相同表示满，head 与 tail 完全相同表示空。</desc>
+  <rect x="0" y="0" width="980" height="560" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 4-3　FTQ 的动态填充与消耗</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">预测器从队尾写，取指从队头读，两个指针各走各的</text>
+
+  <!-- 生产者：预测器 -->
+  <g>
+    <rect x="620" y="96" width="300" height="56" rx="9" fill="#EDE9FE" stroke="#6D5BD0" stroke-width="1.6"/>
+    <text x="770" y="120" font-size="13" font-weight="bold" fill="#4C1D95" text-anchor="middle">预测器（生产者）</text>
+    <text x="770" y="140" font-size="11" fill="#5B21B6" text-anchor="middle">算出一个后续地址就 push 到队尾</text>
+
+    <!-- 指向 tail 的弯曲箭头 -->
+    <path d="M 700 152 C 700 186 490 176 490 206" fill="none" stroke="#6D5BD0" stroke-width="2"/>
+    <polygon points="490,206 484,194 496,194" fill="#6D5BD0"/>
+    <text x="612" y="180" font-size="11" fill="#5B21B6" text-anchor="middle">写入 0x118</text>
+  </g>
+
+  <!-- 队列主体：8 个格子 -->
+  <g>
+    <text x="30" y="232" font-size="12" font-weight="bold" fill="#374151">FTQ</text>
+
+    <!-- 格 0：已取走（空，虚线） -->
+    <rect x="90" y="206" width="98" height="68" rx="7" fill="#F9FAFB" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="139" y="246" font-size="11" fill="#9CA3AF" text-anchor="middle">已取走</text>
+    <text x="139" y="288" font-size="10.5" fill="#9CA3AF" text-anchor="middle">slot 0</text>
+
+    <!-- 格 1：head 指向，即将被取 -->
+    <rect x="192" y="206" width="98" height="68" rx="7" fill="#B7E4CD" stroke="#0F6E56" stroke-width="2"/>
+    <text x="241" y="236" font-size="13" font-weight="bold" fill="#0F6E56" text-anchor="middle">0x104</text>
+    <text x="241" y="256" font-size="10" fill="#0F6E56" text-anchor="middle">下一条取它</text>
+    <text x="241" y="288" font-size="10.5" fill="#0F6E56" text-anchor="middle">slot 1</text>
+
+    <!-- 格 2、3：占用 -->
+    <rect x="294" y="206" width="98" height="68" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+    <text x="343" y="246" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">0x108</text>
+    <text x="343" y="288" font-size="10.5" fill="#185FA5" text-anchor="middle">slot 2</text>
+
+    <rect x="396" y="206" width="98" height="68" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+    <text x="445" y="246" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">0x10C</text>
+    <text x="445" y="288" font-size="10.5" fill="#185FA5" text-anchor="middle">slot 3</text>
+
+    <!-- 格 4：tail 指向，下一个写入位置 -->
+    <rect x="498" y="206" width="98" height="68" rx="7" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="2" stroke-dasharray="5 3"/>
+    <text x="547" y="246" font-size="11" fill="#6D5BD0" text-anchor="middle">空闲</text>
+    <text x="547" y="288" font-size="10.5" fill="#6D5BD0" text-anchor="middle">slot 4</text>
+
+    <!-- 格 5-7：空 -->
+    <rect x="600" y="206" width="98" height="68" rx="7" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.2"/>
+    <text x="649" y="288" font-size="10.5" fill="#9CA3AF" text-anchor="middle">slot 5</text>
+    <rect x="702" y="206" width="98" height="68" rx="7" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.2"/>
+    <text x="751" y="288" font-size="10.5" fill="#9CA3AF" text-anchor="middle">slot 6</text>
+    <rect x="804" y="206" width="98" height="68" rx="7" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.2"/>
+    <text x="853" y="288" font-size="10.5" fill="#9CA3AF" text-anchor="middle">slot 7</text>
+
+    <!-- head 指针（下方，向上指） -->
+    <line x1="241" y1="302" x2="241" y2="276" stroke="#0F6E56" stroke-width="2"/>
+    <polygon points="241,276 235,288 247,288" fill="#0F6E56"/>
+    <text x="241" y="320" font-size="11.5" font-weight="bold" fill="#0F6E56" text-anchor="middle">head（取指侧）</text>
+
+    <!-- tail 指针（上方，向下指） -->
+    <line x1="547" y1="206" x2="547" y2="182" stroke="#6D5BD0" stroke-width="2"/>
+    <polygon points="547,182 541,194 553,194" fill="#6D5BD0"/>
+    <text x="547" y="176" font-size="11.5" font-weight="bold" fill="#6D5BD0" text-anchor="middle">tail（预测侧）</text>
+  </g>
+
+  <!-- 消费者：取指单元 -->
+  <g>
+    <rect x="90" y="360" width="300" height="56" rx="9" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="240" y="384" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">取指单元（消费者）</text>
+    <text x="240" y="404" font-size="11" fill="#185FA5" text-anchor="middle">从队头 pop 一个地址，去 ICache 取指令</text>
+
+    <path d="M 241 322 C 241 344 240 344 240 358" fill="none" stroke="#0F6E56" stroke-width="2"/>
+    <polygon points="240,358 234,346 246,346" fill="#0F6E56"/>
+    <text x="300" y="344" font-size="11" fill="#0F6E56">取出 0x104</text>
+  </g>
+
+  <!-- 右侧：满空判断说明 -->
+  <g>
+    <rect x="620" y="360" width="300" height="120" rx="9" fill="#FAFAF9" stroke="#D1D5DB" stroke-width="1.2"/>
+    <text x="640" y="388" font-size="12.5" font-weight="bold" fill="#374151">指针怎么判断满和空</text>
+    <text x="640" y="414" font-size="11.5" fill="#2C2C2A">满　tail 比 head 多绕一整圈</text>
+    <text x="640" y="438" font-size="11.5" fill="#2C2C2A">空　head 和 tail 指到同一格</text>
+    <text x="640" y="464" font-size="11.5" fill="#2C2C2A">多留一位指针，两种状态就分得清</text>
+  </g>
+
+  <!-- 底部说明 -->
+  <rect x="30" y="498" width="920" height="46" rx="10" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="1.2"/>
+  <text x="50" y="527" font-size="12.5" fill="#4C1D95">队列满，预测器暂停；队列空，取指暂停。速度差就被这一个队列吸收掉了。</text>
+</svg>

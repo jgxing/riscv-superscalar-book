@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图13-1 ROB 环形队列</title>
+  <desc>ROB 是按程序顺序排的环形队列。分配指针 tail 在末尾写入，提交指针 head 在头部退休。每项记有效位、完成位、异常位、PC 和旧物理号。</desc>
+  <rect x="0" y="0" width="1000" height="460" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 13-1　ROB 环形队列</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">一边从尾部写入，一边从头部退休，两个指针同向绕圈</text>
+
+  <!-- 环形示意 -->
+  <g>
+    <rect x="70" y="110" width="860" height="210" rx="14" fill="#F7F9FC" stroke="#CBD5E1"/>
+
+    <!-- 表项 0..7 -->
+    <g font-size="11.5">
+      <rect x="90"  y="150" width="96" height="120" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+      <rect x="198" y="150" width="96" height="120" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+      <rect x="306" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+      <rect x="414" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+      <rect x="522" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+      <rect x="630" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+      <rect x="738" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+      <rect x="846" y="150" width="96" height="120" rx="7" fill="#ffffff" stroke="#94A3B8"/>
+    </g>
+
+    <g font-size="12" font-weight="bold" fill="#374151" text-anchor="middle">
+      <text x="138" y="172">0</text>
+      <text x="246" y="172">1</text>
+      <text x="354" y="172">2</text>
+      <text x="462" y="172">3</text>
+      <text x="570" y="172">4</text>
+      <text x="678" y="172">5</text>
+      <text x="786" y="172">6</text>
+      <text x="894" y="172">7</text>
+    </g>
+
+    <g font-size="10.5" fill="#64748B" text-anchor="middle">
+      <text x="138" y="196">U1</text>
+      <text x="246" y="196">U2</text>
+      <text x="138" y="214">done=1</text>
+      <text x="246" y="214">done=1</text>
+      <text x="138" y="232">pc=0x100</text>
+      <text x="246" y="232">pc=0x104</text>
+      <text x="138" y="250">old=P32</text>
+      <text x="246" y="250">old=P33</text>
+    </g>
+
+    <!-- head / tail 指针 -->
+    <g font-size="12" font-weight="bold" text-anchor="middle">
+      <path d="M138 300 L138 282" stroke="#B45309" stroke-width="2" fill="none"/>
+      <path d="M132 288 L138 280 L144 288" stroke="#B45309" stroke-width="2" fill="none"/>
+      <text x="138" y="316" fill="#B45309">head</text>
+
+      <path d="M894 300 L894 282" stroke="#0C447C" stroke-width="2" fill="none"/>
+      <path d="M888 288 L894 280 L900 288" stroke="#0C447C" stroke-width="2" fill="none"/>
+      <text x="894" y="316" fill="#0C447C">tail</text>
+    </g>
+    <text x="500" y="316" font-size="11" fill="#64748B" text-anchor="middle">head 到 tail 之间是已占用项，按程序顺序排列</text>
+  </g>
+
+  <!-- 表项字段说明 -->
+  <rect x="70" y="350" width="420" height="80" rx="9" fill="#E6F1FB" stroke="#185FA5"/>
+  <text x="88" y="374" font-size="12.5" font-weight="bold" fill="#0C447C">每项记六样东西</text>
+  <text x="88" y="396" font-size="11.5" fill="#374151">valid 占用、done 写完、except 异常</text>
+  <text x="88" y="416" font-size="11.5" fill="#374151">pc 地址、dest 目的号、old_pd 旧物理号</text>
+
+  <rect x="510" y="350" width="420" height="80" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="528" y="374" font-size="12.5" font-weight="bold" fill="#374151">判满判空</text>
+  <text x="528" y="396" font-size="11.5" fill="#374151">多留一位指针：head == tail 为空</text>
+  <text x="528" y="416" font-size="11.5" fill="#374151">最高位不同、低位相同为满</text>
+
+  <text x="30" y="452" font-size="11.5" fill="#8B5E00">要点　ROB 记的是账，顺序由入队时刻决定，和谁先算完无关</text>
+</svg>

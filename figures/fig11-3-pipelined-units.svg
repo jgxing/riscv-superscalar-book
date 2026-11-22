@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" width="1000" height="480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图11-3 多周期部件的延迟与吞吐</title>
+  <desc>非流水除法器一次只算一条，下一条要等它走完；流水乘法器把运算分成几级，每拍收进一条、吐出一个结果。旁路只能转发真正算完的结果。</desc>
+  <rect x="0" y="0" width="1000" height="480" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 11-3　多周期部件的延迟与吞吐</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">延迟是一个结果从进到出要几拍，吞吐是多久能收下一个</text>
+
+  <text x="30" y="98" font-size="13" font-weight="bold" fill="#475569">非流水除法器　一次只算一条</text>
+  <text x="520" y="98" font-size="13" font-weight="bold" fill="#92400E">流水乘法器　错开进、流水出</text>
+
+  <!-- 左侧时间线 -->
+  <text x="40" y="128" font-size="11" fill="#64748B">周期</text>
+  <text x="75"  y="128" font-size="11.5" fill="#5F5E5A" text-anchor="middle">N</text>
+  <text x="150" y="128" font-size="11.5" fill="#5F5E5A" text-anchor="middle">N+1</text>
+  <text x="225" y="128" font-size="11.5" fill="#5F5E5A" text-anchor="middle">N+2</text>
+  <text x="300" y="128" font-size="11.5" fill="#5F5E5A" text-anchor="middle">N+3</text>
+  <text x="375" y="128" font-size="11.5" fill="#5F5E5A" text-anchor="middle">N+4</text>
+  <text x="40" y="175" font-size="11.5" fill="#374151">DIV1</text>
+  <text x="40" y="225" font-size="11.5" fill="#374151">DIV2</text>
+  <rect x="110" y="150" width="260" height="40" rx="6" fill="#F7F9FC" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="240" y="175" font-size="12" fill="#475569" text-anchor="middle">DIV1 一直占着部件，算完才走</text>
+  <rect x="370" y="200" width="70" height="40" rx="6" fill="#E6F1FB" stroke="#185FA5"/>
+  <text x="405" y="225" font-size="11" fill="#0C447C" text-anchor="middle">DIV2 进</text>
+  <text x="110" y="265" font-size="11.5" fill="#64748B">延迟十几拍，吞吐只有 1 条 / 十几拍</text>
+
+  <!-- 右侧时间线 -->
+  <text x="520" y="128" font-size="11" fill="#64748B">周期</text>
+  <text x="565" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N</text>
+  <text x="640" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N+1</text>
+  <text x="715" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N+2</text>
+  <text x="790" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N+3</text>
+  <text x="865" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N+4</text>
+  <text x="940" y="128" font-size="11" fill="#5F5E5A" text-anchor="middle">N+5</text>
+  <text x="520" y="175" font-size="11.5" fill="#374151">MUL1</text>
+  <text x="520" y="225" font-size="11.5" fill="#374151">MUL2</text>
+  <text x="520" y="275" font-size="11.5" fill="#374151">MUL3</text>
+
+  <rect x="530" y="150" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="565" y="175" font-size="11" fill="#0C447C" text-anchor="middle">级 1</text>
+  <rect x="605" y="150" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="640" y="175" font-size="11" fill="#0C447C" text-anchor="middle">级 2</text>
+  <rect x="680" y="150" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="715" y="175" font-size="11" fill="#0C447C" text-anchor="middle">级 3</text>
+  <rect x="755" y="150" width="70" height="40" rx="5" fill="#FFF7E8" stroke="#D97706"/><text x="790" y="175" font-size="11" fill="#92400E" text-anchor="middle">出结果</text>
+
+  <rect x="605" y="200" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="640" y="225" font-size="11" fill="#0C447C" text-anchor="middle">级 1</text>
+  <rect x="680" y="200" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="715" y="225" font-size="11" fill="#0C447C" text-anchor="middle">级 2</text>
+  <rect x="755" y="200" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="790" y="225" font-size="11" fill="#0C447C" text-anchor="middle">级 3</text>
+  <rect x="830" y="200" width="70" height="40" rx="5" fill="#FFF7E8" stroke="#D97706"/><text x="865" y="225" font-size="11" fill="#92400E" text-anchor="middle">出结果</text>
+
+  <rect x="680" y="250" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="715" y="275" font-size="11" fill="#0C447C" text-anchor="middle">级 1</text>
+  <rect x="755" y="250" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="790" y="275" font-size="11" fill="#0C447C" text-anchor="middle">级 2</text>
+  <rect x="830" y="250" width="70" height="40" rx="5" fill="#E6F1FB" stroke="#185FA5"/><text x="865" y="275" font-size="11" fill="#0C447C" text-anchor="middle">级 3</text>
+  <rect x="905" y="250" width="70" height="40" rx="5" fill="#FFF7E8" stroke="#D97706"/><text x="940" y="275" font-size="11" fill="#92400E" text-anchor="middle">出结果</text>
+  <text x="530" y="310" font-size="11.5" fill="#64748B">延迟 3 拍，但吞吐是 1 条 / 拍</text>
+
+  <!-- 对比表 -->
+  <rect x="30" y="326" width="940" height="82" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="60" y="350" font-size="11.5" font-weight="bold" fill="#475569">部件</text>
+  <text x="420" y="350" font-size="11.5" font-weight="bold" fill="#475569">延迟</text>
+  <text x="700" y="350" font-size="11.5" font-weight="bold" fill="#475569">吞吐</text>
+  <line x1="50" y1="358" x2="950" y2="358" stroke="#CBD5E1"/>
+  <text x="60" y="378" font-size="12" fill="#374151">整数 ALU</text>
+  <text x="420" y="378" font-size="12" fill="#374151">1 拍</text>
+  <text x="700" y="378" font-size="12" fill="#374151">1 条 / 拍</text>
+  <text x="60" y="399" font-size="12" fill="#374151">流水乘法器</text>
+  <text x="420" y="399" font-size="12" fill="#374151">3 到 4 拍</text>
+  <text x="700" y="399" font-size="12" fill="#374151">1 条 / 拍</text>
+  <text x="420" y="418" font-size="12" fill="#374151">非流水除法器　十几拍</text>
+  <text x="700" y="418" font-size="12" fill="#374151">1 条 / 十几拍</text>
+
+  <rect x="30" y="420" width="940" height="44" rx="7" fill="#FFF7E8" stroke="#D97706"/>
+  <text x="46" y="442" font-size="12" fill="#92400E">要点　旁路网挂的是刚算完的结果。多周期部件在结果真正出来之前，目的号不能广播，</text>
+  <text x="46" y="459" font-size="12" fill="#92400E">否则等它的指令会发射进来，却读到还没写好的寄存器。</text>
+</svg>

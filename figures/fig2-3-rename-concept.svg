@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" width="940" height="560" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图2-3 重命名怎样消除伪相关</title>
+  <desc>寄存器重命名给每次写分配新名字，读记下所等的名字。WAW 因两次写名字不同而消失，WAR 因读已记下旧值而消失，RAW 通过新名字继续传递。</desc>
+  <rect x="0" y="0" width="940" height="560" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 2-3　重命名怎样消除伪相关</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">左侧为重命名前的程序，右侧展示换名字后各条指令实际依赖的名字</text>
+
+  <!-- 左：重命名前 -->
+  <g>
+    <rect x="30" y="86" width="360" height="410" rx="12" fill="#F7F7F4" stroke="#D3D1C8" stroke-width="1.2"/>
+    <text x="210" y="114" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">重命名前</text>
+    <g font-family="Consolas,monospace" font-size="12.5" fill="#2C2C2A">
+      <text x="48" y="152">I1  MUL  R1, R2, R3</text>
+      <text x="48" y="182">I2  ADD  R4, R1, R5</text>
+      <text x="48" y="212">I3  SUB  R1, R6, R7</text>
+      <text x="48" y="242">I4  XOR  R8, R1, R9</text>
+    </g>
+    <line x1="48" y1="260" x2="372" y2="260" stroke="#D3D1C8" stroke-width="1"/>
+    <g font-size="12" fill="#5F5E5A">
+      <text x="48" y="290">I1 → I2　RAW（读 R1，真相关）</text>
+      <text x="48" y="318">I1 → I3　WAW（都写 R1）</text>
+      <text x="48" y="346">I2 → I3　WAR（I2 读 R1，I3 写）</text>
+      <text x="48" y="374">I3 → I4　RAW（读 R1，真相关）</text>
+    </g>
+    <rect x="48" y="398" width="324" height="76" rx="8" fill="#FCECEC" stroke="#A32D2D" stroke-dasharray="4 3"/>
+    <text x="64" y="424" font-size="12" fill="#7a2020">I3 被 WAW 和 WAR 两条伪相关拴住，</text>
+    <text x="64" y="446" font-size="12" fill="#7a2020">明明只依赖 I1 的乘法，却不能早早执行。</text>
+    <text x="64" y="466" font-size="11.5" fill="#5F5E5A">4 条指令里 I3 是瓶颈</text>
+  </g>
+
+  <!-- 中间箭头 -->
+  <line x1="400" y1="290" x2="465" y2="290" stroke="#185FA5" stroke-width="2"/>
+  <text x="432" y="278" font-size="11.5" fill="#185FA5" text-anchor="middle">换名字</text>
+  <text x="432" y="312" font-size="11.5" fill="#185FA5" text-anchor="middle">重命名</text>
+
+  <!-- 右：重命名后 -->
+  <g>
+    <rect x="475" y="86" width="435" height="410" rx="12" fill="#F1F8F4" stroke="#0F6E56" stroke-width="1.2"/>
+    <text x="692" y="114" font-size="14" font-weight="bold" fill="#0F6E56" text-anchor="middle">重命名后</text>
+    <g font-family="Consolas,monospace" font-size="12.5" fill="#2C2C2A">
+      <text x="493" y="152">I1  MUL  R1a, R2, R3</text>
+      <text x="493" y="182">I2  ADD  R4, R1a, R5</text>
+      <text x="493" y="212">I3  SUB  R1b, R6, R7</text>
+      <text x="493" y="242">I4  XOR  R8, R1b, R9</text>
+    </g>
+    <line x1="493" y1="260" x2="892" y2="260" stroke="#D3D1C8" stroke-width="1"/>
+    <g font-size="12">
+      <text x="493" y="290" fill="#A32D2D">I1 → I2　RAW（I2 等 R1a，保留）</text>
+      <text x="493" y="318" fill="#0F6E56">I1 → I3　WAW 消失（R1a ≠ R1b）</text>
+      <text x="493" y="346" fill="#0F6E56">I2 → I3　WAR 消失（I2 已记下 R1a 的值）</text>
+      <text x="493" y="374" fill="#A32D2D">I3 → I4　RAW（I4 等 R1b，保留）</text>
+    </g>
+    <rect x="493" y="398" width="399" height="76" rx="8" fill="#fff" stroke="#0F6E56" stroke-dasharray="4 3"/>
+    <text x="509" y="424" font-size="12" fill="#0F6E56">只剩 I1→I2 和 I3→I4 两条真相关链，</text>
+    <text x="509" y="446" font-size="12" fill="#0F6E56">I3 不再被伪相关拴住，可以早点执行。</text>
+    <text x="509" y="466" font-size="11.5" fill="#5F5E5A">提交时登记：R1 的最终值来自 R1b</text>
+  </g>
+
+  <text x="30" y="528" font-size="12.5" fill="#3C3489">核心：每次写分配新名字，读记下所等的名字。真相关靠名字继续传递，伪相关因名字不同而消失。</text>
+  <text x="30" y="550" font-size="11.5" fill="#6B7280">真实处理器里"新名字"通常是物理寄存器号或标签；第 3 章用标签，第 9 章讲物理寄存器方案。</text>
+</svg>

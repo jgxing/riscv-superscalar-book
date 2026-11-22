@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="1000" height="500" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图12-1 乱序访存的记账本 LSQ</title>
+  <desc>访存uop按程序顺序进入LSQ，每项记录类型、年龄、地址、数据和就绪状态。store的地址与数据分开到齐，load地址算完后做转发检查或投机读。</desc>
+  <rect x="0" y="0" width="1000" height="500" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 12-1　乱序访存的记账本 LSQ</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">访存 uop 进队先占位置，地址和数据到齐之后才有资格做判断</text>
+
+  <!-- 左侧入口 -->
+  <rect x="30" y="100" width="190" height="180" rx="9" fill="#F7F9FC" stroke="#94A3B8" stroke-width="1.5"/>
+  <text x="125" y="130" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">进队的访存 uop</text>
+  <line x1="48" y1="142" x2="202" y2="142" stroke="#CBD5E1"/>
+  <text x="48" y="168" font-size="11.5" fill="#374151">类型　load 还是 store</text>
+  <text x="48" y="194" font-size="11.5" fill="#374151">年龄　程序顺序的先后</text>
+  <text x="48" y="220" font-size="11.5" fill="#374151">目的物理号　load 的结果写这里</text>
+  <text x="48" y="252" font-size="11" fill="#64748B">地址还没算出来</text>
+  <text x="48" y="270" font-size="11" fill="#64748B">先占一项，不急着访存</text>
+
+  <line x1="222" y1="190" x2="256" y2="190" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="256,190 248,186 248,194" fill="#185FA5"/>
+
+  <!-- 中间表格 -->
+  <rect x="260" y="100" width="440" height="286" rx="10" fill="#ffffff" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="480" y="128" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">LSQ 表项</text>
+  <line x1="278" y1="140" x2="682" y2="140" stroke="#185FA5" stroke-width="1"/>
+  <text x="292" y="158" font-size="11" font-weight="bold" fill="#475569">项</text>
+  <text x="330" y="158" font-size="11" font-weight="bold" fill="#475569">类型</text>
+  <text x="392" y="158" font-size="11" font-weight="bold" fill="#475569">年龄</text>
+  <text x="452" y="158" font-size="11" font-weight="bold" fill="#475569">地址</text>
+  <text x="552" y="158" font-size="11" font-weight="bold" fill="#475569">数据</text>
+  <text x="632" y="158" font-size="11" font-weight="bold" fill="#475569">状态</text>
+
+  <rect x="278" y="168" width="404" height="44" rx="5" fill="#FFF7E8"/>
+  <text x="292" y="195" font-size="11.5" fill="#374151">E0</text>
+  <text x="330" y="195" font-size="11.5" fill="#92400E">store</text>
+  <text x="392" y="195" font-size="11.5" fill="#374151">1</text>
+  <text x="452" y="195" font-size="11.5" fill="#374151">0x100</text>
+  <text x="552" y="195" font-size="11.5" fill="#374151">0xAB</text>
+  <text x="632" y="195" font-size="11" fill="#92400E">地址数据齐</text>
+
+  <rect x="278" y="216" width="404" height="44" rx="5" fill="#E6F1FB"/>
+  <text x="292" y="243" font-size="11.5" fill="#374151">E1</text>
+  <text x="330" y="243" font-size="11.5" fill="#0C447C">load</text>
+  <text x="392" y="243" font-size="11.5" fill="#374151">2</text>
+  <text x="452" y="243" font-size="11.5" fill="#374151">0x100</text>
+  <text x="552" y="243" font-size="11.5" fill="#94A3B8">—</text>
+  <text x="632" y="243" font-size="11" fill="#0C447C">已投机读</text>
+
+  <rect x="278" y="264" width="404" height="44" rx="5" fill="#F7F9FC"/>
+  <text x="292" y="291" font-size="11.5" fill="#374151">E2</text>
+  <text x="330" y="291" font-size="11.5" fill="#64748B">store</text>
+  <text x="392" y="291" font-size="11.5" fill="#374151">3</text>
+  <text x="452" y="291" font-size="11.5" fill="#94A3B8">待算</text>
+  <text x="552" y="291" font-size="11.5" fill="#374151">0xCD</text>
+  <text x="632" y="291" font-size="11" fill="#64748B">等地址</text>
+
+  <rect x="278" y="312" width="404" height="44" rx="5" fill="#F7F9FC"/>
+  <text x="292" y="339" font-size="11.5" fill="#374151">E3</text>
+  <text x="330" y="339" font-size="11.5" fill="#64748B">load</text>
+  <text x="392" y="339" font-size="11.5" fill="#374151">4</text>
+  <text x="452" y="339" font-size="11.5" fill="#94A3B8">待算</text>
+  <text x="552" y="339" font-size="11.5" fill="#94A3B8">—</text>
+  <text x="632" y="339" font-size="11" fill="#64748B">等地址</text>
+
+  <!-- 右侧三个去处 -->
+  <rect x="740" y="110" width="230" height="74" rx="8" fill="#E7F5EC" stroke="#2E8B57" stroke-width="1.5"/>
+  <text x="855" y="138" font-size="12.5" font-weight="bold" fill="#1E6B40" text-anchor="middle">转发命中</text>
+  <text x="855" y="162" font-size="11" fill="#1E6B40" text-anchor="middle">同址更老 store 直接给数据</text>
+
+  <rect x="740" y="208" width="230" height="74" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+  <text x="855" y="236" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">转发未命中</text>
+  <text x="855" y="260" font-size="11" fill="#0C447C" text-anchor="middle">拿地址去内存读</text>
+
+  <rect x="740" y="306" width="230" height="74" rx="8" fill="#FFF7E8" stroke="#D97706" stroke-width="1.5"/>
+  <text x="855" y="334" font-size="12.5" font-weight="bold" fill="#92400E" text-anchor="middle">store 提交</text>
+  <text x="855" y="358" font-size="11" fill="#92400E" text-anchor="middle">按程序顺序写回内存</text>
+
+  <line x1="702" y1="190" x2="738" y2="147" stroke="#2E8B57" stroke-width="1.6"/>
+  <polygon points="738,147 730,147 735,140" fill="#2E8B57"/>
+  <line x1="702" y1="238" x2="738" y2="245" stroke="#185FA5" stroke-width="1.6"/>
+  <polygon points="738,245 730,242 733,250" fill="#185FA5"/>
+  <line x1="702" y1="300" x2="738" y2="342" stroke="#D97706" stroke-width="1.6"/>
+  <polygon points="738,342 730,340 733,333" fill="#D97706"/>
+
+  <rect x="30" y="410" width="940" height="70" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="48" y="438" font-size="12.5" fill="#374151">LSQ 按程序顺序记录访存，执行却可以乱序。地址和数据分开到齐，让加载不必等前面所有 store 慢慢算完。</text>
+  <text x="48" y="463" font-size="12.5" fill="#374151">转发走短路，提交走长路。短路决定能跑多快，长路决定结果对不对。</text>
+</svg>

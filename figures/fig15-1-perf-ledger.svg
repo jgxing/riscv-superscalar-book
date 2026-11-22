@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图15-1 从 CPI 账本到 IPC 账本</title>
+  <desc>第 1 章用 CPI 分解看顺序流水线的损失，乱序核改用周期数与提交数直接算 IPC，同时把停顿按前端、发射、访存和恢复四类记账。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 15-1　从 CPI 账本到 IPC 账本</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">同一笔性能账，顺序核和乱序核的记法不同</text>
+
+  <!-- 左：第1章的账本 -->
+  <rect x="30" y="90" width="330" height="300" rx="11" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="48" y="118" font-size="13" font-weight="bold" fill="#0C447C">第 1 章　顺序单发射的账本</text>
+  <text x="48" y="142" font-size="11.5" fill="#374151">CPI = 1 + 结构停顿 + 数据停顿 + 控制停顿</text>
+
+  <g font-size="11.5" fill="#334155">
+    <rect x="48" y="158" width="180" height="26" rx="4" fill="#93C5FD"/>
+    <text x="56" y="176">理想执行　1000</text>
+    <rect x="48" y="190" width="11" height="26" rx="2" fill="#60A5FA"/>
+    <rect x="59" y="190" width="48" height="26" rx="2" fill="#3B82F6"/>
+    <text x="116" y="208">数据 180　控制 260</text>
+    <rect x="48" y="222" width="11" height="26" rx="2" fill="#2563EB"/>
+    <text x="68" y="240">结构 60</text>
+  </g>
+
+  <line x1="48" y1="262" x2="340" y2="262" stroke="#94A3B8" stroke-width="1"/>
+  <text x="48" y="288" font-size="12" fill="#0C447C">总周期 1500　提交 1000</text>
+  <text x="48" y="316" font-size="15" font-weight="bold" fill="#0C447C">IPC = 1000 / 1500 ≈ 0.67</text>
+  <text x="48" y="348" font-size="11.5" fill="#475569">账本按冒险类型分列，每一列都要想办法压下去</text>
+  <text x="48" y="372" font-size="11.5" fill="#475569">控制冒险那列最扎眼，所以先做分支预测</text>
+
+  <!-- 中：箭头 -->
+  <path d="M370 230 L470 230" stroke="#64748B" stroke-width="2" fill="none"/>
+  <path d="M460 222 L470 230 L460 238" stroke="#64748B" stroke-width="2" fill="none"/>
+  <text x="420" y="214" font-size="11" fill="#64748B" text-anchor="middle">多发射乱序</text>
+  <text x="420" y="256" font-size="11" fill="#64748B" text-anchor="middle">换了算法</text>
+
+  <!-- 右：乱序核的账本 -->
+  <rect x="490" y="90" width="480" height="300" rx="11" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+  <text x="508" y="118" font-size="13" font-weight="bold" fill="#15803D">第 15 章　乱序核直接数两个量</text>
+  <text x="508" y="142" font-size="11.5" fill="#374151">IPC = 提交数 / 周期数，不再按冒险类型硬拆</text>
+
+  <g font-size="12" fill="#166534">
+    <rect x="508" y="158" width="200" height="44" rx="7" fill="#ffffff" stroke="#16A34A"/>
+    <text x="524" y="176">周期计数器</text>
+    <text x="524" y="194" font-size="11" fill="#475569">每拍加一，做分母</text>
+
+    <rect x="722" y="158" width="228" height="44" rx="7" fill="#ffffff" stroke="#16A34A"/>
+    <text x="738" y="176">提交计数器</text>
+    <text x="738" y="194" font-size="11" fill="#475569">每拍加本拍提交条数，做分子</text>
+  </g>
+
+  <text x="508" y="234" font-size="12" font-weight="bold" fill="#15803D">停顿另外记账，只为找瓶颈</text>
+  <g font-size="11.5" fill="#166534">
+    <rect x="508" y="246" width="105" height="38" rx="6" fill="#ffffff" stroke="#4ADE80"/>
+    <text x="560" y="263" text-anchor="middle">前端断粮</text>
+    <text x="560" y="279" text-anchor="middle" font-size="10.5" fill="#64748B">供指不足</text>
+
+    <rect x="623" y="246" width="105" height="38" rx="6" fill="#ffffff" stroke="#4ADE80"/>
+    <text x="675" y="263" text-anchor="middle">发射阻塞</text>
+    <text x="675" y="279" text-anchor="middle" font-size="10.5" fill="#64748B">没货或没端口</text>
+
+    <rect x="738" y="246" width="105" height="38" rx="6" fill="#ffffff" stroke="#4ADE80"/>
+    <text x="790" y="263" text-anchor="middle">访存阻塞</text>
+    <text x="790" y="279" text-anchor="middle" font-size="10.5" fill="#64748B">队列满或等地址</text>
+
+    <rect x="853" y="246" width="97" height="38" rx="6" fill="#ffffff" stroke="#4ADE80"/>
+    <text x="901" y="263" text-anchor="middle">恢复冲刷</text>
+    <text x="901" y="279" text-anchor="middle" font-size="10.5" fill="#64748B">控制代价</text>
+  </g>
+
+  <text x="508" y="316" font-size="15" font-weight="bold" fill="#15803D">IPC = 提交数 / 周期数</text>
+  <text x="508" y="344" font-size="11.5" fill="#475569">除法留给软件做，硬件只给分子和分母</text>
+  <text x="508" y="368" font-size="11.5" fill="#475569">四类停顿可能同拍成立，各记各的账</text>
+
+  <text x="30" y="420" font-size="11.5" fill="#374151">第 1 章的账本用来解释为什么要乱序，这一章的账本用来回答当前这一拍卡在哪。目的不同，量法也不同。</text>
+  <text x="30" y="446" font-size="11.5" fill="#8B5E00">要点　IPC 是结果，停顿分布才是诊断书</text>
+</svg>

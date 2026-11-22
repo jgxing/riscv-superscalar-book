@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 540" width="980" height="540" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图5-4 BTB与BHT用PC查表</title>
+  <desc>取指时拿同一个PC同时查两张表。BTB用PC中间位索引，表项含有效位、标签和目标地址，命中则给出跳转目标；BHT用PC低位索引，表项是2位计数器，最高位给出跳转方向。两者结合得到下一条取指地址。</desc>
+  <rect x="0" y="0" width="980" height="540" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 5-4　BTB 与 BHT 用 PC 查表</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">同一个 PC 查两张表，BTB 给目标，BHT 给方向</text>
+
+  <!-- PC 输入 -->
+  <rect x="60" y="100" width="180" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="150" y="124" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">取指 PC</text>
+  <text x="150" y="144" font-size="10.5" fill="#185FA5" text-anchor="middle">分支指令的地址</text>
+
+  <!-- PC 位拆分示意 -->
+  <g>
+    <rect x="60" y="180" width="180" height="44" rx="6" fill="#F4F4F2" stroke="#C9C9C5"/>
+    <text x="150" y="198" font-size="10.5" fill="#6B7280" text-anchor="middle">高位当标签　低位当索引</text>
+    <rect x="72" y="205" width="78" height="14" rx="2" fill="#D8E6F5" stroke="#185FA5"/>
+    <text x="111" y="216" font-size="9.5" fill="#0C447C" text-anchor="middle">tag</text>
+    <rect x="154" y="205" width="74" height="14" rx="2" fill="#F5E6D8" stroke="#B5702E"/>
+    <text x="191" y="216" font-size="9.5" fill="#8a5316" text-anchor="middle">index</text>
+  </g>
+
+  <!-- 分叉箭头到两张表 -->
+  <line x1="240" y1="128" x2="330" y2="128" stroke="#9CA3AF" stroke-width="1.6"/>
+  <line x1="330" y1="128" x2="330" y2="192" stroke="#9CA3AF" stroke-width="1.6"/>
+  <line x1="330" y1="128" x2="330" y2="360" stroke="#9CA3AF" stroke-width="1.6"/>
+  <line x1="330" y1="192" x2="424" y2="192" stroke="#9CA3AF" stroke-width="1.6"/>
+  <polygon points="424,192 416,188 416,196" fill="#9CA3AF"/>
+  <line x1="330" y1="360" x2="424" y2="360" stroke="#9CA3AF" stroke-width="1.6"/>
+  <polygon points="424,360 416,356 416,364" fill="#9CA3AF"/>
+
+  <!-- BTB 表 -->
+  <g>
+    <rect x="424" y="140" width="360" height="110" rx="10" fill="#F4F8FC" stroke="#185FA5" stroke-width="1.5"/>
+    <text x="604" y="164" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">BTB　分支目标缓冲</text>
+    <text x="604" y="184" font-size="10.5" fill="#5F5E5A" text-anchor="middle">用 PC 中间几位索引，回答"跳去哪"</text>
+    <!-- 表项 -->
+    <rect x="446" y="196" width="316" height="40" rx="5" fill="#fff" stroke="#9CA3AF"/>
+    <line x1="546" y1="196" x2="546" y2="236" stroke="#D6D6D2"/>
+    <line x1="656" y1="196" x2="656" y2="236" stroke="#D6D6D2"/>
+    <text x="496" y="221" font-size="11" fill="#374151" text-anchor="middle">有效位</text>
+    <text x="601" y="221" font-size="11" fill="#374151" text-anchor="middle">标签</text>
+    <text x="731" y="221" font-size="11" fill="#374151" text-anchor="middle">目标地址</text>
+  </g>
+
+  <!-- BHT 表 -->
+  <g>
+    <rect x="424" y="306" width="360" height="108" rx="10" fill="#F2F8F1" stroke="#6E9B62" stroke-width="1.5"/>
+    <text x="604" y="330" font-size="14" font-weight="bold" fill="#3E6B34" text-anchor="middle">BHT　分支历史表</text>
+    <text x="604" y="350" font-size="10.5" fill="#5F5E5A" text-anchor="middle">用 PC 低位索引，回答"跳不跳"</text>
+    <rect x="446" y="362" width="316" height="40" rx="5" fill="#fff" stroke="#9CA3AF"/>
+    <text x="604" y="387" font-size="11" fill="#374151" text-anchor="middle">一组 2 位计数器，最高位 1 猜跳、0 猜不跳</text>
+  </g>
+
+  <!-- 结果汇合 -->
+  <line x1="784" y1="195" x2="850" y2="195" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="850,195 842,191 842,199" fill="#185FA5"/>
+  <line x1="784" y1="360" x2="850" y2="360" stroke="#6E9B62" stroke-width="1.8"/>
+  <polygon points="850,360 842,356 842,364" fill="#6E9B62"/>
+
+  <g>
+    <rect x="850" y="150" width="100" height="90" rx="8" fill="#F4F8FC" stroke="#185FA5"/>
+    <text x="900" y="182" font-size="11.5" font-weight="bold" fill="#0C447C" text-anchor="middle">目标地址</text>
+    <text x="900" y="204" font-size="10" fill="#5F5E5A" text-anchor="middle">命中才有效</text>
+    <text x="900" y="222" font-size="10" fill="#5F5E5A" text-anchor="middle">(hit)</text>
+
+    <rect x="850" y="318" width="100" height="84" rx="8" fill="#F2F8F1" stroke="#6E9B62"/>
+    <text x="900" y="350" font-size="11.5" font-weight="bold" fill="#3E6B34" text-anchor="middle">方向</text>
+    <text x="900" y="372" font-size="10" fill="#5F5E5A" text-anchor="middle">跳 / 不跳</text>
+    <text x="900" y="390" font-size="10" fill="#5F5E5A" text-anchor="middle">(predict)</text>
+  </g>
+
+  <!-- 底部结论 -->
+  <rect x="60" y="446" width="860" height="66" rx="10" fill="#F4F4F2" stroke="#D6D6D2"/>
+  <text x="490" y="472" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="middle">方向跳 + BTB 命中 → 从目标地址取指　　方向不跳 → 顺序取指</text>
+  <text x="490" y="495" font-size="11.5" fill="#5F5E5A" text-anchor="middle">BTB 命中要同时满足有效位为 1 且标签相等，否则多条分支低位相同会互相认错</text>
+</svg>

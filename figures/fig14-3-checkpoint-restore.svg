@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图14-3 检查点快照与恢复</title>
+  <desc>分支进入后端时把整张 RAT 和空闲表指针存进检查点槽，错误路径把 RAT 改乱之后，按检查点号把快照读回来覆盖当前 RAT。</desc>
+  <rect x="0" y="0" width="1000" height="460" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 14-3　检查点快照与恢复</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">给命名状态拍张照片，改乱了照着照片擦回去</text>
+
+  <!-- 左：拍快照 -->
+  <rect x="30" y="90" width="300" height="290" rx="11" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="48" y="118" font-size="13" font-weight="bold" fill="#0C447C">① 分支进入后端时拍快照</text>
+
+  <text x="48" y="146" font-size="11.5" fill="#374151">当前 RAT（只画三项示意）</text>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="48" y="156" width="80" height="40" rx="6" fill="#ffffff" stroke="#94A3B8"/>
+    <text x="88" y="181" fill="#475569">x1→P10</text>
+    <rect x="134" y="156" width="80" height="40" rx="6" fill="#ffffff" stroke="#94A3B8"/>
+    <text x="174" y="181" fill="#475569">x2→P11</text>
+    <rect x="220" y="156" width="80" height="40" rx="6" fill="#ffffff" stroke="#94A3B8"/>
+    <text x="260" y="181" fill="#475569">x3→P12</text>
+  </g>
+
+  <path d="M180 202 L180 230" stroke="#185FA5" stroke-width="1.8" fill="none"/>
+  <path d="M174 222 L180 230 L186 222" stroke="#185FA5" stroke-width="1.8" fill="none"/>
+  <text x="180" y="246" font-size="11" fill="#185FA5" text-anchor="middle">整张表加空闲表头尾指针一起存</text>
+
+  <rect x="56" y="258" width="248" height="96" rx="8" fill="#ffffff" stroke="#185FA5"/>
+  <text x="72" y="282" font-size="12" font-weight="bold" fill="#0C447C">检查点槽</text>
+  <text x="72" y="304" font-size="11" fill="#374151">rat_snap　整张 RAT 的拷贝</text>
+  <text x="72" y="322" font-size="11" fill="#374151">fl_head / fl_tail　空闲表指针</text>
+  <text x="72" y="340" font-size="11" fill="#374151">seq　这条分支的序号</text>
+
+  <!-- 中：被改乱 -->
+  <rect x="360" y="150" width="250" height="180" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.5"/>
+  <text x="485" y="180" font-size="12.5" font-weight="bold" fill="#B45309" text-anchor="middle">② 错误路径继续改 RAT</text>
+  <text x="485" y="210" font-size="11.5" fill="#92400E" text-anchor="middle">x1→P40　x2→P41</text>
+  <text x="485" y="234" font-size="11.5" fill="#92400E" text-anchor="middle">空闲表指针也往后走了</text>
+  <text x="485" y="266" font-size="11" fill="#B45309" text-anchor="middle">这些改动都是错的</text>
+  <text x="485" y="292" font-size="11" fill="#B45309" text-anchor="middle">要从照片擦回去</text>
+
+  <path d="M330 300 L360 240" stroke="#94A3B8" stroke-width="1.6" fill="none"/>
+
+  <!-- 右：恢复 -->
+  <rect x="640" y="90" width="330" height="290" rx="11" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.6"/>
+  <text x="658" y="118" font-size="13" font-weight="bold" fill="#15803D">③ 发现猜错后按编号恢复</text>
+
+  <text x="658" y="146" font-size="11.5" fill="#166534">恢复出的 RAT</text>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="658" y="156" width="90" height="40" rx="6" fill="#ffffff" stroke="#16A34A"/>
+    <text x="703" y="181" fill="#15803D">x1→P10</text>
+    <rect x="754" y="156" width="90" height="40" rx="6" fill="#ffffff" stroke="#16A34A"/>
+    <text x="799" y="181" fill="#15803D">x2→P11</text>
+    <rect x="850" y="156" width="100" height="40" rx="6" fill="#ffffff" stroke="#16A34A"/>
+    <text x="900" y="181" fill="#15803D">x3→P12</text>
+  </g>
+
+  <text x="658" y="222" font-size="11.5" fill="#166534">空闲表指针退回分支进来时的位置</text>
+  <text x="658" y="244" font-size="11.5" fill="#166534">错误路径分配的物理寄存器一次退回</text>
+
+  <rect x="658" y="262" width="294" height="96" rx="8" fill="#ffffff" stroke="#16A34A"/>
+  <text x="674" y="286" font-size="12" font-weight="bold" fill="#15803D">为什么必须存整张</text>
+  <text x="674" y="308" font-size="11" fill="#166534">错误路径可能改过任意几项 RAT</text>
+  <text x="674" y="328" font-size="11" fill="#166534">只记一项不够，恢复要覆盖全部</text>
+  <text x="674" y="348" font-size="11" fill="#166534">增量记录省地方，但逻辑更复杂</text>
+
+  <path d="M610 240 L640 180" stroke="#94A3B8" stroke-width="1.6" fill="none"/>
+
+  <text x="30" y="420" font-size="11.5" fill="#374151">快照拍在错误路径进来之前，恢复就是回到那个干净的时刻。分支自己不写寄存器，所以恢复点恰好是它刚进来的样子。</text>
+  <text x="30" y="444" font-size="11.5" fill="#8B5E00">要点　恢复的不是 PC 那么简单，命名状态也要一起拨回正确的时刻</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 580" width="980" height="580" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图4-1 前端全景与前后端边界</title>
+  <desc>前端分为两层：上层由分支预测器和取指目标队列FTQ决定去哪取指令，下层由取指、预译码、指令缓冲、译码负责把指令取上来并整理好。FTQ与指令缓冲是顺序前端通向乱序后端的换乘站。</desc>
+  <rect x="0" y="0" width="980" height="580" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 4-1　前端全景与前后端边界</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">前端顺序、后端乱序，中间的 FTQ 与指令缓冲是两者之间的换乘站</text>
+
+  <!-- 决策层背景 -->
+  <rect x="30" y="90" width="920" height="128" rx="12" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="1.2"/>
+  <text x="46" y="112" font-size="12" font-weight="bold" fill="#5B21B6">决策层　决定去哪取</text>
+
+  <!-- 执行层背景 -->
+  <rect x="30" y="290" width="920" height="150" rx="12" fill="#F1F8F4" stroke="#0F6E56" stroke-width="1.2"/>
+  <text x="46" y="312" font-size="12" font-weight="bold" fill="#0F6E56">执行层　把指令取上来并整理好</text>
+
+  <!-- 上层模块：预测器（右） -> FTQ（左） -->
+  <g>
+    <rect x="430" y="128" width="230" height="70" rx="9" fill="#EDE9FE" stroke="#6D5BD0" stroke-width="1.6"/>
+    <text x="545" y="156" font-size="14" font-weight="bold" fill="#4C1D95" text-anchor="middle">分支预测器</text>
+    <text x="545" y="178" font-size="11.5" fill="#5B21B6" text-anchor="middle">根据历史猜下一段地址</text>
+
+    <rect x="70" y="128" width="210" height="70" rx="9" fill="#DDD6FE" stroke="#6D5BD0" stroke-width="1.6"/>
+    <text x="175" y="156" font-size="14" font-weight="bold" fill="#4C1D95" text-anchor="middle">FTQ 取指目标队列</text>
+    <text x="175" y="178" font-size="11.5" fill="#5B21B6" text-anchor="middle">缓冲预测出的地址</text>
+
+    <!-- 预测器 -> FTQ（向左） -->
+    <line x1="430" y1="163" x2="286" y2="163" stroke="#6D5BD0" stroke-width="2"/>
+    <polygon points="286,163 298,157 298,169" fill="#6D5BD0"/>
+    <text x="358" y="154" font-size="11" fill="#5B21B6" text-anchor="middle">算出一个地址就填入队尾</text>
+  </g>
+
+  <!-- FTQ -> 取指（竖直向下） -->
+  <line x1="175" y1="198" x2="175" y2="330" stroke="#6D5BD0" stroke-width="2" stroke-dasharray="6 4"/>
+  <polygon points="175,330 169,318 181,318" fill="#6D5BD0"/>
+  <text x="190" y="266" font-size="11" fill="#5B21B6">取指按地址去取</text>
+
+  <!-- 下层模块：取指 -> 预译码 -> 指令缓冲 -> 译码 -> 后端 -->
+  <g>
+    <rect x="70" y="346" width="170" height="72" rx="9" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="155" y="374" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">取指 / ICache</text>
+    <text x="155" y="396" font-size="11" fill="#185FA5" text-anchor="middle">按地址取一个指令块</text>
+
+    <rect x="278" y="346" width="140" height="72" rx="9" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="348" y="374" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">预译码</text>
+    <text x="348" y="396" font-size="11" fill="#185FA5" text-anchor="middle">尽早识别分支</text>
+
+    <rect x="456" y="346" width="150" height="72" rx="9" fill="#B7E4CD" stroke="#0F6E56" stroke-width="1.6"/>
+    <text x="531" y="374" font-size="13" font-weight="bold" fill="#0F6E56" text-anchor="middle">指令缓冲队列</text>
+    <text x="531" y="396" font-size="11" fill="#0F6E56" text-anchor="middle">吸收速度差</text>
+
+    <rect x="644" y="346" width="120" height="72" rx="9" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="704" y="374" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">译码</text>
+    <text x="704" y="396" font-size="11" fill="#185FA5" text-anchor="middle">拆成微操作</text>
+
+    <rect x="814" y="346" width="120" height="72" rx="9" fill="#FAC775" stroke="#BA7517" stroke-width="1.6"/>
+    <text x="874" y="374" font-size="13" font-weight="bold" fill="#7a4f00" text-anchor="middle">乱序后端</text>
+    <text x="874" y="396" font-size="11" fill="#854d0e" text-anchor="middle">发射 / 执行</text>
+
+    <!-- 横向数据流 -->
+    <line x1="240" y1="382" x2="274" y2="382" stroke="#185FA5" stroke-width="2"/>
+    <polygon points="274,382 266,377 266,387" fill="#185FA5"/>
+    <line x1="418" y1="382" x2="452" y2="382" stroke="#185FA5" stroke-width="2"/>
+    <polygon points="452,382 444,377 444,387" fill="#185FA5"/>
+    <line x1="606" y1="382" x2="640" y2="382" stroke="#185FA5" stroke-width="2"/>
+    <polygon points="640,382 632,377 632,387" fill="#185FA5"/>
+    <line x1="764" y1="382" x2="810" y2="382" stroke="#BA7517" stroke-width="2"/>
+    <polygon points="810,382 802,377 802,387" fill="#BA7517"/>
+  </g>
+
+  <!-- 顺序 / 乱序分界线 -->
+  <line x1="790" y1="286" x2="790" y2="432" stroke="#A32D2D" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <text x="790" y="278" font-size="11.5" font-weight="bold" fill="#A32D2D" text-anchor="middle">顺序 / 乱序边界</text>
+
+  <!-- 底部说明 -->
+  <rect x="30" y="470" width="920" height="88" rx="10" fill="#FAFAF9" stroke="#D1D5DB" stroke-width="1.2"/>
+  <text x="50" y="497" font-size="12.5" fill="#2C2C2A">1　FTQ 让预测与取指解耦，指令缓冲让取指与后端解耦。</text>
+  <text x="50" y="520" font-size="12.5" fill="#2C2C2A">2　分界线之前次序严格按程序走；过了分界线，指令才被允许乱序执行。</text>
+  <text x="50" y="543" font-size="12.5" fill="#2C2C2A">3　后续第 5 至 7 章，就是沿着下层这条流水线逐个展开。</text>
+</svg>

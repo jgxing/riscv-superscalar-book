@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+        <entry>
+          <string>Description</string>
+          <string>第8章 uop 类型分发电路（2-4 译码器）。
+后端控制块收到一条 uop，先看它的两位类型标记 type1 type0，
+把它译成四路独热信号，分别送到四个执行去处：
+  type=00 -> to_ctrl（控制块内部/分支）
+  type=01 -> to_int （整数块）
+  type=10 -> to_fp  （浮点块）
+  type=11 -> to_mem （访存块）
+任何时刻只有一路点亮，这就是"uop 按类型分发到不同功能块"在门电路上的样子。
+2-4 译码器 = 两个 Not 产生反相信号 + 四个 And 各认一种组合。
+仿真：拨动 type1、type0，观察四路输出哪盏亮。带真值表 Testcase。
+对照教材第8章 8.2 节（四大功能块）与 8.8 节。</string>
+        </entry>
+        <entry>
+          <string>Width</string>
+          <string>4</string>
+        </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type1</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>uop 类型标记高位</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="100" y="160"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type0</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>uop 类型标记低位</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="100" y="260"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes></elementAttributes>
+      <pos x="160" y="160"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes></elementAttributes>
+      <pos x="160" y="260"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type=00</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="340" y="100"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type=01</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="340" y="180"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type=10</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="340" y="260"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>type=11</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="340" y="340"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>to_ctrl</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>送控制块内部/分支</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="480" y="110"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>to_int</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>送整数块</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="480" y="190"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>to_fp</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>送浮点块</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="480" y="270"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>to_mem</string>
+        </entry>
+
+        <entry>
+          <string>Description</string>
+          <string>送访存块</string>
+        </entry>
+
+        </elementAttributes>
+      <pos x="480" y="350"/>
+      <rotate>0</rotate>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>type1 type0 to_ctrl to_int to_fp to_mem
+0   0   1   0   0   0
+0   1   0   1   0   0
+1   0   0   0   1   0
+1   1   0   0   0   1
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="440"/>
+      <rotate>0</rotate>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="100" y="160"/>
+      <p2 x="160" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="260"/>
+      <p2 x="160" y="260"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="160"/>
+      <p2 x="340" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="160"/>
+      <p2 x="340" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="260"/>
+      <p2 x="340" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="260"/>
+      <p2 x="340" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="160"/>
+      <p2 x="340" y="260"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="160"/>
+      <p2 x="340" y="340"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="260"/>
+      <p2 x="340" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="260"/>
+      <p2 x="340" y="360"/>
+    </wire>
+    <wire>
+      <p1 x="370" y="110"/>
+      <p2 x="480" y="110"/>
+    </wire>
+    <wire>
+      <p1 x="370" y="190"/>
+      <p2 x="480" y="190"/>
+    </wire>
+    <wire>
+      <p1 x="370" y="270"/>
+      <p2 x="480" y="270"/>
+    </wire>
+    <wire>
+      <p1 x="370" y="350"/>
+      <p2 x="480" y="350"/>
+    </wire>
+  </wires>
+</circuit>

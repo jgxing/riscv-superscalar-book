@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="1000" height="450" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图9-2 空闲表的分配与回收</title>
+  <desc>空闲物理寄存器池随重命名分配而减少，随提交回收而增加。旧物理寄存器在覆盖发生时不能立刻回收，要等到覆盖它的那条 uop 提交之后才回到空闲表。</desc>
+  <rect x="0" y="0" width="1000" height="450" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 9-2　空闲表的分配与回收</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">分配发生在重命名站，回收要等 ROB 提交，两头速度不同就用队列隔开</text>
+
+  <!-- 上方: 两条通路 -->
+  <rect x="28" y="88" width="230" height="92" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+  <text x="143" y="116" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">重命名站</text>
+  <text x="143" y="140" font-size="11.5" fill="#185FA5" text-anchor="middle">每条写寄存器的 uop</text>
+  <text x="143" y="161" font-size="11.5" fill="#185FA5" text-anchor="middle">从队头取一个物理号</text>
+
+  <rect x="385" y="88" width="230" height="126" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.5"/>
+  <text x="500" y="116" font-size="13" font-weight="bold" fill="#92400E" text-anchor="middle">空闲表</text>
+  <g font-size="12" fill="#92400E">
+    <rect x="407" y="132" width="46" height="34" rx="5" fill="#ffffff" stroke="#D97706"/>
+    <text x="430" y="154" text-anchor="middle">P32</text>
+    <rect x="459" y="132" width="46" height="34" rx="5" fill="#ffffff" stroke="#D97706"/>
+    <text x="482" y="154" text-anchor="middle">P33</text>
+    <rect x="511" y="132" width="46" height="34" rx="5" fill="#ffffff" stroke="#D97706"/>
+    <text x="534" y="154" text-anchor="middle">P34</text>
+    <text x="574" y="154" font-size="13">…</text>
+  </g>
+  <text x="500" y="195" font-size="11.5" fill="#B45309" text-anchor="middle">head 出队，tail 入队，判满多留一位</text>
+
+  <rect x="742" y="88" width="230" height="92" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+  <text x="857" y="116" font-size="13" font-weight="bold" fill="#0C447C" text-anchor="middle">ROB 提交</text>
+  <text x="857" y="140" font-size="11.5" fill="#185FA5" text-anchor="middle">提交时带上 old_pd</text>
+  <text x="857" y="161" font-size="11.5" fill="#185FA5" text-anchor="middle">把旧物理号放回队尾</text>
+
+  <line x1="258" y1="140" x2="383" y2="140" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="383,140 375,136 375,144" fill="#185FA5"/>
+  <text x="320" y="131" font-size="10.5" fill="#185FA5" text-anchor="middle">分配</text>
+  <line x1="742" y1="140" x2="617" y2="140" stroke="#185FA5" stroke-width="1.8"/>
+  <polygon points="617,140 625,136 625,144" fill="#185FA5"/>
+  <text x="680" y="131" font-size="10.5" fill="#185FA5" text-anchor="middle">回收</text>
+
+  <!-- 下方时间线 -->
+  <text x="30" y="254" font-size="13" font-weight="bold" fill="#1f2937">一次覆盖的时间线</text>
+
+  <g font-size="11.5" fill="#374151">
+    <rect x="30" y="270" width="940" height="34" rx="6" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="44" y="292">1　U1 写 R1，拿走 P10</text>
+    <text x="330" y="292">RAT[R1]=P10，old_pd=P1 写进 ROB</text>
+    <text x="760" y="292" fill="#185FA5">空闲数 31</text>
+
+    <rect x="30" y="310" width="940" height="34" rx="6" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="44" y="332">2　U2 读 R1，记下 P10</text>
+    <text x="330" y="332">U2 还在等 P10 广播</text>
+    <text x="760" y="332" fill="#185FA5">空闲数 31</text>
+
+    <rect x="30" y="350" width="940" height="34" rx="6" fill="#FFF4E5" stroke="#D97706" stroke-width="1.2"/>
+    <text x="44" y="372">3　U4 写 R1，拿走 P11</text>
+    <text x="330" y="372">RAT[R1]=P11，old_pd=P10 写进 ROB</text>
+    <text x="760" y="372" fill="#B45309">P10 暂不回收</text>
+
+    <rect x="30" y="390" width="940" height="34" rx="6" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="44" y="412">4　U4 提交</text>
+    <text x="330" y="412">这时才把 P10 放回空闲表</text>
+    <text x="760" y="412" fill="#185FA5">空闲数加一</text>
+  </g>
+
+  <text x="30" y="444" font-size="11" fill="#8B5E00">要点　提前回收 P10，还在等它的 U2 就会读到被别人改过的物理寄存器</text>
+</svg>

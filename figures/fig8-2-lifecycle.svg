@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图8-2 一条uop的六个站点</title>
+  <desc>一条uop从进入到提交依次经过六个站点:重命名、分派、发射、执行、写回、提交。前两站重命名和分派按程序顺序,中间三站发射、执行、写回可以乱序,最后的提交又回到按序。中间的乱序段用橙色底标出,两端的按序段用蓝色底标出。图下方对应着每一站的核心动作和后面对应的章节号。</desc>
+  <rect x="0" y="0" width="1000" height="430" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 8-2　一条 uop 的六个站点</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">重命名与提交按序，中间的发射、执行、写回乱序——这块底色就是隧道</text>
+
+  <!-- 背景分区: 按序 | 乱序 | 按序 -->
+  <rect x="28" y="88" width="332" height="150" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.2"/>
+  <rect x="368" y="88" width="360" height="150" rx="12" fill="#FFF4E5" stroke="#D97706" stroke-width="1.4"/>
+  <rect x="736" y="88" width="236" height="150" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.2"/>
+
+  <text x="194" y="110" font-size="11.5" font-weight="bold" fill="#0C447C" text-anchor="middle">按序段</text>
+  <text x="548" y="110" font-size="11.5" font-weight="bold" fill="#B45309" text-anchor="middle">乱序段（隧道里可以超车）</text>
+  <text x="854" y="110" font-size="11.5" font-weight="bold" fill="#0C447C" text-anchor="middle">按序段</text>
+
+  <!-- 六个站点方框 -->
+  <!-- 1 重命名 -->
+  <g>
+    <rect x="42" y="130" width="88" height="76" rx="9" fill="#ffffff" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="86" y="154" font-size="11" fill="#185FA5" text-anchor="middle">第 1 站</text>
+    <text x="86" y="178" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">重命名</text>
+    <text x="86" y="197" font-size="10" fill="#185FA5" text-anchor="middle">换物理名</text>
+  </g>
+  <!-- 2 分派 -->
+  <g>
+    <rect x="150" y="130" width="88" height="76" rx="9" fill="#ffffff" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="194" y="154" font-size="11" fill="#185FA5" text-anchor="middle">第 2 站</text>
+    <text x="194" y="178" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">分派</text>
+    <text x="194" y="197" font-size="10" fill="#185FA5" text-anchor="middle">登记入场</text>
+  </g>
+  <!-- 3 发射 -->
+  <g>
+    <rect x="382" y="130" width="98" height="76" rx="9" fill="#ffffff" stroke="#D97706" stroke-width="1.8"/>
+    <text x="431" y="154" font-size="11" fill="#B45309" text-anchor="middle">第 3 站</text>
+    <text x="431" y="178" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">发射</text>
+    <text x="431" y="197" font-size="10" fill="#B45309" text-anchor="middle">就绪就走</text>
+  </g>
+  <!-- 4 执行 -->
+  <g>
+    <rect x="500" y="130" width="98" height="76" rx="9" fill="#ffffff" stroke="#D97706" stroke-width="1.8"/>
+    <text x="549" y="154" font-size="11" fill="#B45309" text-anchor="middle">第 4 站</text>
+    <text x="549" y="178" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">执行</text>
+    <text x="549" y="197" font-size="10" fill="#B45309" text-anchor="middle">功能件运算</text>
+  </g>
+  <!-- 5 写回 -->
+  <g>
+    <rect x="618" y="130" width="98" height="76" rx="9" fill="#ffffff" stroke="#D97706" stroke-width="1.8"/>
+    <text x="667" y="154" font-size="11" fill="#B45309" text-anchor="middle">第 5 站</text>
+    <text x="667" y="178" font-size="14" font-weight="bold" fill="#92400E" text-anchor="middle">写回</text>
+    <text x="667" y="197" font-size="10" fill="#B45309" text-anchor="middle">广播结果</text>
+  </g>
+  <!-- 6 提交 -->
+  <g>
+    <rect x="750" y="130" width="98" height="76" rx="9" fill="#ffffff" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="799" y="154" font-size="11" fill="#185FA5" text-anchor="middle">第 6 站</text>
+    <text x="799" y="178" font-size="14" font-weight="bold" fill="#0C447C" text-anchor="middle">提交</text>
+    <text x="799" y="197" font-size="10" fill="#185FA5" text-anchor="middle">按序交差</text>
+  </g>
+
+  <!-- 流程箭头 -->
+  <line x1="130" y1="168" x2="148" y2="168" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="148,168 141,164 141,172" fill="#334155"/>
+  <line x1="238" y1="168" x2="380" y2="168" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="380,168 372,164 372,172" fill="#334155"/>
+  <line x1="480" y1="168" x2="498" y2="168" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="498,168 491,164 491,172" fill="#334155"/>
+  <line x1="598" y1="168" x2="616" y2="168" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="616,168 609,164 609,172" fill="#334155"/>
+  <line x1="716" y1="168" x2="748" y2="168" stroke="#334155" stroke-width="1.8"/>
+  <polygon points="748,168 740,164 740,172" fill="#334155"/>
+
+  <!-- 前端来 / 后端出 -->
+  <text x="34" y="228" font-size="10.5" fill="#64748B">← 前端译码送来的 uop</text>
+  <text x="850" y="228" font-size="10.5" fill="#64748B">结果送回寄存器堆 →</text>
+
+  <!-- 对应的章节 -->
+  <text x="30" y="278" font-size="13" font-weight="bold" fill="#1f2937">每一站在后面哪一章展开</text>
+  <g font-size="11" fill="#374151">
+    <rect x="30" y="294" width="150" height="46" rx="7" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="105" y="313" text-anchor="middle">第 9 章</text>
+    <text x="105" y="330" text-anchor="middle" font-size="10" fill="#64748B">重命名</text>
+
+    <rect x="192" y="294" width="150" height="46" rx="7" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="267" y="313" text-anchor="middle">第 10 章</text>
+    <text x="267" y="330" text-anchor="middle" font-size="10" fill="#64748B">发射与调度</text>
+
+    <rect x="354" y="294" width="150" height="46" rx="7" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="429" y="313" text-anchor="middle">第 11 / 12 章</text>
+    <text x="429" y="330" text-anchor="middle" font-size="10" fill="#64748B">执行 / 访存</text>
+
+    <rect x="516" y="294" width="150" height="46" rx="7" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="591" y="313" text-anchor="middle">第 11 章</text>
+    <text x="591" y="330" text-anchor="middle" font-size="10" fill="#64748B">写回与旁路</text>
+
+    <rect x="678" y="294" width="180" height="46" rx="7" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="768" y="313" text-anchor="middle">第 13 章</text>
+    <text x="768" y="330" text-anchor="middle" font-size="10" fill="#64748B">ROB 与精确异常</text>
+  </g>
+
+  <text x="30" y="380" font-size="11" fill="#8B5E00">第 14 章会把预测错误和异常时的恢复单独讲透，那是一次把前后端串起来的闭环</text>
+  <text x="30" y="404" font-size="11" fill="#5F5E5A">关键　重命名和提交守住程序顺序，中间的乱序段才敢放心超车</text>
+</svg>

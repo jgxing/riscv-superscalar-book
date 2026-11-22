@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520" width="940" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图2-2 顺序无害，乱序要命</title>
+  <desc>同样两条写 R1 的 WAW 指令。顺序执行时 I1 先写 I2 后写，最终留下 I2 的新值，结果正确；乱序时快的 I2 抢先写回、慢的 I1 后写覆盖，最终留下 I1 的旧值，结果错误。</desc>
+  <rect x="0" y="0" width="940" height="520" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 2-2　顺序无害，乱序要命</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">以 WAW 为例：I1 是慢乘法写 R1，I2 是快加法写 R1，程序要求 I2 的结果最后留下</text>
+
+  <!-- 左侧：顺序执行 -->
+  <g>
+    <rect x="30" y="90" width="430" height="330" rx="12" fill="#F1F8F4" stroke="#0F6E56" stroke-width="1.4"/>
+    <text x="245" y="120" font-size="15" font-weight="bold" fill="#0F6E56" text-anchor="middle">顺序执行</text>
+
+    <text x="50" y="156" font-size="12" fill="#2C2C2A" font-family="Consolas,monospace">I1  MUL  R1, ...   （3 拍）</text>
+    <text x="50" y="180" font-size="12" fill="#2C2C2A" font-family="Consolas,monospace">I2  ADD  R1, ...   （1 拍）</text>
+
+    <!-- 写回时间线 -->
+    <text x="50" y="220" font-size="12" fill="#5F5E5A">时间 →</text>
+    <line x1="110" y1="250" x2="440" y2="250" stroke="#9CA3AF" stroke-width="1.4"/>
+
+    <rect x="120" y="238" width="120" height="24" rx="5" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="180" y="255" font-size="11" fill="#0C447C" text-anchor="middle">I1 写 R1=旧</text>
+
+    <rect x="300" y="238" width="120" height="24" rx="5" fill="#B7E4CD" stroke="#0F6E56"/>
+    <text x="360" y="255" font-size="11" fill="#0F6E56" text-anchor="middle">I2 写 R1=新</text>
+
+    <rect x="50" y="300" width="390" height="88" rx="8" fill="#fff" stroke="#0F6E56" stroke-dasharray="4 3"/>
+    <text x="70" y="328" font-size="13" font-weight="bold" fill="#0F6E56">R1 最终 = I2 的新值　正确</text>
+    <text x="70" y="354" font-size="12" fill="#2C2C2A">I1 先算完先写，I2 后写把旧值覆盖掉。</text>
+    <text x="70" y="376" font-size="12" fill="#2C2C2A">按序写回天然满足 WAW，硬件什么都不用做。</text>
+  </g>
+
+  <!-- 右侧：乱序执行 -->
+  <g>
+    <rect x="480" y="90" width="430" height="330" rx="12" fill="#FCECEC" stroke="#A32D2D" stroke-width="1.4"/>
+    <text x="695" y="120" font-size="15" font-weight="bold" fill="#A32D2D" text-anchor="middle">乱序执行（未处理伪相关）</text>
+
+    <text x="500" y="156" font-size="12" fill="#2C2C2A" font-family="Consolas,monospace">I1  MUL  R1, ...   （慢）</text>
+    <text x="500" y="180" font-size="12" fill="#2C2C2A" font-family="Consolas,monospace">I2  ADD  R1, ...   （快，抢先）</text>
+
+    <text x="500" y="220" font-size="12" fill="#5F5E5A">时间 →</text>
+    <line x1="560" y1="250" x2="890" y2="250" stroke="#9CA3AF" stroke-width="1.4"/>
+
+    <rect x="570" y="238" width="120" height="24" rx="5" fill="#FAC775" stroke="#BA7517"/>
+    <text x="630" y="255" font-size="11" fill="#7a4f00" text-anchor="middle">I2 抢先写 R1=新</text>
+
+    <rect x="750" y="238" width="120" height="24" rx="5" fill="#F7C1C1" stroke="#A32D2D"/>
+    <text x="810" y="255" font-size="11" fill="#7a2020" text-anchor="middle">I1 后写 R1=旧</text>
+
+    <rect x="500" y="300" width="390" height="88" rx="8" fill="#fff" stroke="#A32D2D" stroke-dasharray="4 3"/>
+    <text x="520" y="328" font-size="13" font-weight="bold" fill="#A32D2D">R1 最终 = I1 的旧值　错误</text>
+    <text x="520" y="354" font-size="12" fill="#2C2C2A">慢的 I1 结果后写回来，把 I2 的新值盖掉了。</text>
+    <text x="520" y="376" font-size="12" fill="#2C2C2A">队伍一打散，就得靠重命名把两次写拆成不同名字。</text>
+  </g>
+
+  <text x="30" y="458" font-size="12.5" fill="#3C3489">WAR 的情形类似：若 I2 先写 R1，本该读旧值的 I1 就会读到新值。</text>
+  <text x="30" y="484" font-size="12" fill="#6B7280">顺序机器靠排队免费保证正确性，乱序机器必须自己把伪相关处理掉。</text>
+</svg>

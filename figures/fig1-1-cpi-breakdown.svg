@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图1-1 CPI 的四个组成部分</title>
+  <desc>把 CPI 拆成理想执行加三类冒险停顿的堆叠柱状图。理想值 1.00，结构冒险 0.06，数据冒险 0.18，控制冒险 0.26，合计 CPI=1.50，IPC 约 0.67。</desc>
+  <rect x="0" y="0" width="900" height="520" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 1-1　CPI 的四个组成部分</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">以一段 1000 条指令的程序为例，各类停顿折算到每条指令上的周期数</text>
+
+  <!-- 坐标轴 -->
+  <line x1="130" y1="410" x2="130" y2="90" stroke="#9CA3AF" stroke-width="1.4"/>
+  <line x1="130" y1="410" x2="360" y2="410" stroke="#9CA3AF" stroke-width="1.4"/>
+  <text x="118" y="414" font-size="11" fill="#9CA3AF" text-anchor="end">0</text>
+  <text x="118" y="214" font-size="11" fill="#9CA3AF" text-anchor="end">1.0</text>
+  <text x="118" y="94" font-size="11" fill="#9CA3AF" text-anchor="end">1.5</text>
+
+  <!-- 堆叠柱：理想1.00→200px, 结构0.06→12px, 数据0.18→36px, 控制0.26→52px -->
+  <rect x="180" y="210" width="120" height="200" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.2"/>
+  <rect x="180" y="198" width="120" height="12" fill="#D3D1C8" stroke="#5F5E5A" stroke-width="1"/>
+  <rect x="180" y="162" width="120" height="36" fill="#FAC775" stroke="#BA7517" stroke-width="1"/>
+  <rect x="180" y="110" width="120" height="52" fill="#F7C1C1" stroke="#A32D2D" stroke-width="1"/>
+
+  <!-- 柱内数值 -->
+  <text x="240" y="315" font-size="16" font-weight="bold" fill="#0C447C" text-anchor="middle">1.00</text>
+  <text x="240" y="208" font-size="10.5" fill="#3a3a38" text-anchor="middle">0.06</text>
+  <text x="240" y="185" font-size="11" fill="#7a4f00" text-anchor="middle">0.18</text>
+  <text x="240" y="140" font-size="12" font-weight="bold" fill="#7a2020" text-anchor="middle">0.26</text>
+
+  <!-- 总量标注 -->
+  <line x1="300" y1="110" x2="340" y2="110" stroke="#1f2937" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="348" y="108" font-size="13" font-weight="bold" fill="#1f2937">CPI = 1.50</text>
+  <text x="348" y="128" font-size="12" fill="#B45309">IPC ≈ 0.67</text>
+
+  <!-- 右侧账本表 -->
+  <g font-size="12.5">
+    <rect x="470" y="100" width="390" height="310" rx="10" fill="#FAFAF8" stroke="#D3D1C8" stroke-width="1.2"/>
+    <text x="490" y="128" font-size="14" font-weight="bold" fill="#1f2937">四类组成</text>
+
+    <rect x="490" y="146" width="14" height="14" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="514" y="158" fill="#2C2C2A">理想执行</text>
+    <text x="840" y="158" fill="#0C447C" text-anchor="end">1.00</text>
+
+    <rect x="490" y="186" width="14" height="14" fill="#D3D1C8" stroke="#5F5E5A"/>
+    <text x="514" y="198" fill="#2C2C2A">结构冒险　资源不够用</text>
+    <text x="840" y="198" fill="#3a3a38" text-anchor="end">0.06</text>
+
+    <rect x="490" y="226" width="14" height="14" fill="#FAC775" stroke="#BA7517"/>
+    <text x="514" y="238" fill="#2C2C2A">数据冒险　真相关只能等</text>
+    <text x="840" y="238" fill="#7a4f00" text-anchor="end">0.18</text>
+
+    <rect x="490" y="266" width="14" height="14" fill="#F7C1C1" stroke="#A32D2D"/>
+    <text x="514" y="278" fill="#2C2C2A">控制冒险　分支猜错冲刷</text>
+    <text x="840" y="278" fill="#7a2020" text-anchor="end">0.26</text>
+
+    <line x1="490" y1="298" x2="840" y2="298" stroke="#D3D1C8" stroke-width="1"/>
+    <text x="514" y="322" font-weight="bold" fill="#1f2937">合计</text>
+    <text x="840" y="322" font-weight="bold" fill="#1f2937" text-anchor="end">1.50</text>
+
+    <text x="490" y="356" font-size="12" fill="#5F5E5A">控制冒险占大头，深流水线里尤其明显</text>
+    <text x="490" y="378" font-size="12" fill="#5F5E5A">只消掉一类，整体收益受阿姆达尔定律限制</text>
+  </g>
+
+  <text x="30" y="470" font-size="12" fill="#6B7280">数字为教学示例，不同程序的比例差别很大；趋势比具体数值更重要。</text>
+  <text x="30" y="492" font-size="12" fill="#6B7280">CPI = 1 + 结构冒险停顿 + 数据冒险停顿 + 控制冒险停顿</text>
+</svg>

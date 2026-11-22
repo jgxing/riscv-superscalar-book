@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 460" width="980" height="460" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图6-3 指令缓冲队列的结构</title>
+  <desc>指令缓冲队列是一排先进先出的格子，每个格子存一个包裹：里面是指令字，外面贴着预译码位标签。取指单元从队尾tail写入包裹，译码与后端从队头head读出包裹。写指针与读指针各自前进，两者关系指示队列空满。指令字与预译码位必须同进同出，不能拆开。</desc>
+  <rect x="0" y="0" width="980" height="460" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 6-3　指令缓冲队列的结构</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">每个格子存一个包裹，指令字和预译码位同进同出</text>
+
+  <!-- 队列格子 -->
+  <g>
+    <!-- 格子 0 (head) -->
+    <rect x="120" y="120" width="130" height="120" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.8"/>
+    <text x="185" y="146" font-size="11" fill="#185FA5" text-anchor="middle">格子 0</text>
+    <rect x="134" y="158" width="102" height="34" rx="5" fill="#ffffff" stroke="#7FB2DC" stroke-width="1"/>
+    <text x="185" y="180" font-size="10.5" fill="#0C447C" text-anchor="middle">指令字 32 位</text>
+    <rect x="134" y="200" width="102" height="28" rx="5" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1"/>
+    <text x="185" y="218" font-size="10.5" fill="#7D6608" text-anchor="middle">预译码位 4 位</text>
+
+    <!-- 格子 1 -->
+    <rect x="266" y="120" width="130" height="120" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="331" y="146" font-size="11" fill="#185FA5" text-anchor="middle">格子 1</text>
+    <rect x="280" y="158" width="102" height="34" rx="5" fill="#ffffff" stroke="#7FB2DC" stroke-width="1"/>
+    <text x="331" y="180" font-size="10.5" fill="#0C447C" text-anchor="middle">指令字 32 位</text>
+    <rect x="280" y="200" width="102" height="28" rx="5" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1"/>
+    <text x="331" y="218" font-size="10.5" fill="#7D6608" text-anchor="middle">预译码位 4 位</text>
+
+    <!-- 格子 2 -->
+    <rect x="412" y="120" width="130" height="120" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="477" y="146" font-size="11" fill="#185FA5" text-anchor="middle">格子 2</text>
+    <rect x="426" y="158" width="102" height="34" rx="5" fill="#ffffff" stroke="#7FB2DC" stroke-width="1"/>
+    <text x="477" y="180" font-size="10.5" fill="#0C447C" text-anchor="middle">指令字 32 位</text>
+    <rect x="426" y="200" width="102" height="28" rx="5" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1"/>
+    <text x="477" y="218" font-size="10.5" fill="#7D6608" text-anchor="middle">预译码位 4 位</text>
+
+    <!-- 省略 -->
+    <text x="600" y="190" font-size="26" fill="#94A3B8" text-anchor="middle">···</text>
+
+    <!-- 格子 7 (tail) -->
+    <rect x="658" y="120" width="130" height="120" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="723" y="146" font-size="11" fill="#185FA5" text-anchor="middle">格子 7</text>
+    <rect x="672" y="158" width="102" height="34" rx="5" fill="#ffffff" stroke="#7FB2DC" stroke-width="1"/>
+    <text x="723" y="180" font-size="10.5" fill="#0C447C" text-anchor="middle">指令字 32 位</text>
+    <rect x="672" y="200" width="102" height="28" rx="5" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1"/>
+    <text x="723" y="218" font-size="10.5" fill="#7D6608" text-anchor="middle">预译码位 4 位</text>
+  </g>
+
+  <!-- head 指针 -->
+  <line x1="185" y1="106" x2="185" y2="86" stroke="#0F6E56" stroke-width="2"/>
+  <polygon points="185,120 179,108 191,108" fill="#0F6E56"/>
+  <text x="185" y="80" font-size="12" font-weight="bold" fill="#0F6E56" text-anchor="middle">head 读指针</text>
+
+  <!-- tail 指针 -->
+  <line x1="723" y1="240" x2="723" y2="266" stroke="#6D5BD0" stroke-width="2"/>
+  <polygon points="723,240 717,252 729,252" fill="#6D5BD0"/>
+  <text x="723" y="284" font-size="12" font-weight="bold" fill="#5B21B6" text-anchor="middle">tail 写指针</text>
+
+  <!-- 写入方 -->
+  <g>
+    <rect x="820" y="132" width="140" height="60" rx="8" fill="#DDD6FE" stroke="#6D5BD0" stroke-width="1.6"/>
+    <text x="890" y="158" font-size="12" font-weight="bold" fill="#4C1D95" text-anchor="middle">取指单元</text>
+    <text x="890" y="178" font-size="10.5" fill="#5B21B6" text-anchor="middle">写入包裹</text>
+    <line x1="820" y1="162" x2="792" y2="162" stroke="#6D5BD0" stroke-width="1.8"/>
+    <polygon points="792,162 802,157 802,167" fill="#6D5BD0"/>
+  </g>
+
+  <!-- 读出方 -->
+  <g>
+    <rect x="820" y="216" width="140" height="60" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+    <text x="890" y="242" font-size="12" font-weight="bold" fill="#0C447C" text-anchor="middle">译码 / 后端</text>
+    <text x="890" y="262" font-size="10.5" fill="#185FA5" text-anchor="middle">读出包裹</text>
+    <line x1="820" y1="246" x2="792" y2="246" stroke="#185FA5" stroke-width="1.8"/>
+    <polygon points="792,246 802,241 802,251" fill="#185FA5"/>
+  </g>
+
+  <!-- 底部说明 -->
+  <rect x="28" y="312" width="452" height="120" rx="10" fill="#FEF5F4" stroke="#E6B0AA" stroke-width="1.2"/>
+  <text x="46" y="338" font-size="12.5" font-weight="bold" fill="#922B21">为什么要同进同出</text>
+  <text x="46" y="362" font-size="11.5" fill="#7B241C">如果指令字和预译码位写进了不同的格子，</text>
+  <text x="46" y="384" font-size="11.5" fill="#7B241C">就会出现指令是分支、边带位说不是的错位。</text>
+  <text x="46" y="410" font-size="11.5" fill="#7B241C">后端拿着错的分支信息做决定，后果比 FTQ</text>
+  <text x="46" y="428" font-size="11.5" fill="#7B241C">存错地址严重得多。</text>
+
+  <rect x="500" y="312" width="452" height="120" rx="10" fill="#F1F8F4" stroke="#A9D5C0" stroke-width="1.2"/>
+  <text x="518" y="338" font-size="12.5" font-weight="bold" fill="#0F6E56">指针判空判满</text>
+  <text x="518" y="362" font-size="11.5" fill="#2C2C2A">head == tail　　队列为空</text>
+  <text x="518" y="384" font-size="11.5" fill="#2C2C2A">最高位不同、其余位相同　　队列为满</text>
+  <text x="518" y="410" font-size="11.5" fill="#2C2C2A">多留一位指针区分空满；索引数组时</text>
+  <text x="518" y="428" font-size="11.5" fill="#2C2C2A">只取低位，别用完整指针越界。</text>
+</svg>

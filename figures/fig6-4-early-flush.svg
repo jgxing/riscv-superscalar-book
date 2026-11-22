@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 480" width="980" height="480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图6-4 预译码触发的提前冲刷</title>
+  <desc>一次预译码提前发现预测错误并冲刷的过程。ICache取出jal指令并交给预译码；预译码认出这是无条件跳转；检查逻辑发现预译码的必跳结论与预测的不跳结论矛盾；当拍发出冲刷信号，清掉FTQ中的错误地址和指令缓冲中的错误指令；取指从正确目标重新开始。整个过程在取指阶段结束，错误指令没有流进后端。</desc>
+  <rect x="0" y="0" width="980" height="480" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 6-4　预译码触发的提前冲刷</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">以一条被猜错的 jal 为例，错误在取指阶段就被拦下</text>
+
+  <!-- 步骤 1 -->
+  <g>
+    <circle cx="60" cy="128" r="16" fill="#185FA5"/>
+    <text x="60" y="134" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+    <rect x="90" y="102" width="860" height="52" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.4"/>
+    <text x="108" y="125" font-size="12.5" font-weight="bold" fill="#0C447C">ICache 取出 jal 指令，同时交给预译码</text>
+    <text x="108" y="143" font-size="11.5" fill="#185FA5">预测器这一拍猜的是不跳，沿着顺序路径继续取指</text>
+  </g>
+
+  <!-- 步骤 2 -->
+  <g>
+    <circle cx="60" cy="198" r="16" fill="#D4AC0D"/>
+    <text x="60" y="204" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+    <rect x="90" y="172" width="860" height="52" rx="8" fill="#FEF9E7" stroke="#D4AC0D" stroke-width="1.4"/>
+    <text x="108" y="195" font-size="12.5" font-weight="bold" fill="#7D6608">预译码认出这是无条件跳转，记下分支类型</text>
+    <text x="108" y="213" font-size="11.5" fill="#9A7D0A">指令本身就能判定必跳，不需要等寄存器值</text>
+  </g>
+
+  <!-- 步骤 3 -->
+  <g>
+    <circle cx="60" cy="268" r="16" fill="#C0392B"/>
+    <text x="60" y="274" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+    <rect x="90" y="242" width="860" height="52" rx="8" fill="#FCE8E6" stroke="#C0392B" stroke-width="1.8"/>
+    <text x="108" y="265" font-size="12.5" font-weight="bold" fill="#922B21">检查逻辑发现矛盾　预译码说必跳，预测说不该跳</text>
+    <text x="108" y="283" font-size="11.5" fill="#A93226">当拍触发冲刷信号</text>
+  </g>
+
+  <!-- 步骤 4 -->
+  <g>
+    <circle cx="60" cy="338" r="16" fill="#C0392B"/>
+    <text x="60" y="344" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+    <rect x="90" y="312" width="860" height="52" rx="8" fill="#FADBD8" stroke="#C0392B" stroke-width="1.4"/>
+    <text x="108" y="335" font-size="12.5" font-weight="bold" fill="#922B21">FTQ 里的错误地址被清掉，指令缓冲里的错误指令被作废</text>
+    <text x="108" y="353" font-size="11.5" fill="#A93226">这些错误指令还没来得及进入后端</text>
+  </g>
+
+  <!-- 步骤 5 -->
+  <g>
+    <circle cx="60" cy="408" r="16" fill="#0F6E56"/>
+    <text x="60" y="414" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+    <rect x="90" y="382" width="860" height="52" rx="8" fill="#D5F5E3" stroke="#0F6E56" stroke-width="1.4"/>
+    <text x="108" y="405" font-size="12.5" font-weight="bold" fill="#0E6655">取指从 jal 的正确目标重新开始</text>
+    <text x="108" y="423" font-size="11.5" fill="#0F6E56">整件事在取指阶段就结束了，不需要惊动后端</text>
+  </g>
+
+  <!-- 底部说明 -->
+  <rect x="90" y="450" width="860" height="22" rx="6" fill="#F5F3FF"/>
+  <text x="520" y="465" font-size="11.5" fill="#5B21B6" text-anchor="middle">对比　没有预译码时，这条错误要等 jal 执行完才发现，中间取回的指令白带一趟还要专门冲刷</text>
+</svg>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第5章 2 位饱和计数器的状态边界检测单元。
+计数器加一到 11、减一到 00 就饱和不再变化，判断的关键是把当前状态与边界值比较。
+2 位状态要逐位比较：本电路画的是其中一位的比较——输入 state_bit（当前状态的一位）
+与 bound_bit（边界值 11 或 00 的对应位），输出这一位的关系 state_lt_bound、
+bit_match、state_gt_bound。
+把两位的 bit_match 相与，全为 1 就说明状态已到达边界（该饱和了）。
+仿真：拨动两个输入，观察相等时 bit_match=1。
+对照教材第5章 5.4 节（2 位饱和计数器）与 5.10 节。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>4</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>当前计数器状态 state 的其中一位（s1 或 s0）。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>state_bit</string>
+        </entry>
+      </elementAttributes>
+      <pos x="160" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>边界值的对应位：检测上边界 11 时接 1，检测下边界 00 时接 0。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>bound_bit</string>
+        </entry>
+      </elementAttributes>
+      <pos x="160" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="200" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="200" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="280" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="280" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NOr</elementName>
+      <elementAttributes/>
+      <pos x="400" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>state 这一位小于边界位</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>state_lt_bound</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>bit_match=1 表示这一位状态与边界位相等。各位都相等即状态到达饱和边界。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>bit_match</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>state 这一位大于边界位</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>state_gt_bound</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>state_bit bound_bit state_lt_bound bit_match state_gt_bound
+0   0   0   1   0
+0   1   1   0   0
+1   0   0   0   1
+1   1   0   1   0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="460" y="260"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="180" y="140"/>
+      <p2 x="260" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="180"/>
+      <p2 x="260" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="480" y="160"/>
+      <p2 x="500" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="100"/>
+      <p2 x="180" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="240" y="100"/>
+      <p2 x="280" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="100"/>
+      <p2 x="500" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="100"/>
+      <p2 x="200" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="180"/>
+      <p2 x="280" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="180"/>
+      <p2 x="400" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="120"/>
+      <p2 x="360" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="340" y="200"/>
+      <p2 x="360" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="160" y="220"/>
+      <p2 x="180" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="240" y="220"/>
+      <p2 x="280" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="220"/>
+      <p2 x="500" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="220"/>
+      <p2 x="200" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="140"/>
+      <p2 x="280" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="140"/>
+      <p2 x="400" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="100"/>
+      <p2 x="180" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="180"/>
+      <p2 x="180" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="100"/>
+      <p2 x="360" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="180"/>
+      <p2 x="360" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="120"/>
+      <p2 x="360" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="200"/>
+      <p2 x="360" y="220"/>
+    </wire>
+  </wires>
+</circuit>

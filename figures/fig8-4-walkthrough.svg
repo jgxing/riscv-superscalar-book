@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="1000" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图8-4 一段uop流走通六站</title>
+  <desc>四条uop在后端六站的流动。U1乘法写R1拿到P10,U4也写R1拿到P11,WAW化解。U2依赖U1,挂在发射队列等P10广播。U3操作数就绪,越过U2先执行先写回。提交时按顺序:U1算完先提交,再U2、U3、U4,外部看到的仍是原始顺序。</desc>
+  <rect x="0" y="0" width="1000" height="520" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 8-4　一段 uop 流走通六站</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">U3 越过还在等乘法的 U2 先执行、先写回，但提交仍按原始顺序</text>
+
+  <!-- 四条 uop 说明 -->
+  <g font-size="11">
+    <rect x="30" y="82" width="940" height="66" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+    <text x="46" y="104" font-size="11" font-weight="bold" fill="#334155">U1  MUL R1, R2, R3　慢</text>
+    <text x="46" y="124" font-size="10.5" fill="#64748B">写 R1 → P10</text>
+    <text x="270" y="104" font-size="11" font-weight="bold" fill="#334155">U2  ADD R4, R1, R5</text>
+    <text x="270" y="124" font-size="10.5" fill="#64748B">依赖 U1，等 P10</text>
+    <text x="500" y="104" font-size="11" font-weight="bold" fill="#334155">U3  ADD R6, R7, R8</text>
+    <text x="500" y="124" font-size="10.5" fill="#64748B">无依赖，可立刻算</text>
+    <text x="730" y="104" font-size="11" font-weight="bold" fill="#334155">U4  ADD R1, R9, R10</text>
+    <text x="730" y="124" font-size="10.5" fill="#64748B">也写 R1 → P11（WAW）</text>
+  </g>
+
+  <!-- 阶段表头 -->
+  <g font-size="11.5" font-weight="bold" fill="#1f2937" text-anchor="middle">
+    <text x="120" y="176">重命名</text>
+    <text x="330" y="176">分派 · 发射队列</text>
+    <text x="560" y="176">执行 · 乱序</text>
+    <text x="790" y="176">提交 · 按序</text>
+  </g>
+  <line x1="30" y1="184" x2="970" y2="184" stroke="#E2E8F0"/>
+
+  <!-- U1 行 -->
+  <g>
+    <text x="34" y="216" font-size="11" font-weight="bold" fill="#0C447C">U1</text>
+    <rect x="60" y="198" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="125" y="223" font-size="10.5" fill="#0C447C" text-anchor="middle">R1 → P10</text>
+    <rect x="270" y="198" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="335" y="223" font-size="10.5" fill="#0C447C" text-anchor="middle">操作数就绪</text>
+    <rect x="500" y="198" width="130" height="40" rx="7" fill="#FFF4E5" stroke="#D97706"/>
+    <text x="565" y="216" font-size="10.5" fill="#92400E" text-anchor="middle">乘法单元</text>
+    <text x="565" y="231" font-size="9.5" fill="#B45309" text-anchor="middle">算得慢</text>
+    <rect x="730" y="198" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="795" y="223" font-size="10.5" fill="#0C447C" text-anchor="middle">① 先提交</text>
+  </g>
+
+  <!-- U2 行 -->
+  <g>
+    <text x="34" y="276" font-size="11" font-weight="bold" fill="#0C447C">U2</text>
+    <rect x="60" y="258" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="125" y="283" font-size="10.5" fill="#0C447C" text-anchor="middle">R1 → P10</text>
+    <rect x="270" y="258" width="130" height="40" rx="7" fill="#FEF3C7" stroke="#D97706" stroke-width="1.6"/>
+    <text x="335" y="276" font-size="10.5" fill="#92400E" text-anchor="middle">挂起等 P10</text>
+    <text x="335" y="291" font-size="9.5" fill="#B45309" text-anchor="middle">盯着旁路网络</text>
+    <rect x="500" y="258" width="130" height="40" rx="7" fill="#FFF4E5" stroke="#D97706"/>
+    <text x="565" y="276" font-size="10.5" fill="#92400E" text-anchor="middle">P10 广播后</text>
+    <text x="565" y="291" font-size="9.5" fill="#B45309" text-anchor="middle">才执行</text>
+    <rect x="730" y="258" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="795" y="283" font-size="10.5" fill="#0C447C" text-anchor="middle">② 接着提交</text>
+  </g>
+
+  <!-- U3 行 -->
+  <g>
+    <text x="34" y="336" font-size="11" font-weight="bold" fill="#0C447C">U3</text>
+    <rect x="60" y="318" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="125" y="343" font-size="10.5" fill="#0C447C" text-anchor="middle">R6 → P12</text>
+    <rect x="270" y="318" width="130" height="40" rx="7" fill="#DCFCE7" stroke="#16A34A"/>
+    <text x="335" y="343" font-size="10.5" fill="#166534" text-anchor="middle">操作数就绪</text>
+    <rect x="500" y="318" width="130" height="40" rx="7" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.8"/>
+    <text x="565" y="336" font-size="10.5" font-weight="bold" fill="#166534" text-anchor="middle">先执行</text>
+    <text x="565" y="351" font-size="9.5" fill="#15803D" text-anchor="middle">先写回</text>
+    <rect x="730" y="318" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="795" y="336" font-size="10.5" fill="#0C447C" text-anchor="middle">③ 等着提交</text>
+    <text x="795" y="351" font-size="9.5" fill="#185FA5" text-anchor="middle">队头没走</text>
+  </g>
+
+  <!-- U4 行 -->
+  <g>
+    <text x="34" y="396" font-size="11" font-weight="bold" fill="#0C447C">U4</text>
+    <rect x="60" y="378" width="130" height="40" rx="7" fill="#F5F3FF" stroke="#6D5BD0" stroke-width="1.6"/>
+    <text x="125" y="396" font-size="10.5" fill="#5B21B6" text-anchor="middle">R1 → P11</text>
+    <text x="125" y="411" font-size="9.5" fill="#6D5BD0" text-anchor="middle">与 U1 不同</text>
+    <rect x="270" y="378" width="130" height="40" rx="7" fill="#F5F3FF" stroke="#6D5BD0"/>
+    <text x="335" y="403" font-size="10.5" fill="#5B21B6" text-anchor="middle">操作数就绪</text>
+    <rect x="500" y="378" width="130" height="40" rx="7" fill="#FFF4E5" stroke="#D97706"/>
+    <text x="565" y="403" font-size="10.5" fill="#92400E" text-anchor="middle">整数单元执行</text>
+    <rect x="730" y="378" width="130" height="40" rx="7" fill="#E6F1FB" stroke="#185FA5"/>
+    <text x="795" y="403" font-size="10.5" fill="#0C447C" text-anchor="middle">④ 最后提交</text>
+  </g>
+
+  <!-- U3 超越箭头 -->
+  <path d="M 400 338 C 440 300, 470 300, 498 318" fill="none" stroke="#16A34A" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <text x="430" y="312" font-size="9.5" fill="#166534">超越 U2</text>
+
+  <!-- 底部结论 -->
+  <rect x="30" y="440" width="940" height="62" rx="9" fill="#F0F5FB" stroke="#185FA5" stroke-width="1.4"/>
+  <text x="46" y="463" font-size="11.5" font-weight="bold" fill="#0C447C">三个核心思想在这一段里都露了面</text>
+  <text x="46" y="483" font-size="10.5" fill="#185FA5">重命名拆伪相关（U1 与 U4 各拿 P10 / P11）　　发射挖并行（U3 越过 U2）　　ROB 保按序（①→②→③→④）</text>
+  <text x="46" y="498" font-size="10" fill="#64748B">真相关躲不掉：U2 必须等 U1 的 P10 广播，这是数据的真实依赖</text>
+</svg>

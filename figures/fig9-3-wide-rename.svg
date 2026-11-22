@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图9-3 两宽重命名的组内旁路</title>
+  <desc>同一拍进入重命名站的两条 uop，如果第二条读的正是第一条写的目的寄存器，必须用旁路把第一条的新物理号直接送给第二条，不能查还没更新的 RAT 表。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 9-3　两宽重命名的组内旁路</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">第二条 uop 和第一条同拍进站，RAT 还没更新，所以要多拉一根旁路</text>
+
+  <!-- 两条 uop -->
+  <rect x="30" y="96" width="420" height="86" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="48" y="122" font-size="12" fill="#185FA5">第 0 条</text>
+  <text x="48" y="148" font-size="15" font-weight="bold" fill="#0C447C">MUL R1, R2, R3</text>
+  <text x="48" y="168" font-size="11" fill="#185FA5">写 R1，空闲表给它 P10</text>
+
+  <rect x="30" y="206" width="420" height="86" rx="10" fill="#FFF4E5" stroke="#D97706" stroke-width="1.6"/>
+  <text x="48" y="232" font-size="12" fill="#B45309">第 1 条</text>
+  <text x="48" y="258" font-size="15" font-weight="bold" fill="#92400E">ADD R4, R1, R5</text>
+  <text x="48" y="278" font-size="11" fill="#B45309">读 R1，而 R1 正是第 0 条的目的</text>
+
+  <!-- 比较与选择 -->
+  <rect x="520" y="132" width="190" height="74" rx="10" fill="#F7F9FC" stroke="#64748B" stroke-width="1.4"/>
+  <text x="615" y="160" font-size="12.5" font-weight="bold" fill="#334155" text-anchor="middle">rd0 等于 rs1_1 吗</text>
+  <text x="615" y="185" font-size="11" fill="#64748B" text-anchor="middle">R1 == R1，命中</text>
+
+  <rect x="770" y="132" width="190" height="74" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="865" y="160" font-size="12.5" font-weight="bold" fill="#0C447C" text-anchor="middle">选择新映射</text>
+  <text x="865" y="185" font-size="14" font-weight="bold" fill="#185FA5" text-anchor="middle">P10</text>
+
+  <line x1="450" y1="249" x2="518" y2="180" stroke="#D97706" stroke-width="1.6"/>
+  <polygon points="518,180 510,178 514,171" fill="#D97706"/>
+  <line x1="710" y1="169" x2="768" y2="169" stroke="#64748B" stroke-width="1.6"/>
+  <polygon points="768,169 760,165 760,173" fill="#64748B"/>
+
+  <!-- 旁路粗线 -->
+  <path d="M 450 139 C 660 96, 690 96, 768 148" fill="none" stroke="#185FA5" stroke-width="2.4"/>
+  <polygon points="768,148 759,144 763,153" fill="#185FA5"/>
+  <text x="600" y="106" font-size="11.5" font-weight="bold" fill="#185FA5">旁路　第 0 条的新映射 P10</text>
+
+  <!-- 不命中时的路径 -->
+  <rect x="30" y="326" width="420" height="70" rx="10" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="48" y="352" font-size="12" fill="#64748B">如果第 1 条读的不是 R1</text>
+  <text x="48" y="376" font-size="12" fill="#64748B">就照常查 RAT 表，拿旧映射</text>
+  <line x1="450" y1="360" x2="768" y2="228" stroke="#CBD5E1" stroke-width="1.6" stroke-dasharray="6 5"/>
+  <text x="600" y="310" font-size="11" fill="#94A3B8">查表路径</text>
+
+  <rect x="520" y="326" width="440" height="70" rx="10" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="540" y="352" font-size="12" fill="#374151">同一组里的两条写同一目的寄存器，也要按程序顺序更新</text>
+  <text x="540" y="376" font-size="12" fill="#374151">后一条的赋值写在代码后面，自然覆盖前一条</text>
+
+  <text x="30" y="440" font-size="11.5" fill="#5F5E5A">结果　第 1 条的操作数写成 P10，进发射队列后等 P10 广播，真相关照样守住</text>
+  <text x="30" y="460" font-size="11" fill="#8B5E00">没有这根旁路，第 1 条会拿到 P1 或读到未定义值，这就是两宽重命名最容易踩的坑</text>
+</svg>

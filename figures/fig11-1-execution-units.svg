@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图11-1 执行单元的分工</title>
+  <desc>整数ALU、乘法器、除法器和分支单元各管一类运算，延迟和吞吐各不相同。旁路网络要按结果实际出现的那一拍转发。</desc>
+  <rect x="0" y="0" width="1000" height="470" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 11-1　执行单元的分工</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">常用运算交给快的部件，少用运算不必占用宝贵面积</text>
+
+  <!-- 整数 ALU -->
+  <rect x="30" y="90" width="205" height="252" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="132" y="122" font-size="15" font-weight="bold" fill="#0C447C" text-anchor="middle">整数 ALU</text>
+  <line x1="50" y1="136" x2="215" y2="136" stroke="#185FA5" stroke-width="1"/>
+  <text x="50" y="164" font-size="11.5" font-weight="bold" fill="#0C447C">典型操作</text>
+  <text x="50" y="188" font-size="12" fill="#374151">ADD SUB AND OR</text>
+  <text x="50" y="208" font-size="12" fill="#374151">XOR SLL SLT</text>
+  <text x="50" y="240" font-size="11.5" font-weight="bold" fill="#0C447C">延迟</text>
+  <text x="50" y="266" font-size="17" font-weight="bold" fill="#185FA5">1 拍</text>
+  <text x="50" y="300" font-size="11.5" font-weight="bold" fill="#0C447C">特点</text>
+  <text x="50" y="324" font-size="11.5" fill="#374151">两个发射口各配一个</text>
+  <text x="50" y="344" font-size="11.5" fill="#374151">使用最频繁，优先保快</text>
+
+  <!-- 乘法器 -->
+  <rect x="275" y="90" width="205" height="252" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.6"/>
+  <text x="377" y="122" font-size="15" font-weight="bold" fill="#92400E" text-anchor="middle">乘法器</text>
+  <line x1="295" y1="136" x2="460" y2="136" stroke="#D97706" stroke-width="1"/>
+  <text x="295" y="164" font-size="11.5" font-weight="bold" fill="#92400E">典型操作</text>
+  <text x="295" y="188" font-size="12" fill="#374151">MUL</text>
+  <text x="295" y="240" font-size="11.5" font-weight="bold" fill="#92400E">延迟</text>
+  <text x="295" y="266" font-size="17" font-weight="bold" fill="#D97706">3 到 4 拍</text>
+  <text x="295" y="300" font-size="11.5" font-weight="bold" fill="#92400E">特点</text>
+  <text x="295" y="324" font-size="11.5" fill="#374151">做成流水线之后</text>
+  <text x="295" y="344" font-size="11.5" fill="#374151">每拍仍能收进一条</text>
+
+  <!-- 除法器 -->
+  <rect x="520" y="90" width="205" height="252" rx="10" fill="#F7F9FC" stroke="#94A3B8" stroke-width="1.6"/>
+  <text x="622" y="122" font-size="15" font-weight="bold" fill="#475569" text-anchor="middle">除法器</text>
+  <line x1="540" y1="136" x2="705" y2="136" stroke="#94A3B8" stroke-width="1"/>
+  <text x="540" y="164" font-size="11.5" font-weight="bold" fill="#475569">典型操作</text>
+  <text x="540" y="188" font-size="12" fill="#374151">DIV REM</text>
+  <text x="540" y="240" font-size="11.5" font-weight="bold" fill="#475569">延迟</text>
+  <text x="540" y="266" font-size="17" font-weight="bold" fill="#64748B">十几拍</text>
+  <text x="540" y="300" font-size="11.5" font-weight="bold" fill="#475569">特点</text>
+  <text x="540" y="324" font-size="11.5" fill="#374151">通常不做流水</text>
+  <text x="540" y="344" font-size="11.5" fill="#374151">算完才腾出部件</text>
+
+  <!-- 分支单元 -->
+  <rect x="765" y="90" width="205" height="252" rx="10" fill="#E7F5EC" stroke="#2E8B57" stroke-width="1.6"/>
+  <text x="867" y="122" font-size="15" font-weight="bold" fill="#1E6B40" text-anchor="middle">分支单元</text>
+  <line x1="785" y1="136" x2="950" y2="136" stroke="#2E8B57" stroke-width="1"/>
+  <text x="785" y="164" font-size="11.5" font-weight="bold" fill="#1E6B40">典型操作</text>
+  <text x="785" y="188" font-size="12" fill="#374151">条件比较</text>
+  <text x="785" y="208" font-size="12" fill="#374151">目标地址计算</text>
+  <text x="785" y="240" font-size="11.5" font-weight="bold" fill="#1E6B40">延迟</text>
+  <text x="785" y="266" font-size="17" font-weight="bold" fill="#2E8B57">1 到 2 拍</text>
+  <text x="785" y="300" font-size="11.5" font-weight="bold" fill="#1E6B40">特点</text>
+  <text x="785" y="324" font-size="11.5" fill="#374151">越早出结果越好</text>
+  <text x="785" y="344" font-size="11.5" fill="#374151">预测错误的代价越小</text>
+
+  <!-- 底部要点 -->
+  <rect x="30" y="368" width="940" height="72" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="48" y="395" font-size="12.5" fill="#374151">分工是为了把常用运算做快、把少用运算做省。延迟不同带来一个直接后果：</text>
+  <text x="48" y="419" font-size="12.5" fill="#374151">结果要等真正算完才能挂上旁路网，否则等它的指令会拿到错值。</text>
+</svg>

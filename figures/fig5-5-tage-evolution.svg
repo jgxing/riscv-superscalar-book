@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" width="980" height="520" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图5-5 从2位计数器到TAGE的思想演进</title>
+  <desc>三步演进：单一2位计数器只看PC；两级预测器把PC和历史混合索引，同一分支有多种人格；TAGE用多张不同历史长度的表（几何级数2/4/8/16/32）分工，长历史命中优先，并有统计校正做小修正。</desc>
+  <rect x="0" y="0" width="980" height="520" fill="#ffffff"/>
+
+  <text x="30" y="40" font-size="18" font-weight="bold" fill="#1f2937">图 5-5　从 2 位计数器到 TAGE 的思想演进</text>
+  <text x="30" y="64" font-size="12.5" fill="#5F5E5A">每一步都是让预测器看到更长的历史、更多的上下文</text>
+
+  <!-- 阶段1 -->
+  <g>
+    <rect x="30" y="96" width="290" height="330" rx="12" fill="#F2F8F1" stroke="#6E9B62" stroke-width="1.5"/>
+    <text x="175" y="126" font-size="15" font-weight="bold" fill="#3E6B34" text-anchor="middle">单一 2 位计数器</text>
+    <text x="175" y="148" font-size="11" fill="#6B7280" text-anchor="middle">只看 PC</text>
+
+    <rect x="80" y="180" width="70" height="46" rx="6" fill="#fff" stroke="#6E9B62"/>
+    <text x="115" y="209" font-size="12" fill="#374151" text-anchor="middle">PC</text>
+    <line x1="150" y1="203" x2="185" y2="203" stroke="#6E9B62" stroke-width="1.8"/>
+    <polygon points="185,203 177,199 177,207" fill="#6E9B62"/>
+    <rect x="185" y="180" width="90" height="46" rx="6" fill="#D9EAD6" stroke="#6E9B62"/>
+    <text x="230" y="202" font-size="11" fill="#3E6B34" text-anchor="middle">1 个计数器</text>
+    <text x="230" y="217" font-size="9.5" fill="#6B7280" text-anchor="middle">一个分支一个</text>
+
+    <text x="60" y="280" font-size="12" fill="#374151">看不到分支之间的关联</text>
+    <text x="60" y="304" font-size="12" fill="#374151">历史很短，复杂规律记不住</text>
+    <text x="60" y="336" font-size="11.5" fill="#6B7280">比如"连续跳 5 次才跳"这种</text>
+    <text x="60" y="356" font-size="11.5" fill="#6B7280">规律它学不会</text>
+
+    <rect x="55" y="382" width="240" height="26" rx="5" fill="#D9EAD6" stroke="#6E9B62"/>
+    <text x="175" y="399" font-size="11" fill="#3E6B34" text-anchor="middle">能应付：简单循环、有倾向的分支</text>
+  </g>
+
+  <!-- 阶段2 -->
+  <g>
+    <rect x="345" y="96" width="290" height="330" rx="12" fill="#FCF6EC" stroke="#B5702E" stroke-width="1.5"/>
+    <text x="490" y="126" font-size="15" font-weight="bold" fill="#8a5316" text-anchor="middle">两级预测器</text>
+    <text x="490" y="148" font-size="11" fill="#6B7280" text-anchor="middle">PC + 历史混合索引</text>
+
+    <rect x="375" y="176" width="60" height="40" rx="6" fill="#fff" stroke="#B5702E"/>
+    <text x="405" y="201" font-size="11" fill="#374151" text-anchor="middle">PC</text>
+    <rect x="375" y="226" width="60" height="40" rx="6" fill="#F5E6D8" stroke="#B5702E"/>
+    <text x="405" y="251" font-size="10" fill="#8a5316" text-anchor="middle">历史</text>
+    <line x1="435" y1="196" x2="470" y2="211" stroke="#B5702E" stroke-width="1.6"/>
+    <line x1="435" y1="246" x2="470" y2="231" stroke="#B5702E" stroke-width="1.6"/>
+    <rect x="470" y="196" width="130" height="50" rx="6" fill="#F5E6D8" stroke="#B5702E"/>
+    <text x="535" y="217" font-size="10.5" fill="#8a5316" text-anchor="middle">拼起来索引</text>
+    <text x="535" y="234" font-size="10" fill="#6B7280" text-anchor="middle">多个计数器</text>
+
+    <text x="375" y="284" font-size="12" fill="#374151">同一分支，不同历史下</text>
+    <text x="375" y="308" font-size="12" fill="#374151">查到不同的计数器</text>
+    <text x="375" y="340" font-size="11.5" fill="#6B7280">相当于给一个分支准备</text>
+    <text x="375" y="360" font-size="11.5" fill="#6B7280">好几种"人格"按走势切换</text>
+
+    <rect x="370" y="382" width="240" height="26" rx="5" fill="#F5E6D8" stroke="#B5702E"/>
+    <text x="490" y="399" font-size="11" fill="#8a5316" text-anchor="middle">局部历史 + 全局历史各有所长</text>
+  </g>
+
+  <!-- 阶段3 -->
+  <g>
+    <rect x="660" y="96" width="290" height="330" rx="12" fill="#FCF0EC" stroke="#C4613C" stroke-width="1.5"/>
+    <text x="805" y="126" font-size="15" font-weight="bold" fill="#9C4526" text-anchor="middle">TAGE</text>
+    <text x="805" y="148" font-size="11" fill="#6B7280" text-anchor="middle">多张表，历史长度几何增长</text>
+
+    <!-- 多张表 -->
+    <g font-size="10.5" fill="#7a3418" text-anchor="middle">
+      <rect x="688" y="172" width="234" height="26" rx="4" fill="#F9E4D9" stroke="#C4613C"/>
+      <text x="805" y="189">基础表　PC 直接索引（历史长度 0）</text>
+      <rect x="688" y="204" width="234" height="26" rx="4" fill="#F9E4D9" stroke="#C4613C"/>
+      <text x="805" y="221">表 1　历史长度 2</text>
+      <rect x="688" y="236" width="234" height="26" rx="4" fill="#F9E4D9" stroke="#C4613C"/>
+      <text x="805" y="253">表 2　历史长度 4</text>
+      <rect x="688" y="268" width="234" height="26" rx="4" fill="#F9E4D9" stroke="#C4613C"/>
+      <text x="805" y="285">表 3　历史长度 8</text>
+      <rect x="688" y="300" width="234" height="26" rx="4" fill="#F9E4D9" stroke="#C4613C"/>
+      <text x="805" y="317">表 4　历史长度 16 ……</text>
+    </g>
+
+    <text x="685" y="352" font-size="11.5" fill="#374151">长历史命中 → 更具体，优先采信</text>
+    <text x="685" y="374" font-size="11.5" fill="#374151">长表没命中 → 退回短表兜底</text>
+
+    <rect x="680" y="388" width="250" height="24" rx="5" fill="#F9E4D9" stroke="#C4613C"/>
+    <text x="805" y="404" font-size="10.5" fill="#9C4526" text-anchor="middle">再加统计校正 SC 做小修正</text>
+  </g>
+
+  <!-- 演进箭头 -->
+  <line x1="320" y1="262" x2="343" y2="262" stroke="#9CA3AF" stroke-width="2"/>
+  <polygon points="343,262 335,258 335,266" fill="#9CA3AF"/>
+  <line x1="635" y1="262" x2="658" y2="262" stroke="#9CA3AF" stroke-width="2"/>
+  <polygon points="658,262 650,258 650,266" fill="#9CA3AF"/>
+
+  <!-- 底部一句话 -->
+  <rect x="30" y="452" width="920" height="48" rx="10" fill="#F4F4F2" stroke="#D6D6D2"/>
+  <text x="490" y="474" font-size="12.5" fill="#374151" text-anchor="middle">核心思路不变：让预测器看到更长的历史、用不同粒度的表分工。</text>
+  <text x="490" y="492" font-size="11.5" fill="#6B7280" text-anchor="middle">本书只讲到这里，TAGE 的表项分配、标签宽度等工程细节留给进阶阅读。</text>
+</svg>

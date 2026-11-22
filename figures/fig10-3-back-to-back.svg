@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" width="1000" height="440" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图10-3 背靠背依赖的时序</title>
+  <desc>生产者在周期 N 广播结果，消费者在同一周期完成唤醒和选择，周期 N+1 就能发射执行。如果唤醒和选择分成两拍，消费者的发射会推迟到 N+2，中间多一个气泡。</desc>
+  <rect x="0" y="0" width="1000" height="440" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 10-3　背靠背依赖的时序</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">广播、唤醒、选择挤在同一拍，下一条指令才能紧跟着发射</text>
+
+  <!-- 表头 -->
+  <rect x="30" y="86" width="940" height="34" rx="6" fill="#F1F5F9" stroke="#CBD5E1"/>
+  <text x="120" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">谁在做什么</text>
+  <text x="285" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">周期 N-1</text>
+  <text x="435" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">周期 N</text>
+  <text x="585" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">周期 N+1</text>
+  <text x="735" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">周期 N+2</text>
+  <text x="880" y="108" font-size="12" font-weight="bold" fill="#334155" text-anchor="middle">说明</text>
+
+  <!-- 行 1 生产者 -->
+  <rect x="30" y="124" width="940" height="46" rx="5" fill="#ffffff" stroke="#E2E8F0"/>
+  <text x="44" y="152" font-size="11.5" fill="#374151">A1　ADD R1,R2,R3</text>
+  <rect x="218" y="132" width="134" height="30" rx="5" fill="#E6F1FB" stroke="#185FA5"/>
+  <text x="285" y="152" font-size="11" fill="#0C447C" text-anchor="middle">执行</text>
+  <rect x="368" y="132" width="134" height="30" rx="5" fill="#E6F1FB" stroke="#185FA5"/>
+  <text x="435" y="152" font-size="11" fill="#0C447C" text-anchor="middle">算完写回</text>
+  <text x="880" y="152" font-size="10.5" fill="#64748B">结果放进 P10</text>
+
+  <!-- 行 2 广播 -->
+  <rect x="30" y="174" width="940" height="46" rx="5" fill="#FFF7E8" stroke="#FDE3B8"/>
+  <text x="44" y="202" font-size="11.5" fill="#92400E">CDB 广播 P10</text>
+  <rect x="368" y="182" width="134" height="30" rx="5" fill="#FFF4E5" stroke="#D97706" stroke-width="1.6"/>
+  <text x="435" y="202" font-size="11" font-weight="bold" fill="#92400E" text-anchor="middle">广播这一拍</text>
+  <text x="880" y="202" font-size="10.5" fill="#B45309">所有表项同时听</text>
+
+  <!-- 行 3 唤醒选择 -->
+  <rect x="30" y="224" width="940" height="46" rx="5" fill="#FFF7E8" stroke="#FDE3B8"/>
+  <text x="44" y="252" font-size="11.5" fill="#92400E">A2 唤醒加选择</text>
+  <rect x="368" y="232" width="134" height="30" rx="5" fill="#FFF4E5" stroke="#D97706" stroke-width="1.6"/>
+  <text x="435" y="252" font-size="11" font-weight="bold" fill="#92400E" text-anchor="middle">同一拍完成</text>
+  <text x="880" y="252" font-size="10.5" fill="#B45309">ps1 命中 P10</text>
+
+  <!-- 行 4 消费者 -->
+  <rect x="30" y="274" width="940" height="46" rx="5" fill="#ffffff" stroke="#E2E8F0"/>
+  <text x="44" y="302" font-size="11.5" fill="#374151">A2 发射并执行</text>
+  <rect x="518" y="282" width="134" height="30" rx="5" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="585" y="302" font-size="11" font-weight="bold" fill="#0C447C" text-anchor="middle">发射进 ALU</text>
+  <text x="880" y="302" font-size="10.5" fill="#185FA5">没有空泡</text>
+
+  <!-- 对比 -->
+  <rect x="30" y="340" width="940" height="62" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="46" y="364" font-size="12" font-weight="bold" fill="#334155">如果把唤醒和选择拆成两拍</text>
+  <text x="46" y="388" font-size="11.5" fill="#64748B">周期 N 只置就绪，周期 N+1 才选出来，A2 要等到 N+2 才能发射，中间白白多一个空泡。</text>
+  <rect x="518" y="352" width="134" height="30" rx="5" fill="#ffffff" stroke="#CBD5E1" stroke-dasharray="4 3"/>
+  <text x="585" y="372" font-size="11" fill="#94A3B8" text-anchor="middle">本来可以发射</text>
+
+  <text x="30" y="426" font-size="11.5" fill="#8B5E00">要点　读者只需记住这件事的时序含义，具体组合逻辑怎么压到一拍是后端实现的活</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" width="1000" height="440" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <title>图10-2 仲裁规则</title>
+  <desc>三项就绪的 uop 竞争一个发射口。按表项编号给优先级会选错；按年龄给优先级才符合程序顺序。图右侧展示两个发射口时依次挑出最老的两项。</desc>
+  <rect x="0" y="0" width="1000" height="440" fill="#ffffff"/>
+
+  <text x="30" y="38" font-size="18" font-weight="bold" fill="#1f2937">图 10-2　仲裁规则</text>
+  <text x="30" y="62" font-size="12.5" fill="#5F5E5A">编号是家具摆放顺序，年龄才是排队先后</text>
+
+  <!-- 左：三个请求 -->
+  <text x="36" y="94" font-size="12.5" font-weight="bold" fill="#0C447C">当前就绪的三项</text>
+  <rect x="30" y="108" width="250" height="218" rx="10" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <g font-size="12" fill="#374151">
+    <rect x="44" y="124" width="220" height="48" rx="7" fill="#ffffff" stroke="#185FA5"/>
+    <text x="58" y="144">E0　age = 7</text>
+    <text x="58" y="162" font-size="10.5" fill="#64748B">编号最小，其实最年轻</text>
+
+    <rect x="44" y="184" width="220" height="48" rx="7" fill="#ffffff" stroke="#185FA5"/>
+    <text x="58" y="204">E1　age = 2</text>
+    <text x="58" y="222" font-size="10.5" fill="#64748B">中间年纪</text>
+
+    <rect x="44" y="244" width="220" height="48" rx="7" fill="#ffffff" stroke="#D97706" stroke-width="1.8"/>
+    <text x="58" y="264">E2　age = 0</text>
+    <text x="58" y="282" font-size="10.5" fill="#B45309">编号靠后，却最老</text>
+  </g>
+
+  <!-- 中：错误做法 -->
+  <text x="320" y="94" font-size="12.5" font-weight="bold" fill="#B45309">按编号挑（错）</text>
+  <rect x="310" y="108" width="260" height="218" rx="10" fill="#FFF7E8" stroke="#D97706" stroke-width="1.4"/>
+  <text x="440" y="140" font-size="12" fill="#92400E" text-anchor="middle">只看谁是 E0</text>
+  <rect x="370" y="160" width="140" height="48" rx="8" fill="#ffffff" stroke="#D97706"/>
+  <text x="440" y="190" font-size="16" font-weight="bold" fill="#B45309" text-anchor="middle">选中 E0</text>
+  <text x="440" y="240" font-size="11.5" fill="#92400E" text-anchor="middle">age=7 的最年轻指令先走</text>
+  <text x="440" y="270" font-size="11.5" fill="#92400E" text-anchor="middle">老指令被压在后面</text>
+  <text x="440" y="304" font-size="11" fill="#B45309" text-anchor="middle">看起来能工作，其实插队了</text>
+
+  <!-- 右：正确做法 -->
+  <text x="610" y="94" font-size="12.5" font-weight="bold" fill="#0C447C">按年龄挑（对）</text>
+  <rect x="600" y="108" width="370" height="218" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.6"/>
+  <text x="785" y="140" font-size="12" fill="#185FA5" text-anchor="middle">比较两个 age，小的优先</text>
+  <rect x="634" y="160" width="130" height="48" rx="8" fill="#ffffff" stroke="#185FA5"/>
+  <text x="699" y="190" font-size="15" font-weight="bold" fill="#0C447C" text-anchor="middle">第一张票 E2</text>
+  <rect x="790" y="160" width="150" height="48" rx="8" fill="#ffffff" stroke="#185FA5"/>
+  <text x="865" y="190" font-size="15" font-weight="bold" fill="#0C447C" text-anchor="middle">第二张票 E1</text>
+  <text x="785" y="240" font-size="11.5" fill="#185FA5" text-anchor="middle">两项都就绪且有两个空发射口</text>
+  <text x="785" y="268" font-size="11.5" fill="#185FA5" text-anchor="middle">E2 先走，E1 跟上，E0 继续等</text>
+  <text x="785" y="300" font-size="11" fill="#0C447C" text-anchor="middle">年龄只比较大小，不要求连续</text>
+
+  <!-- 只有一个口 -->
+  <rect x="30" y="350" width="940" height="52" rx="9" fill="#F7F9FC" stroke="#CBD5E1"/>
+  <text x="46" y="376" font-size="12" fill="#374151">只有一个空发射口时，仲裁器只发第一张票；第二张票被 limit 信号挡住。</text>
+  <text x="46" y="394" font-size="11" fill="#64748B">复位或无请求时两张票都为空，代码里的 limit_i 就是干这个的。</text>
+
+  <text x="30" y="426" font-size="11.5" fill="#8B5E00">要点　优先级的依据要和业务顺序一致，不能图省事拿表项编号代替年龄</text>
+</svg>

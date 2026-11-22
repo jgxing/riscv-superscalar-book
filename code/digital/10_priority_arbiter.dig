@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes>
+    <entry>
+      <string>Description</string>
+      <string>第10章 发射选择的最底层：两请求优先仲裁器。
+req0 和 req1 表示两项已经就绪，编号小的优先。
+grant0 = req0；grant1 = 非 req0 且 req1。两个授权不会同时给同一项。
+把请求数扩到四项，按年龄比较后再编码，就是 issue_queue.v 里 arbiter 做的事。
+仿真：对照自带真值表拨动 req0、req1，观察两盏输出灯。</string>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>4</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>表项 0 已经就绪。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>req0</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>表项 1 已经就绪。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>req1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="220"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="180" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>And</elementName>
+      <elementAttributes/>
+      <pos x="320" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>第一张票，给编号小的请求。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>grant0</string>
+        </entry>
+      </elementAttributes>
+      <pos x="460" y="100"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>第二张票，只有 req0 没拿票时才给 req1。</string>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>grant1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="460" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>req0 req1 grant0 grant1
+0 0  0     0
+0 1  0     1
+1 0  1     0
+1 1  1     0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="360" y="260"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="100" y="100"/>
+      <p2 x="180" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="100"/>
+      <p2 x="460" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="220" y="100"/>
+      <p2 x="280" y="100"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="100"/>
+      <p2 x="280" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="180"/>
+      <p2 x="320" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="220"/>
+      <p2 x="320" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="350" y="190"/>
+      <p2 x="460" y="190"/>
+    </wire>
+    <wire>
+      <p1 x="460" y="190"/>
+      <p2 x="460" y="180"/>
+    </wire>
+  </wires>
+</circuit>
