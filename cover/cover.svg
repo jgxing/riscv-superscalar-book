@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 900" width="640" height="900" role="img" aria-label="图书封面：RISC-V 多发射乱序处理器，从原理到实现">
+  <title>图书封面：RISC-V 多发射乱序处理器，从原理到实现</title>
+  <desc>白色封面，顶部红色丛书标识，中央一只手绘风格的红色章鱼，八条腕各持一张写有流水线站点的卡片，下方为书名、作者与单位。</desc>
+
+  <style>
+    .zh { font-family: 'Microsoft YaHei', 'Noto Sans CJK SC', 'PingFang SC', sans-serif; }
+    .mono { font-family: Consolas, 'Courier New', monospace; }
+  </style>
+
+  <!-- 封面底色 -->
+  <rect x="0" y="0" width="640" height="900" fill="#FFFFFF"/>
+
+  <!-- 顶部丛书标识 -->
+  <rect x="0" y="0" width="640" height="70" fill="#C8102E"/>
+  <rect x="32" y="18" width="34" height="34" rx="3" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+  <text x="49" y="43" text-anchor="middle" class="mono" font-size="22" font-weight="700" fill="#FFFFFF">R</text>
+  <text x="80" y="45" class="zh" font-size="22" font-weight="700" fill="#FFFFFF" letter-spacing="1">计算机体系结构丛书</text>
+  <text x="608" y="43" text-anchor="end" class="mono" font-size="12" fill="#FFD9DE" letter-spacing="2">ARCHITECTURE SERIES</text>
+
+  <!-- 背景：几条流水线轨道 -->
+  <g fill="none" stroke="#E7E4DF" stroke-width="3" stroke-dasharray="10 8">
+    <path d="M -20 145 L 660 355"/>
+    <path d="M -20 215 L 660 425"/>
+    <path d="M -20 295 L 660 505"/>
+    <path d="M -20 375 L 660 565"/>
+  </g>
+  <g fill="#D9D5CE">
+    <rect x="78" y="176" width="16" height="16" rx="2"/>
+    <rect x="142" y="197" width="16" height="16" rx="2"/>
+    <rect x="470" y="290" width="16" height="16" rx="2"/>
+    <rect x="524" y="310" width="16" height="16" rx="2"/>
+    <rect x="104" y="336" width="16" height="16" rx="2"/>
+    <rect x="158" y="358" width="16" height="16" rx="2"/>
+    <rect x="446" y="454" width="16" height="16" rx="2"/>
+  </g>
+
+  <!-- 八条腕：先铺黑色轮廓，再覆红色内芯 -->
+  <g fill="none" stroke="#1F1F1F" stroke-width="27" stroke-linecap="round">
+    <path d="M 240 352 C 190 378 118 400 82 498"/>
+    <path d="M 256 364 C 212 418 190 470 172 538"/>
+    <path d="M 281 370 C 256 428 260 502 262 553"/>
+    <path d="M 302 372 C 312 430 330 502 346 558"/>
+    <path d="M 338 372 C 366 430 400 502 432 553"/>
+    <path d="M 360 368 C 412 410 470 470 512 533"/>
+    <path d="M 385 360 C 455 380 520 420 572 493"/>
+    <path d="M 402 348 C 480 350 550 390 602 448"/>
+  </g>
+  <g fill="none" stroke="#C8102E" stroke-width="19" stroke-linecap="round">
+    <path d="M 240 352 C 190 378 118 400 82 498"/>
+    <path d="M 256 364 C 212 418 190 470 172 538"/>
+    <path d="M 281 370 C 256 428 260 502 262 553"/>
+    <path d="M 302 372 C 312 430 330 502 346 558"/>
+    <path d="M 338 372 C 366 430 400 502 432 553"/>
+    <path d="M 360 368 C 412 410 470 470 512 533"/>
+    <path d="M 385 360 C 455 380 520 420 572 493"/>
+    <path d="M 402 348 C 480 350 550 390 602 448"/>
+  </g>
+
+  <!-- 头部 -->
+  <path d="M 320 128 C 392 128 428 190 424 256 C 421 310 400 360 320 372 C 240 360 219 310 216 256 C 212 190 248 128 320 128 Z"
+        fill="#C8102E" stroke="#1F1F1F" stroke-width="5"/>
+  <path d="M 260 176 C 276 152 304 143 330 146" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
+
+  <!-- 眼睛 -->
+  <ellipse cx="282" cy="250" rx="30" ry="34" fill="#FFFFFF" stroke="#1F1F1F" stroke-width="4"/>
+  <ellipse cx="358" cy="250" rx="30" ry="34" fill="#FFFFFF" stroke="#1F1F1F" stroke-width="4"/>
+  <circle cx="290" cy="258" r="12" fill="#1F1F1F"/>
+  <circle cx="350" cy="258" r="12" fill="#1F1F1F"/>
+  <circle cx="295" cy="252" r="4" fill="#FFFFFF"/>
+  <circle cx="355" cy="252" r="4" fill="#FFFFFF"/>
+  <path d="M 252 212 Q 282 197 311 212" fill="none" stroke="#1F1F1F" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 329 212 Q 358 197 388 212" fill="none" stroke="#1F1F1F" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 301 315 Q 320 333 339 315" fill="none" stroke="#1F1F1F" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- 八张站点卡片 -->
+  <g fill="#FFFFFF" stroke="#1F1F1F" stroke-width="3">
+    <rect x="56" y="500" width="52" height="30" rx="3"/>
+    <rect x="146" y="538" width="52" height="30" rx="3"/>
+    <rect x="236" y="553" width="52" height="30" rx="3"/>
+    <rect x="320" y="558" width="52" height="30" rx="3"/>
+    <rect x="406" y="553" width="52" height="30" rx="3"/>
+    <rect x="486" y="533" width="52" height="30" rx="3"/>
+    <rect x="546" y="493" width="52" height="30" rx="3"/>
+    <rect x="576" y="448" width="52" height="30" rx="3"/>
+  </g>
+  <g text-anchor="middle" class="mono" font-size="13" font-weight="700" fill="#1F1F1F">
+    <text x="82" y="520">IF</text>
+    <text x="172" y="558">ID</text>
+    <text x="262" y="573">REN</text>
+    <text x="346" y="578">ISS</text>
+    <text x="432" y="573">EXE</text>
+    <text x="512" y="553">LSQ</text>
+    <text x="572" y="513">ROB</text>
+    <text x="602" y="468">CMT</text>
+  </g>
+
+  <!-- 图注：向经典动物封面致意 -->
+  <text x="32" y="116" class="mono" font-size="13" font-style="italic" fill="#9A958D">Octopus superscalarus</text>
+  <line x1="32" y1="592" x2="608" y2="592" stroke="#E0DDD7" stroke-width="2"/>
+
+  <!-- 书名 -->
+  <text x="32" y="656" class="zh" font-size="44" font-weight="800" fill="#1A1A1A">RISC-V 多发射乱序处理器</text>
+  <text x="32" y="720" class="zh" font-size="38" font-weight="700" fill="#C8102E">从原理到实现</text>
+
+  <!-- 作者与定位 -->
+  <text x="32" y="788" class="zh" font-size="22" fill="#222222">邢建国　著</text>
+  <text x="32" y="820" class="zh" font-size="16" fill="#666666">浙江工商大学</text>
+  <text x="32" y="862" class="zh" font-size="14" fill="#777777">面向已有五级流水线设计经验的读者</text>
+  <text x="608" y="862" text-anchor="end" class="zh" font-size="13" fill="#888888">配套代码见 GitHub</text>
+</svg>

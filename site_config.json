@@ -1,0 +1,26 @@
+{
+  "title": "RISC-V 多发射乱序处理器",
+  "subtitle": "从原理到实现",
+  "series": "计算机体系结构丛书",
+  "author": "邢建国",
+  "affiliation": "浙江工商大学",
+  "repo": "https://github.com/jgxing/riscv-superscalar-book",
+  "intro": "一本面向已有五级整数流水线设计经验的读者，讲清多发射乱序处理器背后原理与方法的教材。以 2 发射简化乱序核为教学主线，用 Digital 电路图形化建模系统连接，用 Verilog 骨架验证关键机制。以香山等开源处理器为思想参照，不复刻工程实现。",
+  "front": [
+    {"src": "前言.md", "out": "preface.html", "label": "前言"}
+  ],
+  "chapters": {
+    "dir": "chapters",
+    "pattern": "第??章_*.md",
+    "out_prefix": "ch"
+  },
+  "back": [
+    {"src": "附录A_Digital使用指南.md", "out": "appendix-a.html", "label": "附录A"},
+    {"src": "附录B_Verilog模块模板.md", "out": "appendix-b.html", "label": "附录B"},
+    {"src": "附录C_术语与参数速查.md", "out": "appendix-c.html", "label": "附录C"}
+  ],
+  "references": {
+    "src": "参考文献与延伸阅读.md",
+    "out": "references.html"
+  }
+}

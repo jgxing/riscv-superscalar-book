@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>附录 A　Digital 使用指南</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">RISC-V 多发射乱序处理器</a><nav><a href="index.html">目录</a><a href="chapters/ch15.html">← 第 15 章</a><a href="appendix-b.html">附录B →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="附录-a-digital-使用指南">附录 A　Digital 使用指南</h1>
+<p>Digital 是一个免费的数字电路仿真器，用 Java 写成，单个 jar 文件就能跑。本书所有图形化电路都是用它画的，文件后缀是 <code>.dig</code>。这一章不讲 Digital 的全部功能，只讲读懂和搭建本书电路需要的那部分。</p>
+<h2 id="a.1-先把软件跑起来">A.1 先把软件跑起来</h2>
+<p>去项目主页 <a href="https://github.com/hneemann/digital" class="uri">https://github.com/hneemann/digital</a> 下载发行包。本机装了 Java 之后，双击 jar 就能打开，或者在命令行里运行：</p>
+<pre class="bash"><code>java -jar Digital.jar</code></pre>
+<p>打开后是一个空白画布，左边是元件库，中间是画图区。新建一个电路，从左边拖元件进来，用鼠标连线，点工具栏的运行按钮就能仿真。</p>
+<p>Digital 里的电路文件本质是 XML，纯文本，可以用编辑器打开看。本书的 <code>.dig</code> 文件都在 <code>code/digital/</code> 目录下，建议先用 Digital 打开几个现成的，再照着改。</p>
+<h2 id="a.2-元件库里有什么">A.2 元件库里有什么</h2>
+<p>左边元件库按类别分层，最常用的几类如下。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>代表元件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本门</td>
+<td>And、Or、Not、Xor</td>
+<td>搭组合逻辑</td>
+</tr>
+<tr>
+<td>选择</td>
+<td>Multiplexer、Demultiplexer</td>
+<td>数据选择、译码</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>D_FF、Register、RAM</td>
+<td>存状态</td>
+</tr>
+<tr>
+<td>输入输出</td>
+<td>In、Out、Button、LED</td>
+<td>电路的端口和观察点</td>
+</tr>
+<tr>
+<td>总线</td>
+<td>Splitter、Constant</td>
+<td>位的拆分与合并</td>
+</tr>
+<tr>
+<td>测试</td>
+<td>Testcase</td>
+<td>真值表、波形输入</td>
+</tr>
+</tbody>
+</table>
+<p>本书用到的门电路大多只需要 And、Or、Not 和 Multiplexer。香山那样的处理器会用到更多元件，但原理一样。</p>
+<p>一个元件的引脚位置是固定的。比如 And 门，输入端在元件原点及其正下方 20 像素处，输出端在原点右方 30、下方 10 像素处。手搭电路文件时，连线端点的坐标必须落在这些引脚上，否则 Digital 会认为没连上。本书配套的 <code>.dig</code> 文件都是按精确坐标摆好的，可以直接参考。</p>
+<h2 id="a.3-从门电路搭起">A.3 从门电路搭起</h2>
+<p>先搭一个不需要时钟的电路，比如标签相等检测。它把两个物理寄存器号逐位比较，各位都相等就输出命中。这正是第 3 章保留站唤醒、第 10 章发射队列监听的最底层动作。</p>
+<p>做法是给每一位放一个同或逻辑，再把各位结果用 And 串起来。Digital 提供比较器元件，但自己用门搭一遍更能看清比较是怎么发生的。本书的 <code>03_tag_match_wakeup.dig</code> 就是这个电路。</p>
+<p>组合逻辑的特点是输出只由当前输入决定。改一下输入开关，输出立刻跟着变，不需要时钟。仿真这类电路时，直接拨动 In 开关就能在 Out 上看到结果。</p>
+<p>搭复杂组合逻辑时，一个实用技巧是加一个 Testcase 元件。它本质上是一张真值表，把想要测的输入组合和输出期望写进去，点运行后 Digital 会逐行自动验证。本书每个电路都带了 Testcase，打开就能看到作者预期它怎么工作。</p>
+<figure>
+<img src="../figures/figA-1-digital-layers.svg" alt="图A-1 Digital 建模的四个层次" />
+<figcaption aria-hidden="true">图A-1 Digital 建模的四个层次</figcaption>
+</figure>
+<p><em>图A-1　Digital 建模的四个层次</em></p>
+<h2 id="a.4-状态电路与时钟">A.4 状态电路与时钟</h2>
+<p>组合逻辑算不出”记住”这件事。要存一个位，得用触发器。Digital 里最常用的是 D_FF，它在时钟上升沿把 D 端的值搬到 Q 端，其余时间 Q 保持不变。</p>
+<p>第 9 章的 <code>09_rat_cell.dig</code> 演示了一个带写使能的 RAT 表项。它用一个 Multiplexer 加一个 D_FF 搭成：写使能为 1 时，Multiplexer 选新值送进触发器；写使能为 0 时，选触发器自己的 Q 绕回去，于是保持不变。这个”反馈绕回”是状态电路的常见套路，理解一次就能认出很多类似结构。</p>
+<p>时序电路的仿真和组合逻辑不同。拨动输入后要点击单步或者运行，让时钟走一个沿，输出才更新。Digital 的波形窗口可以把时钟、输入、输出画成时间轴上的方波，一眼看出哪个信号在哪个沿变了。这正是调试握手协议的好帮手：如果 ready 和 valid 差了一拍，波形上立刻现形。</p>
+<h2 id="a.5-总线与存储建模">A.5 总线与存储建模</h2>
+<p>多位信号在 Digital 里是一根粗线。要把它拆成若干单根，或者把几根合成一根，用 Splitter。给 Splitter 设置位号和位数，就能取总线的某几位。</p>
+<p>本书的物理寄存器号是 6 位，逻辑寄存器号是 5 位。电路图上经常要从一个 6 位向量里取出某一位做比较，就要靠 Splitter。反过来，把几个 1 位信号拼成一个向量，也用它。</p>
+<p>存储阵列用 RAM 元件。它有一个地址输入、一个数据输入和一个写使能。地址选中哪个单元，写使能为 1 时就把数据写进去。第 9 章讲 RAT 和空闲表时，正文里画的表在 Digital 里就可以用 RAM 表示。不过本书的门级电路只展示单个表项的行为，没有搭完整的 RAM 阵列，那属于工程实现，超出了本书范围。</p>
+<h2 id="a.6-把电路封装成子电路">A.6 把电路封装成子电路</h2>
+<p>电路搭大了，画布会很乱。Digital 允许把一部分电路框起来，指定输入和输出端口，封装成一个子电路。封装后，它在上层图里就是一个带引脚的方块，内部细节藏起来。</p>
+<p>这是搭大系统的关键。一个 2 发射核可以分成取指、译码、重命名、发射、执行、提交几个子电路，每个子电路单独搭、单独测，最后在顶层图里连线。哪一格出了问题，就双击进去看。本书为了教学清楚，每个概念只画最小的电路，没有做完整封装，但读者自己动手时应该尽早学会这一招。</p>
+<p>封装前要先想清楚接口。哪些信号是进来和出去的，哪些只是内部使用。接口定下来，内部随便改都不会影响上层。这个道理和写 Verilog 模块完全一样。</p>
+<h2 id="a.7-观察波形与注入错误">A.7 观察波形与注入错误</h2>
+<p>仿真的价值在于”看见”。Digital 提供两种观察方式。</p>
+<p>一种是真值表，适合组合逻辑。把输入组合列出来，运行后看输出对不对。本书电路的 Testcase 都是这种。</p>
+<p>另一种是波形图，适合时序逻辑。把关心的信号拖进波形窗口，运行一段时间，就能看到它们随时间的变化。看握手信号时，重点观察 valid 拉高的那一拍，ready 是不是也拉高了；看流水线时，观察一条数据从第几拍进入、第几拍出来。</p>
+<p>更有用的做法是故意注入错误。比如把某个 And 门的一根输入断开，再看输出怎么错、错误传播到哪里。做一次这样的实验，比看十遍正确波形印象都深。本书第 1 章到第 15 章的实验环节都建议了类似的观察点。</p>
+<h2 id="a.8-本书电路清单">A.8 本书电路清单</h2>
+<p>下表列出本书配套的全部 Digital 电路。每个都能单独打开运行，都带真值表。</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>对应章节</th>
+<th>演示什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>01_hazard_detect.dig</code></td>
+<td>第 1 章</td>
+<td>load-use 冒险检测</td>
+</tr>
+<tr>
+<td><code>03_tag_match_wakeup.dig</code></td>
+<td>第 3 章</td>
+<td>标签相等唤醒</td>
+</tr>
+<tr>
+<td><code>04_ftq_status.dig</code></td>
+<td>第 4 章</td>
+<td>队列指针比较</td>
+</tr>
+<tr>
+<td><code>05_bht_cell.dig</code></td>
+<td>第 5 章</td>
+<td>饱和计数边界判断</td>
+</tr>
+<tr>
+<td><code>06_predecode_detect.dig</code></td>
+<td>第 6 章</td>
+<td>预译码分支识别</td>
+</tr>
+<tr>
+<td><code>07_fusion_detect.dig</code></td>
+<td>第 7 章</td>
+<td>指令融合条件</td>
+</tr>
+<tr>
+<td><code>08_uop_dispatch.dig</code></td>
+<td>第 8 章</td>
+<td>2-4 译码分派</td>
+</tr>
+<tr>
+<td><code>09_rat_cell.dig</code></td>
+<td>第 9 章</td>
+<td>带写使能的 RAT 表项</td>
+</tr>
+<tr>
+<td><code>10_priority_arbiter.dig</code></td>
+<td>第 10 章</td>
+<td>两请求优先仲裁</td>
+</tr>
+<tr>
+<td><code>11_bypass_mux.dig</code></td>
+<td>第 11 章</td>
+<td>旁路二选一</td>
+</tr>
+<tr>
+<td><code>12_violation_detect.dig</code></td>
+<td>第 12 章</td>
+<td>访存违例判据</td>
+</tr>
+<tr>
+<td><code>13_rob_commit.dig</code></td>
+<td>第 13 章</td>
+<td>队头提交允许</td>
+</tr>
+<tr>
+<td><code>14_flush_kill.dig</code></td>
+<td>第 14 章</td>
+<td>错误路径冲刷判据</td>
+</tr>
+<tr>
+<td><code>15_bottleneck.dig</code></td>
+<td>第 15 章</td>
+<td>瓶颈优先判定</td>
+</tr>
+</tbody>
+</table>
+<p>打开方式　用 Digital 的文件菜单打开 <code>.dig</code> 文件，点运行按钮，再点 Testcase 查看真值表。</p>
+<h2 id="小结">小结</h2>
+<ul>
+<li>Digital 用单文件 XML 存电路，纯文本可编辑，本书电路都在 <code>code/digital/</code>。</li>
+<li>组合逻辑看真值表，时序逻辑看波形，两种观察方式各有用途。</li>
+<li>多位信号用 Splitter 拆合，存储用 RAM，反馈绕回加触发器可以做出带使能的状态电路。</li>
+<li>电路大了要封装成子电路，先把接口定清楚。</li>
+<li>故意注入一次错误，比反复看正确波形更能理解电路。</li>
+</ul>
+<h2 id="思考题">思考题</h2>
+<ol type="1">
+<li>用 And、Or、Not 搭一个一位全加器，给出真值表，再用 Splitter 把它扩展成四位加法器。</li>
+<li>一个 D_FF 加一个 Multiplexer 就能做出带写使能的寄存器。如果不用 Multiplexer，只用 And 和 Or，能不能做出同样的电路？画出你的方案。</li>
+<li>Digital 的波形窗口里，某个信号总比预期晚一个时钟沿变化。列出三种可能的原因。</li>
+<li>把 <code>09_rat_cell.dig</code> 的写使能固定接 1，仿真结果会怎样？这对应真实 RAT 的什么故障？</li>
+<li>找一个本书的电路，故意删掉一根连线，运行后描述输出如何变化、错误传播到哪里。</li>
+</ol>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

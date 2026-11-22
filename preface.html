@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>前言</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">RISC-V 多发射乱序处理器</a><nav><a href="index.html">目录</a><a href="chapters/ch01.html">第 1 章 →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="前言">前言</h1>
+<h2 id="为什么写这本书">为什么写这本书</h2>
+<p>学过五级整数流水线的人，往往会有这么一段经历：取指、译码、执行、访存、写回，转发怎么接、冒险怎么处理，都能自己搭出来。可一旦翻开高性能处理器的资料，迎面就是重命名、发射队列、重排序缓冲、旁路网络、检查点恢复，名字一大堆，彼此怎么咬合却看不清楚。看得出每个零件长什么样，拼不成一台能跑的机器。</p>
+<p>这中间的缺口，不是因为读者基础不够，而是因为大多数资料要么停留在单发射顺序流水线的教学层次，要么一上来就是工业级实现：成百上千行的参数、针对特定工艺的优化、为了性能而做的各种折中。前者讲不到多发射乱序的核心，后者又把原理埋在了工程细节里。想找一本”从会做五级流水线，到能看懂并搭出一个最小乱序核”的书，并不容易。</p>
+<p>《RISC-V 多发射乱序处理器：从原理到实现》想填的就是这个缺口。它不追求把一个真实高性能处理器的每个模块都讲全，而是要把乱序设计背后的道理讲透：为什么需要这个结构，它解决了什么问题，没有它会怎样。读者合上书，带走的应该是可以迁移到任何处理器的设计思维，而不是某款芯片的图纸。</p>
+<h2 id="这本书写给谁">这本书写给谁</h2>
+<p>本书假定读者已经能独立设计一个五级整数流水线，包括数据转发、结构冒险与数据冒险的处理、分支预测的基本概念。这些基础不再重复。如果你还在于”为什么转发能解决数据冒险”这个阶段，建议先补齐这一课再读本书。</p>
+<p>具体来说，本书适合两类读者。一类是学完计算机体系结构课程之后，想继续深入乱序处理器的高年级本科生和研究生；另一类是已经做过一些处理器设计、想系统理清多发射乱序脉络的工程师。两部分人起点相近：都熟悉流水线，都想知道真正的乱序核是怎么转起来的。</p>
+<h2 id="怎么讲">怎么讲</h2>
+<p>本书采用四条贯穿始终的做法。</p>
+<p>第一，先讲道理，再讲实现。每个结构出现时，都先回答”为什么需要它、它解决什么问题、不用它会怎样”，然后才谈怎么做。这样读者记住的是动因，而不是一堆需要死记的端口信号。</p>
+<p>第二，用一个最小模型把闭环跑通。全书以 2 发射简化乱序核为教学主线。先把一个能完整运行的小核搭起来，讲清楚指令从取指到提交走过的每一步，再谈如何从 2 发射扩展到 N 发射。一上来就堆参数，只会让人记不住重点。</p>
+<p>第三，图形和代码配合。图形负责把系统连接、模块边界、数据流和握手协议”画出来、动起来”，用的工具是 Digital，一种免费的数字电路仿真软件，可以把电路搭出来单步观察信号怎么流动。代码则只写关键模块的骨架和核心逻辑，用 Verilog 验证理解，不追求工业级的可综合细节。看不懂某个模块在机器里的位置，先看图；想知道某个判断到底怎么写，再看代码。</p>
+<p>第四，香山只作参照，不作蓝本。本书以香山等开源高性能处理器为思想参照，借用的是它们已经验证过的设计思想，比如解耦前端、寄存器重命名、按序提交。真实设计要处理向量扩展、缓存一致性、物理时序收敛等大量问题，那些不是本书的主题。每章末尾的”香山一瞥”是给学有余力读者的选读入口，只讲思想与取舍，跳过它不影响主线的完整与连贯。</p>
+<p>有意略过的内容也在开头说清楚：向量扩展、虚拟化、缓存一致性协议、具体工艺下的时序收敛、敏捷开发流程。这些主题最后一篇会指个方向，但不展开。一本书什么都想讲，往往什么都讲不深。</p>
+<h2 id="内容安排">内容安排</h2>
+<p>全书四篇十五章，加三个附录。</p>
+<table>
+<thead>
+<tr>
+<th>篇</th>
+<th>章</th>
+<th>主题</th>
+<th>要解决的核心问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一篇</td>
+<td>1 至 3</td>
+<td>从顺序到乱序</td>
+<td>为什么要乱序，最小闭环长什么样</td>
+</tr>
+<tr>
+<td>第二篇</td>
+<td>4 至 7</td>
+<td>前端供给</td>
+<td>如何持续、准确地给后端喂指令</td>
+</tr>
+<tr>
+<td>第三篇</td>
+<td>8 至 12</td>
+<td>乱序执行核心</td>
+<td>指令如何被重命名、调度、执行、访存</td>
+</tr>
+<tr>
+<td>第四篇</td>
+<td>13 至 15</td>
+<td>闭环与收尾</td>
+<td>出错如何恢复，性能如何分析</td>
+</tr>
+</tbody>
+</table>
+<p>第一篇从算账开始。第 1 章把流水线的 CPI 拆开，找出性能损失去哪了；第 2 章分清真相关与伪相关，指出哪些等待其实是”名字冲突”造成的假堵车；第 3 章用保留站、广播和重命名搭出 Tomasulo 最小闭环，这是全书第一个跑通的完整模型。</p>
+<p>第二篇转向前端。第 4 章讲解耦取指和取指目标队列；第 5 章讲分支预测，从 2 位饱和计数器到 TAGE 的思想演进；第 6 章讲取指、预译码与指令缓冲；第 7 章讲译码、指令融合与微操作拆分。前端的任务只有一个：让后端永远有活干。</p>
+<p>第三篇进入后端核心。第 8 章先用一张指令生命周期图给出后端地图；第 9 章讲寄存器重命名；第 10 章讲发射与调度；第 11 章讲执行单元与旁路网络；第 12 章讲乱序访存。这五章合起来，回答了”一条指令进入后端之后，到底经历了什么”。</p>
+<p>第四篇把机器闭环。第 13 章讲重排序缓冲与精确异常，让乱序执行对外表现得好像是按顺序完成的；第 14 章讲重定向与状态恢复，把第二篇的预测和第三篇的重命名接起来，这是全书的核心章；第 15 章讲性能分析与延伸阅读，把第 1 章的手算账本换成可测量的指标，并给出从教学核走向真实处理器的优化地图。</p>
+<p>三个附录是工具与速查。附录 A 是 Digital 使用指南，附录 B 给出 FIFO、CAM、优先编码器、仲裁器、交叉开关五个通用 Verilog 模板，附录 C 是术语与参数速查。</p>
+<h2 id="怎么读这本书">怎么读这本书</h2>
+<p>每章的结构大体一致：从问题切入，讲清原理与关键权衡，用图形和电路把结构画出来，再用 Verilog 骨架验证理解，最后是选读、小结和思考题。代码不是整段贴出来让人抄的，而是跟着要解决的问题一点点长出来：先说现在要解决什么，再给出为解决这个问题而写的几行代码，解释每行来历，最后才拼成完整模块。读的时候不妨跟着这个顺序自己敲一遍。</p>
+<p>全书正文、插图、Digital 电路和 Verilog 代码已整理成一个开源项目，放在 GitHub 上：</p>
+<blockquote>
+<p>代码仓库：https://github.com/jgxing/riscv-superscalar-book</p>
+</blockquote>
+<p>代码在 <code>code/</code> 目录下，按章分文件夹，每个文件夹有 README 说明怎么运行和测试。Digital 电路在 <code>code/digital/</code>，Verilog 代码在 <code>code/verilog/</code>，图形文件在 <code>figures/</code>，是可编辑的 SVG。仓库根目录的 README 给出全部代码清单、测试状态和运行命令。建议边读边动手：把电路打开单步走一遍，把代码跑起来看看波形，比只读文字印象深得多。</p>
+<p>需要提醒的是，本书的 Verilog 是教学骨架，目的是把机制说清楚、跑通，不是拿去综合的实现。真实处理器在这些模块上还要处理大量边界情况、时序要求和面积功耗权衡，那是进阶话题。</p>
+<p>最后，乱序处理器不是靠一堆名词堆出来的。把第 3 章的最小闭环和第 14 章的恢复闭环真正走通，中间那些模块就都有了位置。希望读完这本书，你看到的不再是一堆互不相干的零件，而是一台知道自己在做什么的机器。</p>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

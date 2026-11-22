@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 3 章　Tomasulo 乱序执行的最小闭环</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html">RISC-V 多发射乱序处理器</a><nav><a href="../index.html">目录</a><a href="ch02.html">← 第 2 章</a><a href="ch04.html">第 4 章 →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="第-3-章-tomasulo-乱序执行的最小闭环">第 3 章　Tomasulo 乱序执行的最小闭环</h1>
+<blockquote>
+<p><strong>本章导读</strong> 上一章我们看到，WAR 和 WAW 这类”伪相关”会让一条明明可以执行的指令白白等待。本章给出解决它们的经典答案——Tomasulo 算法。1967 年 IBM 360/91 的浮点部件首次用它解决了”浮点除法很慢、但后面的加法其实不用等它”的问题。后来的 Alpha、Intel P6 一直到香山，都沿用了这套基本思路。</p>
+<p>学完本章，你应该能够： 1. 说清楚保留站、寄存器重命名、公共数据总线（CDB）各自解决什么问题； 2. 手工走通一段指令序列从发射到写回的全过程； 3. 读懂一个 2 发射乱序核最核心的数据通路； 4. 理解”广播为什么是瓶颈”，以及 2 发射如何扩展到 N 发射。</p>
+<p>Tomasulo 这个名字听着唬人，其实没有引入新电路，只是把你已经熟悉的”流水线加转发”换了一种组织方式。</p>
+</blockquote>
+<hr />
+<h2 id="顺序流水线为什么会堵车">3.1　顺序流水线为什么会堵车</h2>
+<p>你设计过五级流水线，知道数据相关时可以用<strong>转发（forwarding）</strong>把结果直接从 EX 阶段送回输入端。转发很有效，但它有个前提：<strong>指令必须按顺序流过流水线</strong>。一旦某条指令卡住，后面所有指令都得跟着等——哪怕它们和这条指令毫无关系。</p>
+<p>来看一段具体的整数指令序列（我们全书都用它当例子）：</p>
+<pre class="asm"><code>I1:  MUL  R1, R2, R3      # 慢！假设 3 拍（乘法）
+I2:  ADD  R4, R1, R5      # 真相关 RAW：要用 I1 的结果 R1
+I3:  SUB  R6, R7, R8      # 完全独立，1 拍就好
+I4:  ADD  R1, R9, R10     # 也写 R1 —— WAW，但和 I1 无关
+I5:  XOR  R5, R11, R12    # 写 R5 —— WAR，I2 读的是旧的 R5</code></pre>
+<p>在顺序流水线里会发生什么？</p>
+<ul>
+<li><strong>I2 必须等 I1</strong>：这是 RAW，真相关，躲不掉。乘法 3 拍，I2 至少停 2 拍。</li>
+<li><strong>I3 明明独立，却卡在 I2 后面</strong>：因为顺序发射，它眼睁睁看着 ALU 空着也不能用。这叫<strong>前端阻塞</strong>。</li>
+<li><strong>I4 和 I1 都写 R1</strong>，顺序机器里必须保证 I4 的结果”最后留下”，于是它也得排队。</li>
+<li><strong>I5 写 R5</strong>，但 I2 还要读 R5 的旧值。顺序机器靠停止 I5 来保证 I2 先读到旧值。</li>
+</ul>
+<p>后两条其实很冤：<strong>I4 和 I1 写同一个寄存器，谁先算完谁后算完，只要最终 R1 里是 I4 的值就行；I5 写 R5 时，I2 早把旧 R5 取走了就相安无事。</strong> 它们不是真的依赖，只是”名字撞车”了。这就是上一章说的<strong>伪相关（WAR / WAW）</strong>。</p>
+<blockquote>
+<p>本章要回答一个问题：能不能让指令只在操作数就绪时才执行，同时保证结果最终按程序顺序呈现？办法是三件事：保留站、重命名、广播。</p>
+</blockquote>
+<hr />
+<h2 id="tomasulo-的三个核心思想">3.2　Tomasulo 的三个核心思想</h2>
+<p>先把三个概念分别讲清楚，再拼成完整系统。这里用一个贯穿全书的比喻：</p>
+<blockquote>
+<p>把执行单元想成<strong>厨师</strong>，指令想成<strong>订单</strong>，寄存器想成<strong>取餐口编号</strong>。</p>
+</blockquote>
+<h3 id="保留站让指令就地等待">3.2.1　保留站让指令就地等待</h3>
+<p>顺序流水线里，指令在译码后如果操作数没就绪，就堵在流水线上，挡住后面所有人。</p>
+<p><strong>保留站（Reservation Station, RS）</strong>的做法是：译码阶段一出问题指令，先把它<strong>搬到一个小缓冲区（保留站）里待着</strong>，然后立刻空出流水线，让后面的指令继续进来。指令在保留站里盯着自己的操作数，一旦就绪就被送去执行。</p>
+<p>这就像餐厅：点单后不是站在取餐口死等，而是拿个号去座位坐下，叫到号再取餐。流水线门口不再堵。</p>
+<p>保留站的每一项通常存这些东西：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Busy</code></td>
+<td>这一项是否被占用</td>
+<td>座位是否有人</td>
+</tr>
+<tr>
+<td><code>Op</code></td>
+<td>要做什么运算</td>
+<td>订单内容</td>
+</tr>
+<tr>
+<td><code>Vj / Vk</code></td>
+<td>操作数<strong>数据值</strong>（已就绪才有）</td>
+<td>手上已有的食材</td>
+</tr>
+<tr>
+<td><code>Qj / Qk</code></td>
+<td>操作数在等<strong>哪个标签</strong>广播（未就绪）</td>
+<td>在等哪桌上菜</td>
+</tr>
+<tr>
+<td><code>Dest</code></td>
+<td>结果要写到哪个标签/寄存器</td>
+<td>取餐口编号</td>
+</tr>
+</tbody>
+</table>
+<p>注意，<code>V</code> 和 <code>Q</code> 二选一。操作数要么已经有值（<code>V</code>），要么正在等人送（<code>Q</code>），这就记录了就绪还是未就绪。</p>
+<h3 id="寄存器重命名">3.2.2　寄存器重命名</h3>
+<p>重命名是消除伪相关的关键。想象一下：如果每条<strong>写寄存器</strong>的指令都拿到一个独一无二的标签，而读它的指令记下的是”我在等标签 #37”，而不是”我在等 R1”，会发生什么？</p>
+<ul>
+<li><strong>WAW 消失</strong>：I1 和 I4 都写 R1，但它们拿到的是不同标签（比如 #21 和 #24）。“R1 的最新值来自谁”由一张<strong>重命名表（RAT）</strong>记录，后写的 I4 覆盖登记。谁先算完都无所谓，最终登记的是 I4。</li>
+<li><strong>WAR 消失</strong>：I2 在发射时就把 R5 的<strong>当前值</strong>读走存进了自己的 <code>Vk</code>（因为那一刻 R5 的标签是空的，说明寄存器里就是有效值）。之后 I5 写 R5，改的是”R5 的最新标签”，和 I2 手里那份已经 copy 走的旧值无关。</li>
+</ul>
+<p><strong>重命名表（RAT, Register Alias Table）</strong>就是”取餐口 → 当前叫号牌”的对照表：</p>
+<pre><code>发射 I1 (MUL R1,...) 时：  RAT[R1] = #21   （R1 的最新值将由标签 #21 产生）
+发射 I4 (ADD R1,...) 时：  RAT[R1] = #24   （覆盖！现在 R1 的最新值来自 #24）</code></pre>
+<p>读寄存器时查这张表：表里空 → 直接取寄存器堆里的值；表里是标签 → 记下这个标签，等广播。</p>
+<figure>
+<img src="../figures/fig3-1-rename.svg" alt="图 3-1 用标签代替名字化解 WAW 与 WAR" />
+<figcaption aria-hidden="true">图 3-1 用标签代替名字化解 WAW 与 WAR</figcaption>
+</figure>
+<p><em>图 3-1　R1 被写两次时 RAT 标签的覆盖过程。I1 登记 #21，I4 覆盖为 #24，旧标签作废，WAW 随之化解。</em></p>
+<blockquote>
+<p>一句话概括：把寄存器名字换成数据标签。RAW 靠等标签保持（真相关），WAR/WAW 因标签不同而消失（伪相关消除）。</p>
+</blockquote>
+<h3 id="cdb-广播">3.2.3　CDB 广播</h3>
+<p>功能部件算完结果后，不写回某个固定的地方让别的指令去读，而是把 <strong>(标签, 结果值)</strong> 放到一根共享的<strong>公共数据总线（Common Data Bus, CDB）</strong>上，广播给所有人：</p>
+<ul>
+<li>所有保留站都听着：<strong>如果我的 <code>Qj</code> 或 <code>Qk</code> 等于广播的标签，就把结果锁存进 <code>Vj</code>/<code>Vk</code>，并把对应的 <code>Q</code> 清空</strong>——我的操作数就绪了！</li>
+<li>重命名表 RAT 也听着：<strong>如果哪一项登记的这个标签，就更新为”已就绪”，并把结果写入寄存器堆。</strong></li>
+</ul>
+<p>这一喊就唤醒了所有在等这个结果的指令，不需要它们轮询，也不需要专门的控制。CDB 就是把各个模块连起来的公共通路。</p>
+<blockquote>
+<p>类比：厨师做好一道菜，不是在桌上留纸条，而是举起来喊”37 号好了！“——所有在等 37 号的客人同时响应。</p>
+</blockquote>
+<figure>
+<img src="../figures/fig3-2-cdb-broadcast.svg" alt="图 3-2 CDB 广播唤醒所有等待者" />
+<figcaption aria-hidden="true">图 3-2 CDB 广播唤醒所有等待者</figcaption>
+</figure>
+<p><em>图 3-2　结果打上标签放上 CDB，所有保留站同时监听。匹配的锁存数据并唤醒，不匹配的继续等待。</em></p>
+<hr />
+<h2 id="把三块拼起来完整数据通路">3.3　把三块拼起来（完整数据通路）</h2>
+<p>三块合起来就是下面这张图。请对照文字读图，也可以用配套的 Digital 文件（见 3.7）动手连一遍。</p>
+<figure>
+<img src="../figures/fig3-3-datapath.svg" alt="图 3-3 Tomasulo 完整数据通路" />
+<figcaption aria-hidden="true">图 3-3 Tomasulo 完整数据通路</figcaption>
+</figure>
+<p><em>图 3-3　发射 → 保留站等位 → 就绪即执行 → CDB 广播 → 监听唤醒的完整闭环（SVG 矢量图，可编辑）。</em></p>
+<p>读图时留意这几点（对应 Digital 文件里的连线）：</p>
+<ol type="1">
+<li><strong>发射是单向的进</strong>：指令从左边进，查 RAT、读寄存器堆，带着 <code>(V 或 Q)</code> 住进保留站；同时把 <code>RAT[dest]</code> 改成自己的标签。</li>
+<li><strong>执行是按需的取</strong>：只有 <code>Qj</code>、<code>Qk</code> 都空（即两个操作数都在 <code>V</code> 里）的保留站项才”有资格”被送往功能部件。这个”挑谁能执行”的动作叫<strong>发射选择 / 唤醒-选择</strong>（第 10 章详述，本章先理解为”就绪就能上”）。</li>
+<li><strong>写回是广播的出</strong>：功能部件结果汇入 CDB，CDB 的连线<strong>回连到每一个保留站和 RAT</strong>——这就是图里那一圈”监听”的箭头。这条反馈环路是 Tomasulo 的关键。</li>
+</ol>
+<blockquote>
+<p><strong>Digital 里怎么表达”广播”</strong>：Digital 支持总线（多比特线束）和多路开关。把 CDB 画成一根带标签的总线，每个保留站的 <code>Q</code> 比较器挂在总线上；匹配信号作为”写入使能”。配套文件 <code>code/digital/03_tag_match_wakeup.dig</code> 搭出了这个比较器（1 位相等检测，<code>match</code> 即唤醒信号），建议边看边仿真——把 <code>CDB_tag</code> 和 <code>Qj</code> 拨成相同，<code>match</code> 就会亮起，这就是唤醒信号。</p>
+</blockquote>
+<hr />
+<h2 id="逐周期走一遍本章重点">3.4　逐周期走一遍（本章重点）</h2>
+<p>原理讲完了，现在把 3.1 那段指令序列逐周期走一遍。走完之后，抽象的机制就具体了。为简化，假设每周期发射 1 条（2 发射的扩展放在 3.5），功能部件有独立的 ALU 和乘法器，乘法 3 拍、ALU 1 拍。</p>
+<p>初始状态：RAT 全空（所有寄存器的值都在寄存器堆里且有效），所有保留站空闲。</p>
+<h3 id="周期-1-发射-i1-mul-r1-r2-r3">周期 1　发射 I1 <code>MUL R1, R2, R3</code></h3>
+<ul>
+<li>读 RAT[R2]、RAT[R3]：都空 → 从寄存器堆取值，设 <code>Vj=R2值, Vk=R3值</code>。</li>
+<li>分配保留站 <strong>#21</strong>，<code>Op=MUL</code>，<code>Dest=R1</code>。</li>
+<li>更新 <strong>RAT[R1] = #21</strong>。</li>
+<li>I1 两个操作数都就绪 → 送往乘法器开始执行。</li>
+</ul>
+<h3 id="周期-2-发射-i2-add-r4-r1-r5">周期 2　发射 I2 <code>ADD R4, R1, R5</code></h3>
+<ul>
+<li>读 RAT[R1] = <strong>#21</strong>（非空！R1 的最新值还没出来）→ <code>Qj = #21</code>，<code>Vj</code> 无效。</li>
+<li>读 RAT[R5] = 空 → 从寄存器堆取<strong>旧 R5 值</strong>，设 <code>Vk = R5旧值</code>。（← <strong>WAR 在这里就被化解了</strong>：I2 把旧值 copy 走了）</li>
+<li>分配保留站 <strong>#22</strong>，<code>Op=ADD</code>，<code>Dest=R4</code>，更新 <code>RAT[R4]=#22</code>。</li>
+<li><code>Qj</code> 非空 → I2 <strong>留在保留站等待</strong>，不堵流水线。</li>
+</ul>
+<h3 id="周期-3-发射-i3-sub-r6-r7-r8">周期 3　发射 I3 <code>SUB R6, R7, R8</code></h3>
+<ul>
+<li>R7、R8 的 RAT 都空 → <code>Vj, Vk</code> 取到值。分配 <strong>#23</strong>，<code>Dest=R6</code>，<code>RAT[R6]=#23</code>。</li>
+<li>操作数就绪 → 送往空闲 ALU 执行。<strong>I3 越过了还在等的 I2，这就是乱序。</strong></li>
+</ul>
+<h3 id="周期-4-发射-i4-add-r1-r9-r10">周期 4　发射 I4 <code>ADD R1, R9, R10</code></h3>
+<ul>
+<li>R9、R10 都空 → <code>Vj, Vk</code> 就绪。分配 <strong>#24</strong>，<code>Dest=R1</code>。</li>
+<li>更新 <strong>RAT[R1] = #24</strong>，覆盖之前的 #21。（← <strong>WAW 在这里被化解了</strong>：登记簿上 R1 的最新值现在归 #24）</li>
+<li>操作数就绪 → 执行。注意：此时 I1 的乘法可能还没算完，但 I4 不用等它。</li>
+</ul>
+<h3 id="周期-5-发射-i5-xor-r5-r11-r12">周期 5　发射 I5 <code>XOR R5, R11, R12</code></h3>
+<ul>
+<li>R11、R12 都空 → 就绪。分配 <strong>#25</strong>，<code>Dest=R5</code>，<code>RAT[R5]=#25</code>。</li>
+<li>执行。此时 I2 手里的 <code>Vk</code> 是旧的 R5 值，I5 改 R5 不影响它，WAR 伪相关就是这样消除的。</li>
+</ul>
+<h3 id="周期-6-及以后-广播唤醒">周期 6 及以后　广播唤醒</h3>
+<p>假设 I1 的乘法在周期 6 完成，把 <strong>(#21, 结果值)</strong> 放上 CDB：</p>
+<ul>
+<li><strong>保留站 #22（I2）监听</strong>：我的 <code>Qj == #21</code>！→ 把结果锁存进 <code>Vj</code>，清 <code>Qj</code>。I2 的 <code>Vj</code>、<code>Vk</code> 现在都有值了 → <strong>被唤醒，送往 ALU 执行</strong>。</li>
+<li><strong>RAT 监听</strong>：RAT[R1] 现在是 #24，不是 #21 → 不更新。（I1 的结果被 I4 “覆盖”了，正确！）</li>
+</ul>
+<p>随后 I4、I5、I3 的结果也陆续上 CDB，唤醒等待它们的指令并写回寄存器堆。所有指令最终完成。</p>
+<h3 id="一张表看懂全过程">一张表看懂全过程</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>指令</th>
+<th>分配标签</th>
+<th>源操作数来源</th>
+<th>化解的相关</th>
+<th>何时能执行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I1 MUL R1,R2,R3</td>
+<td>#21</td>
+<td>R2,R3 直接取值</td>
+<td>—</td>
+<td>周期 1 立即</td>
+</tr>
+<tr>
+<td>I2 ADD R4,R1,R5</td>
+<td>#22</td>
+<td>R1 等 #21；R5 <strong>取旧值</strong></td>
+<td><strong>WAR</strong>（旧 R5 已 copy）</td>
+<td>等 #21 广播后</td>
+</tr>
+<tr>
+<td>I3 SUB R6,R7,R8</td>
+<td>#23</td>
+<td>R7,R8 直接取值</td>
+<td>—</td>
+<td>周期 3 立即（超越 I2）</td>
+</tr>
+<tr>
+<td>I4 ADD R1,R9,R10</td>
+<td>#24</td>
+<td>R9,R10 直接取值</td>
+<td><strong>WAW</strong>（RAT[R1] 被覆盖为 #24）</td>
+<td>周期 4 立即</td>
+</tr>
+<tr>
+<td>I5 XOR R5,R11,R12</td>
+<td>#25</td>
+<td>R11,R12 直接取值</td>
+<td><strong>WAR</strong>（不碰 I2 的旧值）</td>
+<td>周期 5 立即</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>想一想：RAW（I2 等 I1）并没有被消除，只是变成了等标签。因为 I2 真的需要 I1 算出的那个数，这是真实的数据依赖，绕不过去。Tomasulo 消除的只是假依赖（WAR/WAW）。</p>
+</blockquote>
+<hr />
+<h2 id="重点提炼与关键权衡">3.5　重点提炼与关键权衡</h2>
+<p>把本章的结论整理一下：</p>
+<h3 id="重点-1-收益来自三个解耦">重点 1　收益来自三个解耦</h3>
+<ul>
+<li><strong>指令与流水线解耦</strong>（保留站）：操作数没好就去旁边等，不挡路。</li>
+<li><strong>名字与数据解耦</strong>（重命名）：寄存器名只是标签，真数据跟着标签走。</li>
+<li><strong>生产与消费解耦</strong>（广播）：结果一出来主动通知所有等待者。</li>
+</ul>
+<h3 id="重点-2-cdb-是吞吐量的瓶颈">重点 2　CDB 是吞吐量的瓶颈</h3>
+<p>所有功能部件的结果都要挤上一根（或少数几根）CDB。<strong>同一周期只能广播有限个结果</strong>。这就是为什么真实处理器会用多条 CDB、或把结果先写回 PRF 再靠”唤醒”通知（第 11 章）。问自己：如果 2 发射每周期产生 2 个结果，一根 CDB 够吗？</p>
+<h3 id="重点-3-从-2-发射扩展到-n-发射">重点 3　从 2 发射扩展到 N 发射</h3>
+<figure>
+<img src="../figures/fig3-4-scale-to-n.svg" alt="图 3-4 从 2 发射扩展到 N 发射" />
+<figcaption aria-hidden="true">图 3-4 从 2 发射扩展到 N 发射</figcaption>
+</figure>
+<p><em>图 3-4　2 发射最小核与 N 发射的对照。机制不变，各部件同步加宽，CDB 带宽是主要瓶颈。</em></p>
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>2 发射 → N 发射的扩展</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发射逻辑</td>
+<td>每周期读 N 条指令、查 N 次 RAT、分配 N 个保留站项</td>
+</tr>
+<tr>
+<td>保留站</td>
+<td>端口数增加：要能同时接收 N 个广播写入、N 个发射读取</td>
+</tr>
+<tr>
+<td>功能部件</td>
+<td>更多 ALU / 乘法器</td>
+</tr>
+<tr>
+<td>CDB</td>
+<td>需要更多广播带宽，否则结果堵塞</td>
+</tr>
+<tr>
+<td>RAT / 寄存器堆</td>
+<td>读写端口数随发射宽度增长（这是物理实现的痛点）</td>
+</tr>
+</tbody>
+</table>
+<p>机制不变，只是路口变宽。这也是先把 2 发射闭环讲透的原因，N 发射只是在它上面加宽。</p>
+<h3 id="重点-4-本章留下的两个问题">重点 4　本章留下的两个问题</h3>
+<ol type="1">
+<li>上面的写回是”广播即写入寄存器堆”。但如果一条指令在写回后才发现异常怎么办？寄存器已经被改脏了。<strong>第 13 章的 ROB + 按序提交</strong>解决它。</li>
+<li>分支预测错了，保留站里一堆”在等”的指令怎么办？<strong>第 14 章的 checkpoint 恢复</strong>解决它。</li>
+</ol>
+<blockquote>
+<p>现阶段先接受这个”不完美但能跑”的最小闭环，把直觉建立起来，后面再逐步补全。</p>
+</blockquote>
+<hr />
+<h2 id="从一条指令开始搭电路">3.6　从一条指令开始搭电路</h2>
+<p>这一节跟着一条指令从发射走到写回。每个模块都先看它对外要提供哪些端口，再看内部怎么实现。端口不是一次列全的，需要哪个就加哪个，你会看到每个信号都是被具体需求逼出来的。完整可运行版见 <code>code/verilog/03_tomasulo/</code>。</p>
+<h3 id="保留站条目">3.6.1　保留站条目</h3>
+<p><strong>先看接口。</strong></p>
+<p><strong>第一步，指令得能进来。</strong> 译码后的指令要占住一个保留站条目。占用要有使能 <code>issue_en</code>，还要把这条指令的信息一起送进来，包括操作码、两个操作数以及结果贴什么标签。</p>
+<pre class="verilog"><code>input  wire             issue_en,
+input  wire [3:0]       op_in,
+input  wire             vj_valid_in, vk_valid_in,
+input  wire [DATA_W-1:0] vj_in, vk_in,
+input  wire [TAG_W-1:0]  qj_in, qk_in,
+input  wire [TAG_W-1:0]  dest_tag_in,</code></pre>
+<p><code>vj_valid_in</code> 为 1 表示 <code>vj_in</code> 里已经是数值，为 0 表示 <code>qj_in</code> 里是它等待的标签。一个操作数用”值加标签”两种形式表示，是 Tomasulo 的关键约定。</p>
+<p><strong>第二步，结果要能监听 CDB。</strong> 等数据的条目得一直盯着总线，所以要有广播的有效位、标签和数值三个输入：</p>
+<pre class="verilog"><code>input  wire             cdb_valid,
+input  wire [TAG_W-1:0]  cdb_tag,
+input  wire [DATA_W-1:0] cdb_data,</code></pre>
+<p><strong>第三步，操作数齐了要通知外面。</strong> 条目本身不做运算，它只在操作数到齐时拉高 <code>ready</code>，并把操作码和值送出去给功能部件：</p>
+<pre class="verilog"><code>output wire             ready,
+output wire [3:0]       op_out,
+output wire [DATA_W-1:0] vj_out, vk_out,</code></pre>
+<p>再加上时钟，接口就完整了。</p>
+<p><strong>再看实现。</strong></p>
+<p><strong>第四步，指令进来先记住三样东西。</strong> 待着的时候要记操作码、两个操作数的状态，以及自己的目的标签：</p>
+<pre class="verilog"><code>reg             busy;
+reg [3:0]       op;
+reg             vj_valid, vk_valid;
+reg [DATA_W-1:0] vj, vk;
+reg [TAG_W-1:0]  qj, qk;
+reg [TAG_W-1:0]  dest_tag;
+
+assign ready = busy &amp;&amp; vj_valid &amp;&amp; vk_valid;</code></pre>
+<p><code>ready</code> 就是”两个操作数都到齐”，可以直接拿去启动功能部件。把等数据这件事从流水线上挪到这个小仓库，流水线门口就不再堵着。</p>
+<p><strong>第五步，结果回来怎么唤醒。</strong> 广播的标签和自己在等的标签一对上，就把值锁存下来，清掉等待标志：</p>
+<pre class="verilog"><code>if (cdb_valid &amp;&amp; busy) begin
+    if (!vj_valid &amp;&amp; qj == cdb_tag) begin
+        vj       &lt;= cdb_data;
+        vj_valid &lt;= 1&#39;b1;
+    end
+    if (!vk_valid &amp;&amp; qk == cdb_tag) begin
+        vk       &lt;= cdb_data;
+        vk_valid &lt;= 1&#39;b1;
+    end
+end</code></pre>
+<p>两个 <code>if</code> 要并列写，不能合成一个。虽然一次广播只有一个标签，但两个操作数可能在等同一个标签，比如 <code>ADD R1, R2, R2</code>，两个源都是 R2，就得同时填上。</p>
+<p><strong>第六步，发射和广播撞在同一拍。</strong> 新指令要写入，旧结果同时广播回来，谁优先？让发射优先：</p>
+<pre class="verilog"><code>if (issue_en) begin
+    busy     &lt;= 1&#39;b1;
+    op       &lt;= op_in;
+    dest_tag &lt;= dest_tag_in;
+    vj_valid &lt;= vj_valid_in;  vk_valid &lt;= vk_valid_in;
+    vj       &lt;= vj_in;        vk       &lt;= vk_in;
+    qj       &lt;= qj_in;        qk       &lt;= qk_in;
+end else if (cdb_valid &amp;&amp; busy) begin
+    // 上面那段广播监听
+end</code></pre>
+<p>新写入项的等待标签是刚分配的新标签，不可能等于这一拍广播的老标签，让它去响应没有意义。</p>
+<p><strong>完整代码。</strong> 端口就是上面定稿的那一份，内部是这三层逻辑拼起来：</p>
+<pre class="verilog"><code>module reservation_station #(
+    parameter TAG_W = 5,      // 标签位宽：32 个项
+    parameter DATA_W = 32
+)(
+    input  wire             clk,
+    input  wire             issue_en,
+    input  wire [3:0]       op_in,
+    input  wire             vj_valid_in, vk_valid_in,
+    input  wire [DATA_W-1:0] vj_in, vk_in,
+    input  wire [TAG_W-1:0]  qj_in, qk_in,
+    input  wire [TAG_W-1:0]  dest_tag_in,
+    input  wire             cdb_valid,
+    input  wire [TAG_W-1:0]  cdb_tag,
+    input  wire [DATA_W-1:0] cdb_data,
+    output wire             ready,
+    output wire [3:0]       op_out,
+    output wire [DATA_W-1:0] vj_out, vk_out
+);
+    reg             busy;
+    reg [3:0]       op;
+    reg             vj_valid, vk_valid;
+    reg [DATA_W-1:0] vj, vk;
+    reg [TAG_W-1:0]  qj, qk;
+    reg [TAG_W-1:0]  dest_tag;
+
+    assign ready  = busy &amp;&amp; vj_valid &amp;&amp; vk_valid;
+    assign op_out = op;
+    assign vj_out = vj;
+    assign vk_out = vk;
+
+    always @(posedge clk) begin
+        if (issue_en) begin
+            busy       &lt;= 1&#39;b1;
+            op         &lt;= op_in;
+            dest_tag   &lt;= dest_tag_in;
+            vj_valid   &lt;= vj_valid_in;  vk_valid &lt;= vk_valid_in;
+            vj         &lt;= vj_in;        vk       &lt;= vk_in;
+            qj         &lt;= qj_in;        qk       &lt;= qk_in;
+        end else if (cdb_valid &amp;&amp; busy) begin
+            if (!vj_valid &amp;&amp; qj == cdb_tag) begin
+                vj       &lt;= cdb_data;
+                vj_valid &lt;= 1&#39;b1;
+            end
+            if (!vk_valid &amp;&amp; qk == cdb_tag) begin
+                vk       &lt;= cdb_data;
+                vk_valid &lt;= 1&#39;b1;
+            end
+        end
+        // 被功能部件取走后释放此项，完整版用握手信号实现
+    end
+endmodule</code></pre>
+<h3 id="操作数里的标签是谁填的">3.6.2　操作数里的标签是谁填的</h3>
+<p><strong>先看接口。</strong></p>
+<p><strong>第一步，发射时要查两个源寄存器。</strong> 源寄存器号 <code>rs1</code>、<code>rs2</code> 进来，查表后输出它们的等待标签 <code>q1</code>、<code>q2</code> 和有效位：</p>
+<pre class="verilog"><code>input  wire [4:0]       rs1, rs2,
+output wire [TAG_W-1:0]  q1, q2,
+output wire             q1_valid, q2_valid,</code></pre>
+<p><strong>第二步，发射时还要更新目的寄存器。</strong> 给 <code>rd</code> 分配一个新标签并登记，需要使能 <code>rename_en</code> 和新标签 <code>new_tag</code>：</p>
+<pre class="verilog"><code>input  wire             rename_en,
+input  wire [4:0]       rd,
+input  wire [TAG_W-1:0]  new_tag,</code></pre>
+<p><strong>第三步，结果写回时要清登记。</strong> 某个标签的结果出来后，要把登记着这个标签的表项标成有效，所以要监听 CDB：</p>
+<pre class="verilog"><code>input  wire             cdb_valid,
+input  wire [TAG_W-1:0]  cdb_tag,</code></pre>
+<p>加上时钟，接口齐了。</p>
+<p><strong>再看实现。</strong></p>
+<p><strong>第四步，查表。</strong> 译码一条指令时读它的源寄存器。如果那个寄存器正有写入在途，就不能取寄存器堆里的旧值，而要记下产生新值的标签：</p>
+<pre class="verilog"><code>assign q1_valid = valid[rs1];
+assign q1       = q1_valid ? tag_ram[rs1] : 0;</code></pre>
+<p><code>valid[rs1]</code> 为 1，表示”R1 的新值还在路上，正等着标签 <code>tag_ram[rs1]</code>“；为 0 就直接去寄存器堆取值。</p>
+<p><strong>第五步，两条指令写同一个寄存器。</strong> 这就是第 2 章说的 WAW。RAT 的办法很干脆，新指令一来直接覆盖登记：</p>
+<pre class="verilog"><code>if (rename_en) begin
+    valid[rd]   &lt;= 1&#39;b1;
+    tag_ram[rd] &lt;= new_tag;
+end</code></pre>
+<p>旧标签的结果广播回来时，<code>tag_ram[rd]</code> 里已经是新标签，匹配不上，自然不会误清。WAR 也不需要额外动作：读指令早把旧值的标签或数值记在自己保留站里了，后来者改写 RAT 影响不到它。</p>
+<p><strong>第六步，结果写回后清登记。</strong> 某个标签的结果一旦出来，所有登记着这个标签的寄存器都可以标记为有效值已在寄存器堆：</p>
+<pre class="verilog"><code>if (cdb_valid)
+    for (i = 0; i &lt; NREG; i = i + 1)
+        if (valid[i] &amp;&amp; tag_ram[i] == cdb_tag)
+            valid[i] &lt;= 1&#39;b0;</code></pre>
+<p>一个 <code>for</code> 循环并行清掉所有匹配项，这就是”广播一次唤醒所有等待者”在 RAT 上的样子。</p>
+<p><strong>完整代码。</strong> 端口即定稿的接口，内部就是查表、覆盖、清除三件事：</p>
+<pre class="verilog"><code>module rat #(
+    parameter NREG = 32,
+    parameter TAG_W = 5
+)(
+    input  wire             clk,
+    input  wire [4:0]       rs1, rs2,
+    output wire [TAG_W-1:0]  q1, q2,
+    output wire             q1_valid, q2_valid,
+    input  wire             rename_en,
+    input  wire [4:0]       rd,
+    input  wire [TAG_W-1:0]  new_tag,
+    input  wire             cdb_valid,
+    input  wire [TAG_W-1:0]  cdb_tag
+);
+    localparam NREG_LAST = NREG - 1;
+    reg [TAG_W-1:0] tag_ram [0:NREG_LAST];
+    reg             valid  [0:NREG_LAST];
+
+    assign q1_valid = valid[rs1];
+    assign q2_valid = valid[rs2];
+    assign q1 = q1_valid ? tag_ram[rs1] : {TAG_W{1&#39;b0}};
+    assign q2 = q2_valid ? tag_ram[rs2] : {TAG_W{1&#39;b0}};
+
+    integer i;
+    always @(posedge clk) begin
+        if (rename_en) begin
+            valid[rd]   &lt;= 1&#39;b1;
+            tag_ram[rd] &lt;= new_tag;
+        end
+        if (cdb_valid)
+            for (i = 0; i &lt; NREG; i = i + 1)
+                if (valid[i] &amp;&amp; tag_ram[i] == cdb_tag)
+                    valid[i] &lt;= 1&#39;b0;
+    end
+endmodule</code></pre>
+<blockquote>
+<p><strong>动手提示</strong>：存储器取名 <code>tag_ram</code>，数组上界先转成 <code>localparam</code>。在 Icarus Verilog 里 <code>table</code> 是保留字，数组上界也不能直接写 <code>[0:NREG-1]</code>。配套文件 <code>code/verilog/03_tomasulo/rat.v</code> 还加了复位，并让写回优先于重命名，读者可以对照着看。</p>
+</blockquote>
+<h3 id="一根总线一次只能过一个结果">3.6.3　一根总线一次只能过一个结果</h3>
+<p><strong>先看接口。</strong></p>
+<p><strong>第一步，N 个功能部件要请求广播。</strong> 每个部件给一个请求位，外加它要广播的标签和数值：</p>
+<pre class="verilog"><code>input  wire [N-1:0]              req,
+input  wire [N-1:0][TAG_W-1:0]   req_tag,
+input  wire [N-1:0][DATA_W-1:0]  req_data,</code></pre>
+<p><strong>第二步，裁决结果送上一根总线。</strong> 仲裁器从 N 路里选一路，输出有效位、标签和数值：</p>
+<pre class="verilog"><code>output reg                       cdb_valid,
+output reg  [TAG_W-1:0]          cdb_tag,
+output reg  [DATA_W-1:0]         cdb_data</code></pre>
+<p>这个模块是纯组合逻辑，不需要时钟。</p>
+<p><strong>再看实现。</strong></p>
+<p><strong>第三步，多个结果同时回来。</strong> 乘法器、加法器、访存部件可能在同一拍都算完，都要上 CDB。但总线只有一根，一次只能过一个标签和一个值，所以要仲裁：</p>
+<pre class="verilog"><code>for (k = 0; k &lt; N; k = k + 1)
+    if (req[k]) begin           // 第一个请求者优先
+        cdb_valid = 1&#39;b1;
+        cdb_tag   = req_tag[k];
+        cdb_data  = req_data[k];
+        break;
+    end</code></pre>
+<p>优先级的选法很随意，这里的规则是编号小的先走。真正要紧的是看清这个模块的代价：N 个部件要广播，一拍只放行一个，这正是 3.5 说的广播瓶颈。想提高发射宽度，就得增加 CDB 条数，或者让不同部件的结果走不同通路。</p>
+<p><strong>完整代码。</strong> 端口就是前面那两组，内部一个带 <code>break</code> 的循环：</p>
+<pre class="verilog"><code>module cdb_arbiter #(
+    parameter N = 4,
+    parameter TAG_W = 5,
+    parameter DATA_W = 32
+)(
+    input  wire [N-1:0]              req,
+    input  wire [N-1:0][TAG_W-1:0]   req_tag,
+    input  wire [N-1:0][DATA_W-1:0]  req_data,
+    output reg                       cdb_valid,
+    output reg  [TAG_W-1:0]          cdb_tag,
+    output reg  [DATA_W-1:0]         cdb_data
+);
+    integer k;
+    always @(*) begin
+        cdb_valid = 1&#39;b0; cdb_tag = 0; cdb_data = 0;
+        for (k = 0; k &lt; N; k = k + 1) begin
+            if (req[k]) begin
+                cdb_valid = 1&#39;b1;
+                cdb_tag   = req_tag[k];
+                cdb_data  = req_data[k];
+                break;
+            end
+        end
+    end
+endmodule</code></pre>
+<hr />
+<h2 id="配套-digital-文件与实验">3.7　配套 Digital 文件与实验</h2>
+<p>本书的数字逻辑图用 <a href="https://github.com/hneemann/digital">Digital</a> 绘制（开源、免费）。本章配套文件：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>文件</th>
+<th>格式</th>
+<th>内容</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>figures/fig3-3-datapath.svg</code></td>
+<td>SVG</td>
+<td>完整数据通路（发射→保留站→执行→广播→唤醒）</td>
+<td>对照 3.3 节读，可在矢量编辑器中修改</td>
+</tr>
+<tr>
+<td><code>figures/fig3-1-rename.svg</code></td>
+<td>SVG</td>
+<td>重命名化解 WAW/WAR 的 RAT 覆盖过程</td>
+<td>对照 3.2.2 节</td>
+</tr>
+<tr>
+<td><code>figures/fig3-2-cdb-broadcast.svg</code></td>
+<td>SVG</td>
+<td>CDB 广播唤醒机制</td>
+<td>对照 3.2.3 节</td>
+</tr>
+<tr>
+<td><code>figures/fig3-4-scale-to-n.svg</code></td>
+<td>SVG</td>
+<td>2 发射 → N 发射的扩展对照</td>
+<td>对照 3.5 节</td>
+</tr>
+<tr>
+<td><code>code/digital/03_tag_match_wakeup.dig</code></td>
+<td>Digital</td>
+<td>唤醒核心：标签相等检测器（1 位比较，<code>match</code> 即唤醒信号），自带测试向量</td>
+<td>拨动 <code>CDB_tag</code> 与 <code>Qj</code>，观察 <code>match</code>；相等时亮起</td>
+</tr>
+<tr>
+<td><code>code/verilog/03_tomasulo/</code></td>
+<td>Verilog</td>
+<td>RAT、保留站、CDB 仲裁的可综合实现 + 测试</td>
+<td>见 3.6 节与下方 Verilog 实验</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关于插图</strong>：本书所有结构图、流程图均为 SVG 矢量格式，存放在 <code>figures/</code> 目录。SVG 是纯文本、可编辑的开放格式——用浏览器直接打开查看，用 Inkscape、Illustrator、VS Code 等均可修改文字、颜色和连线，缩放不失真。</p>
+</blockquote>
+<blockquote>
+<p>Digital 的 <code>.dig</code> 文件是 XML 格式，直接用 Digital 软件打开即可。<code>03_tag_match_wakeup.dig</code> 内嵌了测试向量（Testcase），点击仿真即可看到”相等→match=1”。把 CDB 标签拨成和 <code>Qj</code> 一样，看到匹配信号亮起，就对应正文说的广播唤醒。完整系统连接用 3.3 节的分层图配合 Verilog 代码理解（Digital 适合表达局部机制，完整乱序核用 Verilog 更清晰，这也是本书图形化与代码分工的原则）。</p>
+</blockquote>
+<h3 id="本章实验">本章实验</h3>
+<ol type="1">
+<li><strong>手算实验</strong>：把 3.4 的例子在纸上走一遍，画出每个周期 RAT 和三个保留站项的状态表。</li>
+<li><strong>Digital 实验</strong>：在保留站演示里故意让 CDB 广播一个<strong>不匹配</strong>的标签，确认保留站不动作；再广播匹配标签，确认唤醒。</li>
+<li><strong>Verilog 实验</strong>：给 <code>rat</code> 写一个 testbench，发射两次写 R1（标签 #21、#24），然后广播 #21，检查 RAT[R1] 是否<strong>仍登记为 #24</strong>（验证 WAW 未被错误覆盖）。</li>
+</ol>
+<hr />
+<h2 id="香山一瞥选读">3.8　香山一瞥（选读）</h2>
+<p>香山（昆明湖）的后端用的还是 Tomasulo 那套思路，只是做了三点工程调整，了解它们可以把本章知识和真实处理器对上号：</p>
+<ul>
+<li><strong>从”保留站里存数据”到”物理寄存器堆 PRF”</strong>：香山在重命名时直接分配一个<strong>物理寄存器</strong>（第 11 章的概念），指令发射后结果写进 PRF，保留站里只存”指向哪个物理寄存器”。这样避免了 CDB 广播数据时的大位宽连线，代价是要更大的寄存器堆和更复杂的回收逻辑。</li>
+<li><strong>唤醒与选择分拍优化</strong>：经典 Tomasulo 里”广播唤醒 + 就绪判断 + 选一个发射”可能挤在一拍里，时序紧张。香山把发射队列组织成分区结构，配合精心的流水线排布来缓解（第 10、12 章会讲思想）。</li>
+<li><strong>分散的发射队列与执行单元</strong>：整数、浮点、访存各有自己的发射队列和流水线，访存还进一步分成 load / store 地址 / store 数据三条（第 12 章）——本质都是”增加并行通路，减少互相等待”。</li>
+</ul>
+<p>这些都不是新原理，只是围绕三个核心机制做加宽、加深、分块。把 2 发射闭环吃透，再看香山的代码就有了头绪。</p>
+<hr />
+<h2 id="本章小结">3.9　本章小结</h2>
+<ul>
+<li><strong>问题</strong>：顺序流水线里，真相关必须等，伪相关（WAR/WAW）却造成无谓停顿，独立指令也被堵住。</li>
+<li><strong>解法（三个核心机制）</strong>：
+<ol type="1">
+<li><strong>保留站</strong>让指令就地等待，不堵流水线；</li>
+<li><strong>寄存器重命名</strong>用标签代替名字，消除 WAR/WAW；</li>
+<li><strong>CDB 广播</strong>让结果主动唤醒所有等待者。</li>
+</ol></li>
+<li><strong>边界</strong>：Tomasulo 只解伪相关，<strong>RAW 真相关仍须等待</strong>；本节的简单写回还不能处理精确异常和分支恢复（第 13、14 章补）。</li>
+<li><strong>扩展</strong>：2 发射 → N 发射是”加宽路口”，思想不变；CDB 带宽是主要瓶颈。</li>
+</ul>
+<h2 id="思考题">思考题</h2>
+<ol type="1">
+<li>在 3.4 的例子里，如果把 I4 改成写 <strong>R6</strong>（而不是 R1），它和 I3 之间构成什么相关？Tomasulo 会怎么处理？（提示：I3 写 R6 在前）</li>
+<li>为什么 RAT 里”标签为空”就可以直接从寄存器堆取值？需要什么前提保证此时寄存器堆里的值是最新的？</li>
+<li>如果只有一根 CDB，但 2 发射每周期可能产生 2 个结果，会发生什么？系统里哪个部件最先感受到压力？</li>
+<li>本章的保留站是”按标签广播唤醒”。如果改用”物理寄存器堆方案”（香山做法），保留站还需要存 <code>Vj/Vk</code> 数据吗？为什么？（可先猜，第 11 章揭晓）</li>
+</ol>
+<hr />
+<p><em>下一章：第 4 章　前端全景与解耦取指。后端已经能乱序执行了，前端怎么喂饱它？</em></p>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

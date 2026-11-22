@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>附录 B　Verilog 简化模块模板</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">RISC-V 多发射乱序处理器</a><nav><a href="index.html">目录</a><a href="appendix-a.html">← 附录A</a><a href="appendix-c.html">附录C →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="附录-b-verilog-简化模块模板">附录 B　Verilog 简化模块模板</h1>
+<p>这一章把全书反复用到的五个基础构件集中列出来。它们都是参数化的，可以直接拿去用，也可以按需要改。每个模块先讲接口怎么来的，再讲实现里要注意的地方，最后给完整代码。所有代码都在 <code>code/verilog/appendix_b/</code>，仿真 28 项全过。</p>
+<figure>
+<img src="../figures/figB-1-module-map.svg" alt="图B-1 五个模板模块在核里的位置" />
+<figcaption aria-hidden="true">图B-1 五个模板模块在核里的位置</figcaption>
+</figure>
+<p><em>图B-1　五个模板模块在核里的位置</em></p>
+<h2 id="b.1-同步-fifo">B.1 同步 FIFO</h2>
+<h3 id="它要解决什么问题">它要解决什么问题</h3>
+<p>处理器里到处是队列。取指目标队列、指令缓冲、发射队列、重排序缓冲，本质上都是先进先出的存储。写一个通用的 FIFO，以后碰到队列就改个参数拿来用。</p>
+<h3 id="接口怎么来">接口怎么来</h3>
+<p>先想写入这一侧。生产者要给出写入使能和数据。</p>
+<pre class="verilog"><code>    input  wire             push_i,
+    input  wire [DATA_W-1:0] push_data_i,</code></pre>
+<p>再看读取这一侧。消费者给读出使能，队列吐出数据。</p>
+<pre class="verilog"><code>    input  wire             pop_i,
+    output reg  [DATA_W-1:0] pop_data_o,</code></pre>
+<p>光能读写还不够。生产者写之前得知道满没满，消费者读之前得知道空没空，于是补上两个状态信号。</p>
+<pre class="verilog"><code>    output wire             full_o,
+    output wire             empty_o</code></pre>
+<p>最后补上时钟和复位。存跨拍状态，一定要有时钟；要能回到初始状态，一定要有复位。</p>
+<pre class="verilog"><code>    input  wire             clk,
+    input  wire             rst_n,</code></pre>
+<p>接口就齐了。深度和数据位宽用参数表示，改一个数字就能得到不同规格的队列。</p>
+<h3 id="实现里要注意什么">实现里要注意什么</h3>
+<p>第一件事是怎么判满判空。最直接的办法是记一个计数值，但那样要多一个计数器。更省事的是用两个指针，head 指向队头，tail 指向队尾。两者相等时是空。可是写满一圈后 tail 又会追上 head，空和满就分不清了。</p>
+<p>解法是多给指针一位。深度 8 的队列，下标只要 3 位，指针却用 4 位。tail 比 head 多绕一整圈时，最高位不同、低位相同，这就是满。</p>
+<pre class="verilog"><code>    assign empty_o = (head == tail);
+    // 判满：最高位不同、其余位相同。用当前 tail，不是 next_tail
+    assign full_o  = (head[PTR_W-1] != tail[PTR_W-1]) &amp;&amp;
+                     (head[PTR_W-2:0] == tail[PTR_W-2:0]);</code></pre>
+<p>这里用的是当前 tail，不是加一之后的 tail。用加一后的值判满，深度会平白少一格，这是第 6 章踩过的坑。</p>
+<p>第二件事是怎么索引存储器。多出来的最高位只用于判满，不能拿去当数组下标。写满时指针会走到 8，用 4 位指针直接索引深度 8 的数组就越界了，仿真器会读出 x，而且症状很隐蔽。</p>
+<pre class="verilog"><code>                // 索引必须取低位，写满时完整指针会越过数组边界
+                mem[tail[PTR_W-2:0]] &lt;= push_data_i;</code></pre>
+<p>第三件事是指针宽度怎么算。写一个固定值当然省事，但换个深度就要改。用系统函数算最稳妥。</p>
+<pre class="verilog"><code>    localparam PTR_W    = $clog2(DEPTH) + 1;  // 下标位数多留 1 位判满
+    localparam DEPTH_M1 = DEPTH - 1;  // iverilog 不接受数组上界直接写参数表达式</code></pre>
+<p>指针位数取深度的对数再加一。数组上界不能直接在方括号里写参数表达式，先转成 <code>localparam</code>，这是仿真器的要求。</p>
+<h3 id="完整代码">完整代码</h3>
+<pre class="verilog"><code>// 通用同步 FIFO：多一位指针区分满和空
+// 第4章 FTQ、第6章指令缓冲用的都是这套办法
+module fifo #(
+    parameter DEPTH  = 8,
+    parameter DATA_W = 32
+)(
+    input  wire             clk,
+    input  wire             rst_n,
+    input  wire             push_i,
+    input  wire [DATA_W-1:0] push_data_i,
+    input  wire             pop_i,
+    output reg  [DATA_W-1:0] pop_data_o,
+    output wire             full_o,
+    output wire             empty_o
+);
+    localparam PTR_W    = $clog2(DEPTH) + 1;  // 下标位数多留 1 位判满
+    localparam DEPTH_M1 = DEPTH - 1;  // iverilog 不接受数组上界直接写参数表达式
+
+    reg [DATA_W-1:0] mem [0:DEPTH_M1];
+    reg [PTR_W-1:0]  head;
+    reg [PTR_W-1:0]  tail;
+
+    wire [PTR_W-1:0] next_head = head + 1&#39;b1;
+    wire [PTR_W-1:0] next_tail = tail + 1&#39;b1;
+
+    assign empty_o = (head == tail);
+    // 判满：最高位不同、其余位相同。用当前 tail，不是 next_tail
+    assign full_o  = (head[PTR_W-1] != tail[PTR_W-1]) &amp;&amp;
+                     (head[PTR_W-2:0] == tail[PTR_W-2:0]);
+
+    integer i;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            head &lt;= {PTR_W{1&#39;b0}};
+            tail &lt;= {PTR_W{1&#39;b0}};
+            pop_data_o &lt;= {DATA_W{1&#39;b0}};
+            for (i = 0; i &lt; DEPTH; i = i + 1)
+                mem[i] &lt;= {DATA_W{1&#39;b0}};
+        end else begin
+            if (push_i &amp;&amp; !full_o) begin
+                // 索引必须取低位，写满时完整指针会越过数组边界
+                mem[tail[PTR_W-2:0]] &lt;= push_data_i;
+                tail &lt;= next_tail;
+            end
+            if (pop_i &amp;&amp; !empty_o) begin
+                pop_data_o &lt;= mem[head[PTR_W-2:0]];
+                head &lt;= next_head;
+            end
+        end
+    end
+endmodule</code></pre>
+<p>读写同拍时各走各的指针，一个推进 tail，一个推进 head，互不干扰。复位时用循环把整个存储器清零，仿真波形才干净。</p>
+<h2 id="b.2-内容寻址存储器-cam">B.2 内容寻址存储器 CAM</h2>
+<h3 id="它要解决什么问题-1">它要解决什么问题</h3>
+<p>普通存储器给地址，读出那个单元的内容。CAM 反过来，给一个内容，问它在哪几个单元里。保留站监听 CDB 广播时，每条表项都在问”广播的物理号是不是我等的那个”；BTB 查表时，也在问”哪个表项的标签和当前 PC 对得上”。这些动作都是 CAM。</p>
+<h3 id="接口怎么来-1">接口怎么来</h3>
+<p>先要有查询的 key，还要有被查的整张表。表项很多，跨模块传递时用打包向量，N 项每项 KEY_W 位，拼成 N*KEY_W 位。</p>
+<pre class="verilog"><code>    input  wire [KEY_W-1:0]    key_i,
+    input  wire [N*KEY_W-1:0]  table_i,   // N 个表项打包成一位向量
+    input  wire [N-1:0]        valid_i,</code></pre>
+<p>光知道哪项命中还不够，还得知道位置，好去读对应的表项或者发出选择信号。</p>
+<pre class="verilog"><code>    output wire [N-1:0]        match_o,   // 每项是否相等
+    output reg                 hit_o,     // 有没有任一项命中
+    output reg  [2:0]          index_o    // 命中项编号，N&lt;=8 用 3 位</code></pre>
+<p><code>match_o</code> 保留逐项的相等结果，<code>index_o</code> 给出编号。多数时候用 <code>index_o</code> 就够了，保留 <code>match_o</code> 是为了调试时能看到到底哪几项命中。</p>
+<h3 id="实现里要注意什么-1">实现里要注意什么</h3>
+<p>并行比较用 generate 循环展开。每一项先检查有效位，再比内容。注意 <code>+:</code> 位选的写法，它从起始位往上取 KEY_W 位。</p>
+<pre class="verilog"><code>    genvar g;
+    generate
+        for (g = 0; g &lt; N; g = g + 1) begin : cmp
+            assign eq[g] = valid_i[g] &amp;&amp;
+                           (table_i[g*KEY_W +: KEY_W] == key_i);
+        end
+    endgenerate</code></pre>
+<p>无效的表项即便内容一样也不算命中。这一位有效位很关键，否则存储器里残留的旧值会造成假命中。</p>
+<p>多项同时命中时取编号最小的那个，和仲裁器挑最老的是一个道理。</p>
+<pre class="verilog"><code>    // 多项同时命中时取编号最小的那个，和仲裁器的&quot;最老优先&quot;一个道理
+    always @* begin
+        hit_o   = 1&#39;b0;
+        index_o = 3&#39;d0;
+        for (i = 0; i &lt; N; i = i + 1)
+            if (eq[i] &amp;&amp; !hit_o) begin
+                hit_o   = 1&#39;b1;
+                index_o = i[2:0];
+            end
+    end</code></pre>
+<p>循环里用 <code>!hit_o</code> 锁定第一个命中项，后面再命中也不覆盖。位宽写死 3 位是因为教学核里这类表最多 8 项，改成更大的表要相应加宽。</p>
+<h3 id="完整代码-1">完整代码</h3>
+<pre class="verilog"><code>// 内容寻址存储器 CAM：给一个 key，并行查所有表项，返回命中和位置
+// 发射队列的源操作数监听、TLB、分支目标表都用到这个动作
+module cam #(
+    parameter N     = 8,
+    parameter KEY_W = 6
+)(
+    input  wire [KEY_W-1:0]    key_i,
+    input  wire [N*KEY_W-1:0]  table_i,   // N 个表项打包成一位向量
+    input  wire [N-1:0]        valid_i,
+    output wire [N-1:0]        match_o,   // 每项是否相等
+    output reg                 hit_o,     // 有没有任一项命中
+    output reg  [2:0]          index_o    // 命中项编号，N&lt;=8 用 3 位
+);
+    wire [N-1:0] eq;
+    integer i;
+
+    genvar g;
+    generate
+        for (g = 0; g &lt; N; g = g + 1) begin : cmp
+            assign eq[g] = valid_i[g] &amp;&amp;
+                           (table_i[g*KEY_W +: KEY_W] == key_i);
+        end
+    endgenerate
+
+    assign match_o = eq;
+
+    // 多项同时命中时取编号最小的那个，和仲裁器的&quot;最老优先&quot;一个道理
+    always @* begin
+        hit_o   = 1&#39;b0;
+        index_o = 3&#39;d0;
+        for (i = 0; i &lt; N; i = i + 1)
+            if (eq[i] &amp;&amp; !hit_o) begin
+                hit_o   = 1&#39;b1;
+                index_o = i[2:0];
+            end
+    end
+endmodule</code></pre>
+<h2 id="b.3-优先编码器">B.3 优先编码器</h2>
+<h3 id="它要解决什么问题-2">它要解决什么问题</h3>
+<p>CAM 给出的是独热信号，比如 <code>8'b00000100</code>，表示第 2 项命中。可后续电路要的是一个编号，<code>3'd2</code>。把独热信号变成二进制编号，就是优先编码器的活。中断控制器从一堆请求里挑最高优先级，用的也是同一个电路。</p>
+<h3 id="接口怎么来-2">接口怎么来</h3>
+<p>输入是一组请求，输出是有效位和编号。</p>
+<pre class="verilog"><code>    input  wire [N-1:0]     req_i,
+    output reg              valid_o,
+    output reg  [2:0]       code_o    // N&lt;=8 用 3 位</code></pre>
+<h3 id="实现里要注意什么-2">实现里要注意什么</h3>
+<p>从低位往高位扫，第一个置位的锁定下来，后面再置位也不覆盖。这样编号最小的请求优先级最高。</p>
+<pre class="verilog"><code>    reg found;
+    integer i;
+
+    always @* begin
+        found  = 1&#39;b0;
+        code_o = 3&#39;d0;
+        // 从低到扫，第一个命中的锁定下来，后面再命中也不覆盖
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; !found) begin
+                found  = 1&#39;b1;
+                code_o = i[2:0];
+            end
+        valid_o = found;
+    end</code></pre>
+<p>这里有个容易错的地方。不能拿 <code>valid_o</code> 直接当锁定标志，因为如果在循环开始前先算了 <code>valid_o = |req_i</code>，那只要有一个请求，它一开始就是 1，循环里的 <code>!valid_o</code> 永远不成立。要另设一个初值为 0 的临时变量 <code>found</code>，最后再赋给 <code>valid_o</code>。</p>
+<h3 id="完整代码-2">完整代码</h3>
+<pre class="verilog"><code>// 优先编码器：从一组请求里找出编号最小的置位，输出它的二进制编码
+// CAM 命中后要给出位置、中断控制器挑最高优先级，都靠它
+module priority_encoder #(
+    parameter N = 8
+)(
+    input  wire [N-1:0]     req_i,
+    output reg              valid_o,
+    output reg  [2:0]       code_o    // N&lt;=8 用 3 位
+);
+    reg found;
+    integer i;
+
+    always @* begin
+        found  = 1&#39;b0;
+        code_o = 3&#39;d0;
+        // 从低到扫，第一个命中的锁定下来，后面再命中也不覆盖
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; !found) begin
+                found  = 1&#39;b1;
+                code_o = i[2:0];
+            end
+        valid_o = found;
+    end
+endmodule</code></pre>
+<h2 id="b.4-仲裁器">B.4 仲裁器</h2>
+<h3 id="它要解决什么问题-3">它要解决什么问题</h3>
+<p>好几个请求同时要用一个端口，只能放行一部分。仲裁器决定放谁。第 10 章的发射队列每拍最多发射两条，就是仲裁器在发票。</p>
+<h3 id="接口怎么来-3">接口怎么来</h3>
+<p>先有请求，再有每个请求的优先级。优先级用年龄表示，数越小越老，越老越先走。</p>
+<pre class="verilog"><code>    input  wire [N-1:0]         req_i,
+    input  wire [N*AGE_W-1:0]   age_i,     // 每项年龄，数越小越老
+    input  wire [1:0]           limit_i,   // 最多批几个：0、1 或 2</code></pre>
+<p>然后是两个票和总放行信号。分成两张票，是为了后续电路能分别处理第一选择和第二选择。</p>
+<pre class="verilog"><code>    output wire [N-1:0]         grant0_o,  // 第一张票
+    output wire [N-1:0]         grant1_o,  // 第二张票
+    output wire [N-1:0]         grant_o</code></pre>
+<h3 id="实现里要注意什么-3">实现里要注意什么</h3>
+<p>关键是比较年龄，不是比较编号。编号小的表项不一定更老，队列项是循环使用的。先找年龄最小的发第一张票。</p>
+<pre class="verilog"><code>        // 第一张票给年龄最小的请求
+        g0   = {N{1&#39;b0}};
+        best = {AGE_W{1&#39;b1}};
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; (age_i[i*AGE_W +: AGE_W] &lt; best)) begin
+                best = age_i[i*AGE_W +: AGE_W];
+                g0   = {N{1&#39;b0}};
+                g0[i] = 1&#39;b1;
+            end</code></pre>
+<p><code>best</code> 初值设成全 1，保证第一个有效请求一定能入选。每找到一个更老的，就清掉之前的票。第二张票在剩下的请求里同样挑最老的，判断条件多一项 <code>!g0[i]</code>，避免同一项拿两张票。</p>
+<p><code>limit_i</code> 控制一拍最多放行几个，取 0 就一张都不发，取 1 就只发第一张。</p>
+<h3 id="完整代码-3">完整代码</h3>
+<pre class="verilog"><code>// 仲裁器：N 个请求里按优先级挑出最多两个，给出发票
+// 第10章发射队列用的就是它，优先级由输入的 age 决定
+module arbiter #(
+    parameter N     = 4,
+    parameter AGE_W = 8
+)(
+    input  wire [N-1:0]         req_i,
+    input  wire [N*AGE_W-1:0]   age_i,     // 每项年龄，数越小越老
+    input  wire [1:0]           limit_i,   // 最多批几个：0、1 或 2
+    output wire [N-1:0]         grant0_o,  // 第一张票
+    output wire [N-1:0]         grant1_o,  // 第二张票
+    output wire [N-1:0]         grant_o
+);
+    reg [N-1:0]       g0, g1;
+    reg [AGE_W-1:0]   best;
+    integer i;
+
+    always @* begin
+        // 第一张票给年龄最小的请求
+        g0   = {N{1&#39;b0}};
+        best = {AGE_W{1&#39;b1}};
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; (age_i[i*AGE_W +: AGE_W] &lt; best)) begin
+                best = age_i[i*AGE_W +: AGE_W];
+                g0   = {N{1&#39;b0}};
+                g0[i] = 1&#39;b1;
+            end
+
+        // 第二张票在剩下的请求里同样挑最老的
+        g1   = {N{1&#39;b0}};
+        best = {AGE_W{1&#39;b1}};
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; !g0[i] &amp;&amp; (age_i[i*AGE_W +: AGE_W] &lt; best)) begin
+                best = age_i[i*AGE_W +: AGE_W];
+                g1   = {N{1&#39;b0}};
+                g1[i] = 1&#39;b1;
+            end
+
+        // limit 限制一拍最多放行几个
+        if (limit_i == 2&#39;d0) begin
+            g0 = {N{1&#39;b0}};
+            g1 = {N{1&#39;b0}};
+        end else if (limit_i == 2&#39;d1) begin
+            g1 = {N{1&#39;b0}};
+        end
+    end
+
+    assign grant0_o = g0;
+    assign grant1_o = g1;
+    assign grant_o  = g0 | g1;
+endmodule</code></pre>
+<h2 id="b.5-交叉开关">B.5 交叉开关</h2>
+<h3 id="它要解决什么问题-4">它要解决什么问题</h3>
+<p>仲裁器决定谁先走，交叉开关负责把选中的数据送到正确的出口。执行结果写回时，多个功能部件可能同时出结果，要按目的物理寄存器送到对应端口；旁路网络里，多个广播源要选一个送进 ALU 的输入。这些都是交叉开关。</p>
+<h3 id="接口怎么来-4">接口怎么来</h3>
+<p>每一路输入要有请求、目标号和数据。目标号告诉它想去哪个出口。三样东西都用打包向量传。</p>
+<pre class="verilog"><code>    input  wire [N-1:0]             req_i,     // 每个输入有没有请求
+    input  wire [N*2-1:0]           dst_i,     // 每个输入的目标号，N&lt;=4 用 2 位
+    input  wire [N*DATA_W-1:0]      data_i,    // N 路输入数据打包</code></pre>
+<p>输出是送到位的数据和每路的有效位。</p>
+<pre class="verilog"><code>    output reg  [N*DATA_W-1:0]      data_o,    // N 路输出数据打包
+    output reg  [N-1:0]             valid_o    // 每个输出有没有拿到数据</code></pre>
+<h3 id="实现里要注意什么-4">实现里要注意什么</h3>
+<p>对每个出口，遍历所有输入，找出指向它且编号最小的那一路。编号小的优先，这是最简单的冲突处理办法。</p>
+<pre class="verilog"><code>            for (in_j = 0; in_j &lt; N; in_j = in_j + 1) begin
+                if (req_i[in_j] &amp;&amp;
+                    (dst_i[in_j*2 +: 2] == out_k[1:0]) &amp;&amp;
+                    !valid_o[out_k]) begin
+                    valid_o[out_k] = 1&#39;b1;
+                    data_o[out_k*DATA_W +: DATA_W] = data_i[in_j*DATA_W +: DATA_W];
+                end
+            end</code></pre>
+<p>每个出口在开始遍历前先清零，<code>valid_o[out_k]</code> 一旦置位就不再被覆盖，于是留下编号最小的输入。没有输入指向的出口保持零。</p>
+<p>目标号在这里写死 2 位，对应 N 不超过 4。路数更多时要相应加宽，并且把 <code>out_k[1:0]</code> 改成足够宽的位选。</p>
+<h3 id="完整代码-4">完整代码</h3>
+<pre class="verilog"><code>// 交叉开关 crossbar：N 个输入按需路由到 N 个输出
+// 每个输入带上想去的输出号，输出侧从所有指向自己的输入里选一个
+// 冲突时编号小的输入优先，这是最简单的仲裁策略
+module crossbar #(
+    parameter N      = 4,
+    parameter DATA_W = 32
+)(
+    input  wire [N-1:0]             req_i,     // 每个输入有没有请求
+    input  wire [N*2-1:0]           dst_i,     // 每个输入的目标号，N&lt;=4 用 2 位
+    input  wire [N*DATA_W-1:0]      data_i,    // N 路输入数据打包
+    output reg  [N*DATA_W-1:0]      data_o,    // N 路输出数据打包
+    output reg  [N-1:0]             valid_o    // 每个输出有没有拿到数据
+);
+    integer out_k, in_j;
+
+    always @* begin
+        for (out_k = 0; out_k &lt; N; out_k = out_k + 1) begin
+            valid_o[out_k] = 1&#39;b0;
+            data_o[out_k*DATA_W +: DATA_W] = {DATA_W{1&#39;b0}};
+            // 遍历所有输入，找指向本输出且编号最小的那个
+            for (in_j = 0; in_j &lt; N; in_j = in_j + 1) begin
+                if (req_i[in_j] &amp;&amp;
+                    (dst_i[in_j*2 +: 2] == out_k[1:0]) &amp;&amp;
+                    !valid_o[out_k]) begin
+                    valid_o[out_k] = 1&#39;b1;
+                    data_o[out_k*DATA_W +: DATA_W] = data_i[in_j*DATA_W +: DATA_W];
+                end
+            end
+        end
+    end
+endmodule</code></pre>
+<h2 id="b.6-运行自测">B.6 运行自测</h2>
+<p>五个模块的自测程序在 <code>tb_appendix_b.v</code>，覆盖复位、写满、满时拒写、读写同拍、CAM 命中未命中、多项命中取小编号、优先编码、仲裁限流、交叉开关路由与冲突。</p>
+<pre class="bash"><code>iverilog -g2012 -o sim.vvp *.v
+vvp sim.vvp</code></pre>
+<p>跑完会打印 28 项 PASS。</p>
+<h2 id="小结">小结</h2>
+<ul>
+<li>FIFO 用多一位指针判满判空，索引存储器只取低位。</li>
+<li>CAM 并行比较返回独热命中位，有效位防止旧值假命中，优先编码器把独热位变成编号。</li>
+<li>仲裁器按年龄发票，不按表项编号；limit 控制一拍放行几条。</li>
+<li>交叉开关按目标号路由，冲突时编号小的输入优先。</li>
+<li>跨模块传多个同类数据用打包向量和 <code>+:</code> 位选；打包向量最右端是 0 号单元。</li>
+</ul>
+<h2 id="思考题">思考题</h2>
+<ol type="1">
+<li>把 FIFO 的判满条件改成用 <code>next_tail</code>，仿真看深度变成多少，解释原因。</li>
+<li>CAM 里如果去掉有效位判断，存储器中的旧值会造成什么问题？设计一个场景让这个错误现形。</li>
+<li>优先编码器里为什么不能用 <code>valid_o</code> 当循环内的锁定标志？</li>
+<li>仲裁器如果改成按编号发票而不是按年龄，在队列循环使用的场景下会发生什么？</li>
+<li>交叉开关里两个输入指向同一出口，当前是编号小的优先。如果要改成轮转优先，需要增加哪些信号？</li>
+</ol>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

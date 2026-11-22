@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 10 章 发射与调度</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html">RISC-V 多发射乱序处理器</a><nav><a href="../index.html">目录</a><a href="ch09.html">← 第 9 章</a><a href="ch11.html">第 11 章 →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="第-10-章-发射与调度">第 10 章 发射与调度</h1>
+<p>第 9 章结束时，uop 已经带着物理寄存器编号离开了重命名站。这时它们知道自己在等谁，但还不一定能马上算：有的操作数已经在物理寄存器里，有的还在执行单元里慢慢算。不能因为某个操作数没到，就把后面所有 uop 都堵住。</p>
+<p>发射队列就是解决这件事的等待区。uop 在这里住下，盯着结果总线；一旦自己等的物理号被广播出来，它就举手申请执行。如果同时举手的比执行口还多，就得有个仲裁规则决定谁先走。</p>
+<p>这一章讲清楚两件事：怎么知道一个 uop 可以走了，以及谁来先走。</p>
+<h2 id="为什么要有一个等待区">10.1 为什么要有一个等待区</h2>
+<p>顺序流水线里，指令卡在数据相关上时，整条流水线跟着停。第 3 章讲 Tomasulo 时给出的办法是让指令先搬进保留站，空出流水线给后面的指令。发射队列是同一个办法在现代乱序核里的延续，只是名字换了，记账方式更规整了。</p>
+<p>重命名站出来的 uop 带着三个关键编号：两个源物理号 ps1、ps2，一个目的物理号 pd。源物理号还没有值，就说明它在等广播；已经有值，就说明可以执行。队列要做的，是替每一条 uop 记住这个状态，别让它们在重命名站门口堵成一团。</p>
+<p>这里有个容易混淆的地方。第 3 章的保留站既存等待状态，又存操作数的值，标签就是保留站编号。本章的发射队列通常只存物理编号和就绪位，值放在物理寄存器堆里。两种做法的思想一样，都是”记下等谁，谁来就唤醒”，只是现代处理器把值和标签分开存放了。</p>
+<h2 id="发射队列里存什么">10.2 发射队列里存什么</h2>
+<p>一个表项至少要存这些内容。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>valid</code></td>
+<td>这一项有没有住着 uop</td>
+</tr>
+<tr>
+<td><code>ps1</code>, <code>ps2</code></td>
+<td>两个源操作数对应的物理寄存器号</td>
+</tr>
+<tr>
+<td><code>rdy1</code>, <code>rdy2</code></td>
+<td>两个源是否已经就绪</td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td>目的物理寄存器号，写回时要用</td>
+</tr>
+<tr>
+<td><code>age</code></td>
+<td>年龄，用来决定谁更该先走</td>
+</tr>
+</tbody>
+</table>
+<p>有些设计还会存执行单元类型、ROB 编号、是否是 load 或 store 等。本书的教学核不依赖这些字段，先把最简单的骨架立起来。</p>
+<p>就绪位有两种填法。入队时如果某个源的物理号已经就绪，直接把对应位置一；如果还没就绪，就清零，等广播来置位。怎么知道入队时就绪没有？这要看物理寄存器堆的忙碌状态，属于写回一侧的事情，本章先当作外部已经告诉了我们。</p>
+<p>队列的组织也有两种常见做法。<strong>集中式</strong>是一个大队列供所有执行单元使用，调度灵活，但选择电路的规模随表项数增长。<strong>分布式</strong>是给每个执行单元配一个小队列，选择简单，但 uop 进队时要决定去哪边，分不匀就浪费。本书用集中式，四项队列，两个发射口，正好把原理讲清楚。</p>
+<h2 id="唤醒与选择放在同一拍">10.3 唤醒与选择放在同一拍</h2>
+<p>发射队列的核心动作分两步。</p>
+<p><strong>唤醒</strong>。执行单元算完结果，把目的物理号打上广播送到队列。每一项拿自己的 ps1、ps2 和广播号比一比。相等就把对应的就绪位置一。这一步是内容比较，不是按地址查表——队列不知道结果会送到哪里，只能让所有项一起听。第 3 章的 CDB 监听就是这件事。</p>
+<p><strong>选择</strong>。在就绪的项里挑出最多两个，送到空闲的执行口。挑的时候要考虑两个条件：操作数都就绪，以及有空的执行口。没有空口的 uop 只能继续等着。</p>
+<p>图 10-1 把这两步画在了一条通路上。</p>
+<figure>
+<img src="../figures/fig10-1-wakeup-select.svg" alt="图 10-1 发射队列的唤醒与选择通路" />
+<figcaption aria-hidden="true">图 10-1 发射队列的唤醒与选择通路</figcaption>
+</figure>
+<p><em>图 10-1　广播命中后置就绪位，仲裁器再从就绪项里按年龄挑出最多两个送往执行口。</em></p>
+<p>唤醒和选择要放在同一拍完成，这件事值得多说两句。假设加法 A1 在周期 N 广播结果 P10，而加法 A2 正等着 P10。如果这一拍只做唤醒，下一拍才做选择，那么 A2 要到周期 N+2 才能发射，中间白白空出一拍。把两步合到一拍，A2 在周期 N 结束时就知道自己可以走了，周期 N+1 就能进执行单元。第 10.5 节会用时序图专门看这件事。</p>
+<p>“一拍里既要比较又要选择”听起来有点赶。这在真实芯片里确实是时序上的难点，表项越多、广播路数越多，比较和选择就越慢。本书只要求理解它为什么必须这么安排，至于电路怎么压到一拍，属于具体实现技巧，不在这里展开。</p>
+<h2 id="谁来先走">10.4 谁来先走</h2>
+<p>就绪的项不止一条时，需要仲裁规则。最容易想到的是按表项编号挑，编号小的优先。这个规则实现起来最简单，但不一定对。</p>
+<p>表项编号是 uop 住进哪个房间的号码，跟它的出生先后没关系。E0 可能是刚进来的年轻指令，E2 反而可能是很早就住下、只差一个操作数的老指令。按编号挑，等于让后来者插队。</p>
+<p>按<strong>年龄</strong>挑才符合直觉。重命名站是按程序顺序收 uop 的，给每条 uop 附一个递增的序号，序号小的更老。仲裁器比较年龄，把票先发给最老的就绪项。年龄不一定连续，中间有指令没进队列也没关系，只比较大小。</p>
+<p>图 10-2 对比了这两种规则。</p>
+<figure>
+<img src="../figures/fig10-2-arbitration.svg" alt="图 10-2 仲裁规则" />
+<figcaption aria-hidden="true">图 10-2 仲裁规则</figcaption>
+</figure>
+<p><em>图 10-2　按表项编号挑会选中最年轻的 E0；按年龄挑才会先放最老的 E2 走。</em></p>
+<p>两个发射口同时空闲时，就发两张票。第一张给最老的，第二张在剩下的就绪项里再挑最老的。如果只有一个口空闲，第二张票就不发。仲裁器的 <code>limit</code> 输入就是干这个的。</p>
+<p>除了年龄，还可以按执行单元类型、按 uop 的关键程度来挑。真实处理器里这些规则会叠加，但基本套路没变：先筛出有资格的，再按某种优先级发票。</p>
+<h2 id="背靠背依赖">10.5 背靠背依赖</h2>
+<p>来看一段最短的依赖链。</p>
+<pre><code>A1  ADD R1, R2, R3     # 写 P10
+A2  ADD R4, R1, R5     # 读 P10，等 A1 的结果</code></pre>
+<p>A2 的操作数就是 A1 的结果。这类”前一条刚算出、后一条马上要用”的情况叫背靠背依赖。乱序处理器能不能把这两条挨着执行，直接影响 IPC。</p>
+<p>图 10-3 是它的时序。</p>
+<figure>
+<img src="../figures/fig10-3-back-to-back.svg" alt="图 10-3 背靠背依赖的时序" />
+<figcaption aria-hidden="true">图 10-3 背靠背依赖的时序</figcaption>
+</figure>
+<p><em>图 10-3　周期 N 广播、唤醒、选择三件事连在一起，A2 周期 N+1 就能发射；拆成两拍就会多一个空泡。</em></p>
+<p>跟着图走一遍。周期 N-1，A1 在 ALU 里算。周期 N，A1 算完，把 P10 放上结果总线。同一拍里，发射队列中 A2 的那一项比较命中，就绪位置一，仲裁器发现它已经可以走了，给它发出授权。周期 N+1 的时钟沿，A2 进入 ALU。两条加法就这样背靠背执行完了。</p>
+<p>这里要注意”同一拍”的精确含义。广播是组合信号，比较也是组合逻辑，授权在同一拍内算出来，状态变化发生在时钟沿。读者只要记住时序上的结论：生产者写回的下一拍，消费者就能发射。</p>
+<h2 id="走通一段-uop">10.6 走通一段 uop</h2>
+<p>把第 9 章那五条 uop 接着往下走。重命名之后，U1 写 P10、U2 写 P12 且等 P10、U3 写 P13、U4 写 P11、U5 写 P14。图 10-4 给出了队列的几个快照。</p>
+<figure>
+<img src="../figures/fig10-4-walkthrough.svg" alt="图 10-4 一段 uop 流过发射队列" />
+<figcaption aria-hidden="true">图 10-4 一段 uop 流过发射队列</figcaption>
+</figure>
+<p><em>图 10-4　U1、U3、U4、U5 陆续就绪就走，等 P10 的 U2 一直留到 U1 广播，然后紧跟着发射。</em></p>
+<p><strong>周期 A</strong>，U1 和 U2 进队。U1 的两个源都就绪，当场被选中，送去乘法单元。U2 的 ps1 是 P10，还没广播，留在队列里。</p>
+<p><strong>周期 B</strong>，U3 和 U4 进队，两个源都就绪。U3 年龄更小，先拿到发射口；U4 继续等机会。</p>
+<p><strong>周期 C</strong>，U5 进队。此时 U4 和 U5 都就绪，两个发射口都空，一起发出去。队列里只剩 U2。</p>
+<p><strong>周期 D</strong>，U1 的乘法完成，广播 P10。U2 的内容比较命中，就绪位置一，同一拍就被仲裁器选中。</p>
+<p><strong>周期 E</strong>，U2 进入 ALU。从进队到发射它等了好几拍，但这是真相关，躲不掉。能做的是让步子跟得紧些：P10 一出现，U2 只多等一拍就执行了。</p>
+<p>这一段还说明了一个经常有人问的问题：乱序是不是完全不看顺序？不是。U3、U4、U5 确实越过了 U2，但仲裁时仍按年龄决定谁先用空闲的执行口。乱序的是执行时刻，不是优先级规则。</p>
+<h2 id="重点与权衡">10.7 重点与权衡</h2>
+<p><strong>队列深度。</strong> 深队列能容纳更多在飞的 uop，挖出更多并行度；但每一项都要挂比较器，选择逻辑也要看更多请求，面积和延迟一起涨。深度是和 ROB、重命名站一起定的。</p>
+<p><strong>广播路数。</strong> 每拍能广播几个结果，决定了同拍能唤醒多少等待者。广播路数少，连续几个执行单元同时出结果时就会排队；路数多，队列里每一项的比较器都要成倍增加。第 3 章说过 CDB 是瓶颈，这里可以看到瓶颈的具体形状。</p>
+<p><strong>集中式还是分布式。</strong> 集中式调度灵活，分布式连线简单。折中做法也很多，比如按执行单元类型分成几个小队列，再在小队列之间做有限的借用。这里只认路，不细走。</p>
+<p><strong>选择逻辑的延迟。</strong> 从就绪信号到授权信号要在同一拍内完成，表项越多越紧张。真实处理器会用分级选择、预先排序等办法缓解，本书不展开这些时序收敛技巧。</p>
+<p><strong>年龄从哪来。</strong> 重命名站按程序顺序收 uop，顺手发个递增序号最自然。如果年龄丢失或重复，仲裁就会出错。这是前后两站之间一个不起眼但重要的接口约定。</p>
+<h2 id="verilog-骨架">10.8 Verilog 骨架</h2>
+<p>配套代码在 <code>code/verilog/10_issue/</code>，两个模块：<code>arbiter.v</code> 做仲裁，<code>issue_queue.v</code> 做队列。先搭仲裁器，再搭队列。</p>
+<h3 id="仲裁器的接口先长出来">10.8.1 仲裁器的接口先长出来</h3>
+<p>仲裁器最起码要知道谁在举手。</p>
+<pre class="verilog"><code>    input  wire [N-1:0]         req_i,</code></pre>
+<p>一位代表一个表项，1 表示该表项的操作数都就绪了。还要知道本拍最多能发几张票，因为执行口可能没空。</p>
+<pre class="verilog"><code>    input  wire [1:0]           limit_i,   // 最多批几个：0、1 或 2</code></pre>
+<p>一开始只按编号挑的话，有这两个输入就够了。但前面说过，编号不能代表年龄，于是加上年龄输入。为了让模块的端口不受表项数变化影响，年龄被拍平成一个长向量，每项占 <code>SEQ_W</code> 位。</p>
+<pre class="verilog"><code>    input  wire [N*SEQ_W-1:0]   age_i,     // 每项的年龄，数越小越老</code></pre>
+<p>最后是输出。两张票分开给，便于观察；合并后的授权也输出，接队列时更方便。</p>
+<pre class="verilog"><code>    output wire [N-1:0]         grant0_o,  // 第一个被选中的项
+    output wire [N-1:0]         grant1_o,  // 第二个被选中的项
+    output wire [N-1:0]         grant_o</code></pre>
+<p>接口定稿如下。</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>信号</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入</td>
+<td><code>req_i</code></td>
+<td>一位热编码的就绪请求</td>
+</tr>
+<tr>
+<td>输入</td>
+<td><code>age_i</code></td>
+<td>每项年龄，拍平成一个向量</td>
+</tr>
+<tr>
+<td>输入</td>
+<td><code>limit_i</code></td>
+<td>本拍最多发几张票</td>
+</tr>
+<tr>
+<td>输出</td>
+<td><code>grant0_o</code>, <code>grant1_o</code></td>
+<td>第一、第二张票，一位热</td>
+</tr>
+<tr>
+<td>输出</td>
+<td><code>grant_o</code></td>
+<td>两张票的或，方便直接接后级</td>
+</tr>
+</tbody>
+</table>
+<h3 id="仲裁器的实现">10.8.2 仲裁器的实现</h3>
+<p>第一张票给年龄最小的请求。这里用的是严格小于，年龄相同的两项不会被同时选中。</p>
+<pre class="verilog"><code>        // 第一张票给年龄最小的请求，不是编号最小的请求
+        g0 = {N{1&#39;b0}};
+        best = {SEQ_W{1&#39;b1}};
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; (age_i[i*SEQ_W +: SEQ_W] &lt; best)) begin
+                best = age_i[i*SEQ_W +: SEQ_W];
+                g0 = {N{1&#39;b0}};
+                g0[i] = 1&#39;b1;
+            end</code></pre>
+<p>注意 <code>g0 = {N{1'b0}}</code> 写在发现更小年龄之后。每找到一个更老的，就把旧的票擦掉重新发，循环结束时留下的就是最老的那一项。</p>
+<p>第二张票在剩下的请求里重复同样的比较，只要多一个条件：<code>!g0[i]</code>，也就是第一张票已经给出去的项不能再拿一张。</p>
+<pre class="verilog"><code>        // 第二张票在剩下的请求里同样挑最老的
+        g1 = {N{1&#39;b0}};
+        best = {SEQ_W{1&#39;b1}};
+        for (i = 0; i &lt; N; i = i + 1)
+            if (req_i[i] &amp;&amp; !g0[i] &amp;&amp; (age_i[i*SEQ_W +: SEQ_W] &lt; best)) begin
+                best = age_i[i*SEQ_W +: SEQ_W];
+                g1 = {N{1&#39;b0}};
+                g1[i] = 1&#39;b1;
+            end</code></pre>
+<p>最后用 <code>limit</code> 挡住多余的票。没有空口时两张都不发，只有一个空口时把第二张擦掉。</p>
+<pre class="verilog"><code>        if (limit_i == 2&#39;d0) begin
+            g0 = {N{1&#39;b0}};
+            g1 = {N{1&#39;b0}};
+        end else if (limit_i == 2&#39;d1) begin
+            g1 = {N{1&#39;b0}};
+        end</code></pre>
+<p>组合逻辑的结果直接连到输出。</p>
+<pre class="verilog"><code>    assign grant0_o = g0;
+    assign grant1_o = g1;
+    assign grant_o  = g0 | g1;</code></pre>
+<p>这块电路没有时钟。它看到请求和年龄，当场算出授权。Digital 里那个两请求的小电路演示的是同样的事情，只是它按编号定优先级；真实队列按年龄，对应到这里就是上面那两个循环。</p>
+<h3 id="发射队列的接口">10.8.3 发射队列的接口</h3>
+<p>队列先要有入队口。为了把”放到哪一项”和”放什么内容”分开，接口里带一位热的槽号。</p>
+<pre class="verilog"><code>    input  wire [1:0]              alloc_en_i,     // 本拍新进几条
+    input  wire [ENTRY-1:0]        alloc_slot_i0,  // 第一条放到哪一项
+    input  wire [ENTRY-1:0]        alloc_slot_i1,
+    input  wire [UOP_W-1:0]        alloc_uop_i0,   // 打包好的 uop
+    input  wire [UOP_W-1:0]        alloc_uop_i1,</code></pre>
+<p>uop 用 32 位打包总线传递，字段划分和代码里一致。</p>
+<pre class="verilog"><code>    // uop 打包格式，总共 32 位
+    localparam TYPE_HI = 31, TYPE_LO = 30;
+    localparam RDY1    = 29, RDY2    = 28;
+    localparam PS1_HI  = 27, PS1_LO  = 22;
+    localparam PS2_HI  = 21, PS2_LO  = 16;
+    localparam DEST_HI = 15, DEST_LO = 10;
+    localparam AGE_HI  =  9, AGE_LO  =  2;</code></pre>
+<p>唤醒要听广播，接口里加广播使能和两个广播号。</p>
+<pre class="verilog"><code>    input  wire [1:0]              wakeup_en_i,    // 本拍有几路广播
+    input  wire [PS_W-1:0]         wakeup_pd_i0,
+    input  wire [PS_W-1:0]         wakeup_pd_i1,</code></pre>
+<p>出队要问执行口空不空，再把选中的 uop 和授权送出去。</p>
+<pre class="verilog"><code>    input  wire [1:0]              unit_free_i,    // 本拍空着几个发射口
+    output wire [ENTRY-1:0]        grant0_o,
+    output wire [ENTRY-1:0]        grant1_o,
+    output wire [ENTRY-1:0]        grant_o,
+    output wire [UOP_W-1:0]        issue_uop_o0,
+    output wire [UOP_W-1:0]        issue_uop_o1,
+    output wire [ENTRY-1:0]        busy_o</code></pre>
+<p>最后是时钟和复位。队列存着跨拍状态，少不了这两个。接口定稿按用途列一遍。</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>组</th>
+<th>信号</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>入队</td>
+<td><code>alloc_en_i</code>, <code>alloc_slot_i*</code>, <code>alloc_uop_i*</code></td>
+<td>进几条、进哪项、内容是什么</td>
+</tr>
+<tr>
+<td>唤醒</td>
+<td><code>wakeup_en_i</code>, <code>wakeup_pd_i*</code></td>
+<td>这一拍广播了哪些物理号</td>
+</tr>
+<tr>
+<td>出队</td>
+<td><code>unit_free_i</code>, <code>grant*_o</code>, <code>issue_uop_o*</code></td>
+<td>有几个空口、选中了谁、送出去什么</td>
+</tr>
+<tr>
+<td>观察</td>
+<td><code>busy_o</code></td>
+<td>哪些项还占着</td>
+</tr>
+</tbody>
+</table>
+<h3 id="发射队列的实现">10.8.4 发射队列的实现</h3>
+<p>第一步，准备表项。每项有有效位、两个就绪位、两个源物理号、目的号和年龄，类型字段也留着，只是本章不参与选择。</p>
+<pre class="verilog"><code>    reg          valid [0:ENTRY-1];
+    reg  [1:0]   typ   [0:ENTRY-1];
+    reg          rdy1  [0:ENTRY-1];
+    reg          rdy2  [0:ENTRY-1];</code></pre>
+<p>第二步，算出谁有资格申请发射。两个源都就绪才行。</p>
+<pre class="verilog"><code>    // 操作数都就绪的项才有资格被选
+    always @* begin
+        for (e = 0; e &lt; ENTRY; e = e + 1)
+            req[e] = valid[e] &amp; rdy1[e] &amp; rdy2[e];
+    end</code></pre>
+<p>第三步，把空发射口的数量变成仲裁器的 <code>limit</code>，再把年龄拍平接过去。</p>
+<pre class="verilog"><code>    // 空闲发射口的数量就是本次最多能批几个
+    wire [1:0] limit;
+    assign limit = {1&#39;b0, unit_free_i[0]} + {1&#39;b0, unit_free_i[1]};</code></pre>
+<pre class="verilog"><code>    wire [ENTRY*SEQ_W-1:0] age_flat;
+    genvar gi;
+    generate
+        for (gi = 0; gi &lt; ENTRY; gi = gi + 1) begin : flatten_age
+            assign age_flat[gi*SEQ_W +: SEQ_W] = age[gi];
+        end
+    endgenerate
+
+    arbiter #(.N(ENTRY), .SEQ_W(SEQ_W)) u_arb (
+        .req_i(req), .age_i(age_flat), .limit_i(limit),
+        .grant0_o(grant0_o), .grant1_o(grant1_o), .grant_o(grant_o)
+    );</code></pre>
+<p><code>generate</code> 在这里只是把二维的年龄数组接成仲裁器认识的一维向量，没有别的玄机。</p>
+<p>第四步，唤醒。每一项都拿自己的两个源号和广播号比较，命中就置位。这段代码放在时钟沿里，所以唤醒后的就绪状态在下一拍的授权中才生效，正好符合”同一拍唤醒加选择”的时序安排。</p>
+<pre class="verilog"><code>                // 唤醒：内容比较，命中就把对应的就绪位置一
+                if (valid[e] &amp;&amp; wakeup_en_i[0] &amp;&amp; (ps1[e] == wakeup_pd_i0)) rdy1[e] &lt;= 1&#39;b1;
+                if (valid[e] &amp;&amp; wakeup_en_i[0] &amp;&amp; (ps2[e] == wakeup_pd_i0)) rdy2[e] &lt;= 1&#39;b1;
+                if (valid[e] &amp;&amp; wakeup_en_i[1] &amp;&amp; (ps1[e] == wakeup_pd_i1)) rdy1[e] &lt;= 1&#39;b1;
+                if (valid[e] &amp;&amp; wakeup_en_i[1] &amp;&amp; (ps2[e] == wakeup_pd_i1)) rdy2[e] &lt;= 1&#39;b1;</code></pre>
+<p>第五步，让被选中的项让出位置，再写入新来的项。两件事写在一个时钟沿里，顺序不能颠倒。</p>
+<pre class="verilog"><code>                // 被选中的项让出位置
+                if (grant0_o[e] || grant1_o[e])
+                    valid[e] &lt;= 1&#39;b0;
+
+                // 新进来的项写进去；写在最后，同拍不会把新项又选出去
+                if (alloc_en_i[0] &amp;&amp; alloc_slot_i0[e]) begin</code></pre>
+<p>如果把入队写在前面，非阻塞赋值的最后一条会是”让出位置”，刚住进来的项当场被赶走。调试时这种现象很难看出来，只会觉得”怎么刚进来就没了”。</p>
+<p>最后，把选中的项重新打包送出去。打包函数把分散的字段拼回 32 位，和入队时的格式严格对应。</p>
+<pre class="verilog"><code>    function [UOP_W-1:0] pack_entry;
+        input [1:0] t;
+        input r1, r2;
+        input [PS_W-1:0] s1, s2, d;
+        input [SEQ_W-1:0] a;
+        begin
+            pack_entry = {t, r1, r2, s1, s2, d, a, 2&#39;b0};
+        end
+    endfunction</code></pre>
+<p>完整的 32 位格式在 README 里列了表，读代码时可以对照着看。</p>
+<h2 id="图形与实验">10.9 图形与实验</h2>
+<p>本章四张 SVG。图 10-1 是唤醒加选择的数据通路，图 10-2 对比两种仲裁规则，图 10-3 是背靠背依赖的时序，图 10-4 走通一段具体 uop。</p>
+<p>Digital 电路在 <code>code/digital/10_priority_arbiter.dig</code>。它用非门和与门搭了一个两请求的优先仲裁器：req0 直接拿第一张票；req1 只有在 req0 没举手时才拿到第二张票。自带真值表列了四种输入组合，拨动开关就能看到两盏灯的变化。这个电路的优先级按编号定，之所以这样搭，是因为门电路最容易表达”编号小的优先”；真实的发射队列按年龄定优先级，代码里已经把这一点补上了。</p>
+<p>Verilog 实验在 <code>code/verilog/10_issue/</code>。进入目录后执行：</p>
+<pre class="bash"><code>iverilog -g2012 -o sim.vvp *.v
+vvp sim.vvp</code></pre>
+<p>自测程序有 17 项检查，覆盖复位、按年龄单选、双口双选、发射出队、广播唤醒、无发射口时阻塞、两路广播同拍唤醒和单请求时第二授权为空。建议特别看两处：E2 明明编号比 E1 大，却因为年龄更小先拿到票；U2 那种等广播的项，在广播到来之前一直占着队列。</p>
+<h2 id="香山一瞥选读">10.10 香山一瞥（选读）</h2>
+<p>香山的发射队列组织比本章复杂。它会按执行单元类型划分队列，也会为每个执行端口单独维护选择逻辑；唤醒信号不止一路，广播和选择在时序上要做不少权衡。本书讲的”内容比较置就绪、按优先级发票”仍然是这两件事的骨架。</p>
+<p>它的优先级策略也不只看年龄。load、分支、浮点运算各有各的考虑，真实设计会把这些因素编进选择规则。这里不必展开，只要认出”先筛有资格的，再按规则排序”这个共同套路就够了。</p>
+<p>读香山文档时，可以顺着”发射队列”“唤醒”“选择”这些词找过去。看到具体的队列项数和端口数不必细究，那些是工程规模上的选择。</p>
+<h2 id="小结">10.11 小结</h2>
+<p>这一章讲的是发射队列，也就是 uop 从重命名站出来之后的等待区。</p>
+<p>队列每项存物理源号、就绪位和年龄。结果总线上出现某个物理号时，所有项同时比较，命中的把就绪位置一，这叫唤醒。仲裁器从就绪项里按年龄挑出最多两个，送到空闲的执行口，这叫选择。唤醒和选择合在一拍完成，背靠背依赖才不会多出一个空泡。</p>
+<p>仲裁要看年龄，不能看表项编号。编号是住哪个房间，年龄才是排队先后。这个区别很小，却直接决定乱序执行是不是守规矩。</p>
+<p>代码部分先搭了按年龄发两张票的仲裁器，再搭了四项发射队列。就绪信号由队列算出，年龄拍平后送进仲裁器，授权再回来清队列，形成一个完整的局部闭环。</p>
+<p>一句话记住本章：发射队列让能跑的指令先跑，但谁先跑仍按辈分排队。</p>
+<h2 id="思考题">10.12 思考题</h2>
+<ol type="1">
+<li>发射队列为什么要存物理寄存器号，而不是逻辑寄存器号？如果存逻辑号，唤醒时会出什么问题？</li>
+<li>按表项编号仲裁和按年龄仲裁有什么不同？举一个编号小但年龄大的例子说明。</li>
+<li>背靠背依赖为什么要求唤醒和选择在同一拍完成？如果拆成两拍，会发生什么？</li>
+<li>集中式发射队列和分布式发射队列各有什么好处？为什么队列做大以后，选择逻辑会成为瓶颈？</li>
+<li>本章的仲裁器按年龄挑，但年龄相同的两项仍可能按编号决定先后。在什么情况下这会成为问题？</li>
+</ol>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

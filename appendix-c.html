@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>附录 C　术语与参数速查</title>
+<style>
+:root { --red: #C8102E; --ink: #1f2328; --muted: #6b7280; --line: #e5e7eb; --bg: #ffffff; --soft: #faf9f7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--bg); line-height: 1.8;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; }
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.97);
+          border-bottom: 2px solid var(--red); padding: 10px 24px;
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.topbar .brand { font-weight: 700; color: var(--ink); font-size: 15px; }
+.topbar nav { display: flex; gap: 16px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.topbar nav a { color: #374151; }
+.topbar nav a:hover { color: var(--red); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 32px 22px 90px; }
+.hero { display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap; margin: 18px 0 46px; }
+.hero .cover { width: 232px; max-width: 100%; border: 1px solid var(--line);
+               box-shadow: 0 8px 28px rgba(0,0,0,.12); border-radius: 2px; }
+.hero .info { flex: 1 1 360px; }
+.series { color: var(--red); font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px; }
+.hero h1 { font-size: 32px; line-height: 1.3; margin: 0 0 6px; }
+.hero .subtitle { font-size: 21px; color: var(--red); margin: 0 0 18px; }
+.byline { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.intro { color: #374151; font-size: 15px; margin: 0 0 24px; }
+.btn { display: inline-block; padding: 9px 20px; background: var(--red); color: #fff;
+       border-radius: 4px; font-size: 14px; margin-right: 10px; }
+.btn:hover { background: #a50e26; text-decoration: none; }
+.btn.ghost { background: #fff; color: var(--red); border: 1px solid var(--red); }
+.btn.ghost:hover { background: #fdf2f4; }
+.toc-group { margin: 30px 0; }
+.toc-group h2 { font-size: 18px; color: var(--ink); border-bottom: 2px solid var(--line);
+                padding-bottom: 8px; margin: 0 0 12px; }
+ol.toc-list { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+ol.toc-list li { border-bottom: 1px dashed var(--line); padding: 7px 2px; font-size: 15px; }
+ol.toc-list li a { color: var(--ink); }
+ol.toc-list li a:hover { color: var(--red); }
+.article h1 { font-size: 28px; color: var(--red); border-bottom: 3px solid var(--red);
+              padding-bottom: 10px; margin: 0 0 28px; line-height: 1.4; }
+.article h2 { font-size: 21px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--red); }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p { text-align: justify; margin: 12px 0; }
+.article img { max-width: 100%; height: auto; display: block; margin: 22px auto 6px; }
+.article blockquote { border-left: 3px solid var(--line); background: var(--soft);
+                      margin: 16px 0; padding: 10px 16px; color: #4b5563; }
+.article pre { background: #f6f6f4; border-left: 3px solid var(--red); padding: 14px 16px;
+               border-radius: 0 4px 4px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.article code { font-family: Consolas, "Courier New", monospace; background: #f2f2f0;
+                padding: 1px 4px; border-radius: 3px; font-size: .92em; }
+.article pre code { background: none; padding: 0; }
+.article table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 14px; }
+.article th, .article td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.article th { background: var(--soft); font-weight: 600; }
+.pagenav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+           border-top: 1px solid var(--line); margin-top: 54px; padding-top: 18px; font-size: 14px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0 40px; }
+@media (max-width: 640px) { .hero h1 { font-size: 26px; } .wrap { padding: 20px 16px 60px; } }
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">RISC-V 多发射乱序处理器</a><nav><a href="index.html">目录</a><a href="appendix-b.html">← 附录B</a><a href="references.html">参考书目 →</a><a href="https://github.com/jgxing/riscv-superscalar-book">代码仓库</a></nav></header>
+<main class="wrap"><article class="article"><h1 id="附录-c-术语与参数速查">附录 C　术语与参数速查</h1>
+<p>这一章把全书出现的术语集中起来，按主题分组，给出一句话解释和首次展开的章节。参数表按教学用的 2 发射简化核取值，方便读者对照各章代码。</p>
+<h2 id="c.1-流水线与性能">C.1 流水线与性能</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th>含义</th>
+<th>章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>每条指令周期数</td>
+<td>CPI</td>
+<td>平均一条指令要几个时钟周期</td>
+<td>第 1 章</td>
+</tr>
+<tr>
+<td>每周期指令数</td>
+<td>IPC</td>
+<td>CPI 的倒数，一个周期 retire 几条</td>
+<td>第 1、15 章</td>
+</tr>
+<tr>
+<td>指令级并行</td>
+<td>ILP</td>
+<td>一段程序里互不相关、能同时执行的指令数</td>
+<td>第 1 章</td>
+</tr>
+<tr>
+<td>结构冒险</td>
+<td>structural hazard</td>
+<td>硬件资源不够，两条指令抢同一个部件</td>
+<td>第 1 章</td>
+</tr>
+<tr>
+<td>数据冒险</td>
+<td>data hazard</td>
+<td>后面的指令要等前面的结果</td>
+<td>第 1、2 章</td>
+</tr>
+<tr>
+<td>控制冒险</td>
+<td>control hazard</td>
+<td>分支方向没定，不知道该取哪条指令</td>
+<td>第 1、5 章</td>
+</tr>
+<tr>
+<td>读后写相关</td>
+<td>RAW</td>
+<td>真相关，后者要用前者的结果</td>
+<td>第 2 章</td>
+</tr>
+<tr>
+<td>写后读相关</td>
+<td>WAR</td>
+<td>伪相关，换个名字就能消除</td>
+<td>第 2 章</td>
+</tr>
+<tr>
+<td>写后写相关</td>
+<td>WAW</td>
+<td>伪相关，两个写不能颠倒顺序</td>
+<td>第 2 章</td>
+</tr>
+<tr>
+<td>寄存器重命名</td>
+<td>register renaming</td>
+<td>把逻辑寄存器映射到物理寄存器，消除伪相关</td>
+<td>第 2、9 章</td>
+</tr>
+<tr>
+<td>提交宽度</td>
+<td>commit width</td>
+<td>一个周期最多 retire 几条 uop</td>
+<td>第 13 章</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c.2-前端">C.2 前端</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th>含义</th>
+<th>章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>取指目标队列</td>
+<td>FTQ</td>
+<td>存预测出来的取指地址，解耦预测与取指</td>
+<td>第 4 章</td>
+</tr>
+<tr>
+<td>解耦取指</td>
+<td>decoupled frontend</td>
+<td>预测先行、取指跟随，中间用队列吸收速度差</td>
+<td>第 4 章</td>
+</tr>
+<tr>
+<td>分支目标缓冲</td>
+<td>BTB</td>
+<td>缓存分支指令的上次跳转目标</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>分支历史表</td>
+<td>BHT</td>
+<td>存每个分支的 2 位饱和计数器</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>饱和计数器</td>
+<td>saturating counter</td>
+<td>两位状态机，10 和 11 都预测跳</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>返回地址栈</td>
+<td>RAS</td>
+<td>专门预测函数返回地址的后进先出栈</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>全局历史</td>
+<td>global history</td>
+<td>最近若干条分支的方向序列</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>TAGE</td>
+<td>TAGE</td>
+<td>多张不同历史长度的表组成的高级预测器，本书只讲思想</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td>预译码</td>
+<td>predecode</td>
+<td>取指阶段提前标注指令的可用信息</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td>指令缓冲</td>
+<td>instruction buffer</td>
+<td>存指令字和预译码位的队列</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td>微操作</td>
+<td>uop</td>
+<td>译码后的统一内部格式，后端执行的对象</td>
+<td>第 7 章</td>
+</tr>
+<tr>
+<td>指令拆分</td>
+<td>cracking</td>
+<td>一条复杂指令拆成多条 uop</td>
+<td>第 7 章</td>
+</tr>
+<tr>
+<td>指令融合</td>
+<td>fusion</td>
+<td>多条指令合成一条 uop</td>
+<td>第 7 章</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c.3-后端">C.3 后端</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>术语</th>
+<th>英文</th>
+<th>含义</th>
+<th>章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>逻辑寄存器</td>
+<td>logical register</td>
+<td>指令里写的寄存器号，架构可见</td>
+<td>第 3、9 章</td>
+</tr>
+<tr>
+<td>物理寄存器</td>
+<td>physical register</td>
+<td>硬件里真正的存储单元，比逻辑寄存器多</td>
+<td>第 3、9 章</td>
+</tr>
+<tr>
+<td>重命名映射表</td>
+<td>RAT</td>
+<td>记录每个逻辑寄存器当前指向哪个物理寄存器</td>
+<td>第 3、9 章</td>
+</tr>
+<tr>
+<td>空闲表</td>
+<td>free list</td>
+<td>管理还没被占用的物理寄存器</td>
+<td>第 9 章</td>
+</tr>
+<tr>
+<td>旧物理号</td>
+<td>old_pd</td>
+<td>被覆盖映射的前一个物理号，等提交后才回收</td>
+<td>第 9、13 章</td>
+</tr>
+<tr>
+<td>检查点</td>
+<td>checkpoint</td>
+<td>分支处的 RAT 快照，猜错时用来恢复</td>
+<td>第 9、14 章</td>
+</tr>
+<tr>
+<td>保留站</td>
+<td>reservation station</td>
+<td>存等待操作数的 uop，监听广播后置就绪</td>
+<td>第 3 章</td>
+</tr>
+<tr>
+<td>公共数据总线</td>
+<td>CDB</td>
+<td>结果广播总线，按标签唤醒等待者</td>
+<td>第 3 章</td>
+</tr>
+<tr>
+<td>标签</td>
+<td>tag</td>
+<td>结果对应的物理号，广播时供各表项比对</td>
+<td>第 3 章</td>
+</tr>
+<tr>
+<td>发射队列</td>
+<td>issue queue</td>
+<td>乱序核里等待区，就绪项经仲裁后发射</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td>唤醒</td>
+<td>wakeup</td>
+<td>广播号与源物理号比对，命中就把表项置就绪</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td>年龄</td>
+<td>age</td>
+<td>表示 uop 先后序号，仲裁时数小者优先</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td>旁路</td>
+<td>bypass</td>
+<td>把刚算完的结果直接送给消费者，省一拍</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td>转发</td>
+<td>forwarding</td>
+<td>旁路的具体动作，按物理号命中选数据</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td>访存队列</td>
+<td>LSQ</td>
+<td>记录访存 uop，管理地址、转发与违例检查</td>
+<td>第 12 章</td>
+</tr>
+<tr>
+<td>存储转发</td>
+<td>store-to-load forwarding</td>
+<td>更老的同址 store 直接把数据给 load</td>
+<td>第 12 章</td>
+</tr>
+<tr>
+<td>访存违例</td>
+<td>memory violation</td>
+<td>load 投机读之后发现更老的同址 store</td>
+<td>第 12 章</td>
+</tr>
+<tr>
+<td>重排序缓冲</td>
+<td>ROB</td>
+<td>按程序顺序记账的环形队列，保证按序提交</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td>按序提交</td>
+<td>in-order commit</td>
+<td>从队头放行连续完成的 uop</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td>精确异常</td>
+<td>precise exception</td>
+<td>异常之前的都提交，异常之后的都不算</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td>退休</td>
+<td>retire</td>
+<td>uop 从 ROB 提交并永久生效</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td>重定向</td>
+<td>redirect</td>
+<td>猜错时把 PC 和后端状态拨回正确位置</td>
+<td>第 14 章</td>
+</tr>
+<tr>
+<td>冲刷</td>
+<td>flush</td>
+<td>作废错误路径上的全部 uop</td>
+<td>第 14 章</td>
+</tr>
+<tr>
+<td>kill 掩码</td>
+<td>kill mask</td>
+<td>按年龄判据标出要冲掉的表项</td>
+<td>第 14 章</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c.4-教学核参数速查">C.4 教学核参数速查</h2>
+<p>下面是一台 2 发射简化乱序核的参考配置。它是全书代码和插图的取值基线，不是某个真实芯片的参数。</p>
+<h3 id="整机">整机</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发射宽度</td>
+<td>2</td>
+<td>每拍译码、重命名、发射、提交最多 2 条 uop</td>
+</tr>
+<tr>
+<td>取指宽度</td>
+<td>2 条</td>
+<td>简化取值，真实核一次取一个 cache line</td>
+</tr>
+<tr>
+<td>ISA</td>
+<td>RV64I 子集</td>
+<td>只用整数指令，不含向量与虚拟化</td>
+</tr>
+<tr>
+<td>序间号宽度</td>
+<td>8 位</td>
+<td>序号范围 0 到 255，用于年龄比较与冲刷判据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="寄存器与重命名">寄存器与重命名</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>逻辑寄存器数</td>
+<td>32</td>
+<td>对应 x0 到 x31</td>
+</tr>
+<tr>
+<td>逻辑寄存器号宽</td>
+<td>5 位</td>
+<td>32 个寄存器需要 5 位</td>
+</tr>
+<tr>
+<td>物理寄存器数</td>
+<td>64</td>
+<td>逻辑寄存器的两倍，留出重命名空间</td>
+</tr>
+<tr>
+<td>物理寄存器号宽</td>
+<td>6 位</td>
+<td>64 个寄存器需要 6 位</td>
+</tr>
+<tr>
+<td>RAT 表项数</td>
+<td>32</td>
+<td>每个逻辑寄存器一项</td>
+</tr>
+<tr>
+<td>空闲表深度</td>
+<td>32</td>
+<td>初始装着超出逻辑寄存器的那部分物理号</td>
+</tr>
+<tr>
+<td>检查点槽数</td>
+<td>4</td>
+<td>同时最多跟踪 4 个未解析分支</td>
+</tr>
+</tbody>
+</table>
+<h3 id="队列与缓冲">队列与缓冲</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FTQ 深度</td>
+<td>8</td>
+<td>存取指地址</td>
+</tr>
+<tr>
+<td>指令缓冲深度</td>
+<td>8</td>
+<td>存指令字加预译码位</td>
+</tr>
+<tr>
+<td>发射队列项数</td>
+<td>4</td>
+<td>教学取值，真实核通常 16 到 32</td>
+</tr>
+<tr>
+<td>LSQ 项数</td>
+<td>8</td>
+<td>索引需要 3 位</td>
+</tr>
+<tr>
+<td>ROB 项数</td>
+<td>8</td>
+<td>环形队列，指针 4 位</td>
+</tr>
+<tr>
+<td>BHT 项数</td>
+<td>16</td>
+<td>2 位饱和计数器</td>
+</tr>
+<tr>
+<td>BTB 项数</td>
+<td>16</td>
+<td>直接映射</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据宽度与判据">数据宽度与判据</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用寄存器宽</td>
+<td>64 位</td>
+<td>RV64</td>
+</tr>
+<tr>
+<td>地址宽</td>
+<td>32 位</td>
+<td>教学简化，真实 RV64 是 64 位</td>
+</tr>
+<tr>
+<td>uop 打包宽</td>
+<td>48 位</td>
+<td>第 7 章译码器输出总线</td>
+</tr>
+<tr>
+<td>预译码位宽</td>
+<td>4 位</td>
+<td>第 6 章每条指令附带</td>
+</tr>
+<tr>
+<td>提交宽度</td>
+<td>2</td>
+<td>与发射宽度一致</td>
+</tr>
+<tr>
+<td>指针额外位</td>
+<td>1 位</td>
+<td>多一位指针判满，深度 8 用 4 位指针</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c.5-缩写对照">C.5 缩写对照</h2>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>中文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALU</td>
+<td>Arithmetic Logic Unit</td>
+<td>算术逻辑单元</td>
+</tr>
+<tr>
+<td>AGU</td>
+<td>Address Generation Unit</td>
+<td>地址生成单元</td>
+</tr>
+<tr>
+<td>BHT</td>
+<td>Branch History Table</td>
+<td>分支历史表</td>
+</tr>
+<tr>
+<td>BTB</td>
+<td>Branch Target Buffer</td>
+<td>分支目标缓冲</td>
+</tr>
+<tr>
+<td>CAM</td>
+<td>Content Addressable Memory</td>
+<td>内容寻址存储器</td>
+</tr>
+<tr>
+<td>CDB</td>
+<td>Common Data Bus</td>
+<td>公共数据总线</td>
+</tr>
+<tr>
+<td>CPI</td>
+<td>Cycles Per Instruction</td>
+<td>每条指令周期数</td>
+</tr>
+<tr>
+<td>FTQ</td>
+<td>Fetch Target Queue</td>
+<td>取指目标队列</td>
+</tr>
+<tr>
+<td>IPC</td>
+<td>Instructions Per Cycle</td>
+<td>每周期指令数</td>
+</tr>
+<tr>
+<td>IQ</td>
+<td>Issue Queue</td>
+<td>发射队列</td>
+</tr>
+<tr>
+<td>ILP</td>
+<td>Instruction Level Parallelism</td>
+<td>指令级并行</td>
+</tr>
+<tr>
+<td>LSQ</td>
+<td>Load Store Queue</td>
+<td>访存队列</td>
+</tr>
+<tr>
+<td>RAT</td>
+<td>Register Allocation Table</td>
+<td>重命名映射表</td>
+</tr>
+<tr>
+<td>RAS</td>
+<td>Return Address Stack</td>
+<td>返回地址栈</td>
+</tr>
+<tr>
+<td>ROB</td>
+<td>ReOrder Buffer</td>
+<td>重排序缓冲</td>
+</tr>
+<tr>
+<td>uop</td>
+<td>micro operation</td>
+<td>微操作</td>
+</tr>
+</tbody>
+</table>
+<h2 id="c.6-配套代码索引">C.6 配套代码索引</h2>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th>模块</th>
+<th>自测项数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code/verilog/03_tomasulo/</code></td>
+<td>RAT、保留站、CDB 仲裁</td>
+<td>10</td>
+</tr>
+<tr>
+<td><code>code/verilog/04_frontend/</code></td>
+<td>FTQ</td>
+<td>全部通过</td>
+</tr>
+<tr>
+<td><code>code/verilog/05_branch/</code></td>
+<td>BHT、BTB</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>code/verilog/06_fetch/</code></td>
+<td>指令缓冲</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>code/verilog/07_decode/</code></td>
+<td>译码器</td>
+<td>30</td>
+</tr>
+<tr>
+<td><code>code/verilog/09_rename/</code></td>
+<td>空闲表、RAT、重命名</td>
+<td>27</td>
+</tr>
+<tr>
+<td><code>code/verilog/10_issue/</code></td>
+<td>仲裁器、发射队列</td>
+<td>17</td>
+</tr>
+<tr>
+<td><code>code/verilog/11_execute/</code></td>
+<td>ALU、旁路、执行单元</td>
+<td>18</td>
+</tr>
+<tr>
+<td><code>code/verilog/12_lsq/</code></td>
+<td>访存队列</td>
+<td>20</td>
+</tr>
+<tr>
+<td><code>code/verilog/13_rob/</code></td>
+<td>重排序缓冲</td>
+<td>17</td>
+</tr>
+<tr>
+<td><code>code/verilog/14_recovery/</code></td>
+<td>检查点、恢复控制</td>
+<td>17</td>
+</tr>
+<tr>
+<td><code>code/verilog/15_perf/</code></td>
+<td>性能计数器</td>
+<td>21</td>
+</tr>
+<tr>
+<td><code>code/verilog/appendix_b/</code></td>
+<td>五个通用模块</td>
+<td>28</td>
+</tr>
+</tbody>
+</table>
+<p>运行方式统一是　进入目录，执行 <code>iverilog -g2012 -o sim.vvp *.v</code>，再执行 <code>vvp sim.vvp</code>。</p>
+<h2 id="小结">小结</h2>
+<ul>
+<li>术语按流水线性能、前端、后端分组，每个都能回到对应章节看展开。</li>
+<li>参数表给出教学核的取值基线，可以和各章代码逐一对照。</li>
+<li>缩写表和代码索引方便查阅，代码全部仿真通过。</li>
+</ul>
+<h2 id="思考题">思考题</h2>
+<ol type="1">
+<li>逻辑寄存器 32 个、物理寄存器 64 个，空闲表初始为什么只有 32 项，另外 32 项去哪了？</li>
+<li>序号用 8 位，程序超过 256 条在飞指令会怎样？真实处理器怎么解决这个问题？</li>
+<li>发射队列只有 4 项，而 ROB 有 8 项。如果 ROB 满了但发射队列空了，瓶颈在哪？</li>
+<li>为什么提交宽度要和发射宽度一致？不一致会怎样？</li>
+<li>参数表里取指宽度是 2 条、取指缓冲深度 8，如果想把发射宽度提到 4，哪些参数要跟着改？</li>
+</ol>
+</article></main>
+<footer>浙江工商大学　·　邢建国</footer>
+</body>
+</html>

@@ -6,6 +6,21 @@ github_pat.txt
 *.pat
 .env
 
+# PDF 构建中间文件与成品（本地按需生成）
+_book_all.md
+_book_body.html
+_book.html
+_book_base.pdf
+RISC-V多发射乱序处理器_从原理到实现.pdf
+toc_pages.json
+_site_tmp.html
+tools/build_pdf.py
+tools/extract_toc_pages.py
+tools/stamp_pdf.py
+
+# 本地演示数据
+.slidep/
+
 # Verilog 仿真中间产物
 *.vvp
 *.vcd
